@@ -27,32 +27,35 @@
             margin: 0;
             padding: 0;
             line-height: 1.6;
-            background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPgo8ZmllbGRkYXRhIHZhbHVlcz0iMjAuNzUiLz4KPGZpbGwgY29sb3I9InJnYmEoMCwwLDAsMC4yKSIgZmlsbC1vcGFjaXR5PSIuMzMiPgo8cmVjdCB3aWR0aD0iMSIgaGVpZ2h0PSIxIi8+CjwvZmlsbD4KPC9maWxsPgo8L3N2Zz4=');
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPgo8ZmllbGRkYXRhIHZhbHVlcz0iMjAuNzUiLz4KPGZpbGwgY29sb3I9InJnYmEoMCwwLDAsMC4yKSIgZmlsbC1vcGFjaXR5PSIuMzMiPgo8cmVjdCB3aWR0aD0iMSIgaGVpZ2h0PSIxIi8+CjwvZmlsbD4KPC9zdmc+');
             background-repeat: repeat;
+            /* 手机优化 4：移除 iOS 默认点击高亮 */
+            -webkit-tap-highlight-color: transparent;
         }
 
         .container {
             max-width: 1400px;
             margin: 0 auto;
-            /* 手机访问时，左右边距更小，留出更多空间 */
-            padding: 10px 10px 20px 10px; 
+            /* 手机优化 3：减少左右内边距，充分利用手机屏幕 */
+            padding: 0 5px 20px 5px; 
         }
 
         /* --- 1. 标题样式优化 --- */
         .header {
-            padding: 30px 10px 20px; /* 减少手机上的垂直填充 */
+            padding: 30px 10px 20px;
             text-align: center;
             border-bottom: 1px solid var(--color-border);
         }
 
         .header-title {
             font-family: var(--font-mono);
-            font-size: 2em; /* 手机上减小标题字号 */
+            font-size: 2em; 
             color: var(--color-text-light);
             text-shadow: 0 0 5px var(--color-accent-red);
             cursor: pointer;
             transition: color 0.3s, text-shadow 0.3s;
-            letter-spacing: 3px; /* 手机上减小间距 */
+            /* 手机优化 3：减小间距，防止小屏幕换行 */
+            letter-spacing: 2px; 
             text-transform: uppercase;
         }
 
@@ -61,9 +64,8 @@
             text-shadow: 0 0 10px var(--color-accent-red), 0 0 20px rgba(139, 0, 0, 0.4);
         }
 
-        /* --- 2. 核心内容布局 (重点 RWD 调整) --- */
+        /* --- 2. 核心内容布局 (RWD 调整) --- */
         .main-grid {
-            /* 默认桌面布局：2:1 分栏 */
             display: grid;
             grid-template-columns: 2fr 1fr;
             gap: 40px;
@@ -71,32 +73,45 @@
         }
 
         .content-area {
-            /* 桌面布局：两列最小 300px */
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 20px;
         }
         
-        /* 手机适配：900px 以下将布局改为单列，时间线在下方 */
+        /* 900px 以下将布局改为单列，时间线在下方 */
         @media (max-width: 900px) {
             .main-grid {
-                grid-template-columns: 1fr; /* 变成单列布局 */
+                grid-template-columns: 1fr; 
                 gap: 20px;
             }
             .content-area {
-                grid-template-columns: 1fr; /* 内容区也变成单列 */
+                grid-template-columns: 1fr; 
             }
             .timeline-area {
-                 /* 调整时间线在上下的间距 */
                 padding-top: 20px; 
             }
             .header-title {
-                font-size: 2.5em; /* 在中等屏幕上略大 */
+                font-size: 2.5em; 
             }
         }
+        
+        /* 手机优化 3：极小屏幕的字体调整 */
         @media (max-width: 480px) {
             .header-title {
-                font-size: 1.8em; /* 极小屏幕再次缩小标题字号 */
+                font-size: 1.8em; 
+            }
+        }
+        @media (max-width: 400px) {
+            .header-title {
+                font-size: 1.6em; 
+            }
+            .module-header {
+                font-size: 1.2em;
+            }
+            .module-summary,
+            .timeline-event,
+            .timeline-date {
+                font-size: 0.85em;
             }
         }
 
@@ -111,15 +126,23 @@
             position: relative;
         }
 
-        .content-module:hover {
-            box-shadow: 0 0 15px rgba(255, 255, 255, 0.05);
-            transform: translateY(-5px);
+        /* 手机优化 2：限制 transform 仅在支持 hover 的设备上应用 */
+        @media (hover: hover) {
+            .content-module:hover {
+                box-shadow: 0 0 15px rgba(255, 255, 255, 0.05);
+                transform: translateY(-5px);
+            }
+        }
+        /* 手机优化 2：添加触摸设备的点击反馈 */
+        .content-module:active {
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.15);
+            transform: scale(0.99); /* 轻微按压感 */
         }
 
         .module-header {
             font-family: var(--font-mono);
             color: var(--color-accent-green);
-            font-size: 1.4em; /* 略微减小字号 */
+            font-size: 1.4em;
             margin-bottom: 10px;
             text-transform: uppercase;
         }
@@ -138,19 +161,24 @@
             padding-top: 10px;
         }
 
+        .module-details p {
+            /* 手机优化 3：确保展开内容有足够的垂直空间 */
+            margin-bottom: 10px;
+        }
+
         .content-module.active .module-details {
             max-height: 500px;
             transition: max-height 0.5s ease-in;
         }
         
-        /* --- 4. 互动按钮区域样式 (RWD 优化) --- */
+        /* --- 4. 互动按钮区域样式 --- */
         .action-grid {
             grid-column: 1 / -1;
             display: flex;
-            flex-wrap: wrap; /* 允许按钮换行 */
+            flex-wrap: wrap; 
             gap: 10px;
             margin-top: 20px;
-            padding: 15px; /* 手机上减小填充 */
+            padding: 15px; 
             border: 1px solid var(--color-accent-red);
             background-color: #0d0d0d;
         }
@@ -159,14 +187,18 @@
             background-color: var(--color-dark-bg);
             color: var(--color-accent-green);
             border: 1px solid var(--color-accent-green);
-            padding: 8px 10px; /* 手机上减少横向填充 */
+            /* 手机优化 1：增加填充和最小尺寸，适配触摸目标 */
+            padding: 10px 12px; 
+            min-height: 48px; /* 最小触摸高度 */
+            min-width: 48px;  /* 最小触摸宽度 */
+            
             font-family: var(--font-mono);
-            font-size: 0.85em; /* 手机上略微减小字号 */
+            font-size: 0.9em;
             cursor: pointer;
             transition: all 0.2s;
             box-shadow: 0 0 3px var(--color-accent-green);
-            flex-grow: 1; /* 按钮可以稍微拉伸 */
-            min-width: 120px; /* 确保按钮不会太小 */
+            flex-grow: 1; 
+            min-width: 120px; 
         }
 
         .action-button:hover {
@@ -196,7 +228,6 @@
             border-left: 2px solid var(--color-accent-red);
         }
 
-        /* 确保时间轴圆点在小屏幕上仍然清晰 */
         .timeline-item::before {
             content: '';
             position: absolute;
@@ -216,7 +247,7 @@
         }
 
         .timeline-event {
-            font-size: 0.9em; /* 手机上略微减小字号 */
+            font-size: 0.9em;
             color: var(--color-text-light);
         }
     </style>
@@ -254,7 +285,7 @@
                     <p class="module-summary">位于[地理坐标]的一座废弃灯塔，被观测到可以短暂打开通往不同“梦境”的通道。高度危险。</p>
                     <div class="module-details">
                         <p><strong>历史记录：</strong>灯塔于1905年建成，1923年最后一次被点亮后自行熄灭。观测发现其光束并非电磁波，而是某种“认知修正波”。</p>
-                        <p><strong>建议处理：</strong>隔离并使用[加密代码]进行每日检查。</p>
+                        <p><strong>建议处理：：</strong>隔离并使用[加密代码]进行每日检查。</p>
                         <button class="action-button">启动隔离协议</button>
                     </div>
                 </article>
@@ -297,10 +328,9 @@
             moduleElement.classList.toggle('active');
         }
         
-        // 存储原始标题文本，用于恢复
         const ORIGINAL_TITLE_TEXT = "档案代号：黑山羊与编号W-25";
 
-        // JS 用于处理互动按钮的演示效果 (已去除 Glitch 逻辑)
+        // JS 用于处理互动按钮的演示效果
         function logAction(action) {
             const title = document.getElementById('main-title');
             
