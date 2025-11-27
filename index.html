@@ -27,36 +27,33 @@
             margin: 0;
             padding: 0;
             line-height: 1.6;
-            background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPgo8ZmllbGRkYXRhIHZhbHVlcz0iMjAuNzUiLz4KPGZpbGwgY29sb3I9InJnYmEoMCwwLDAsMC4yKSIgZmlsbC1vcGFjaXR5PSIuMzMiPgo8cmVjdCB3aWR0aD0iMSIgaGVpZ2h0PSIxIi8+CjwvZmlsbD4KPC9zdmc+');
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPgo8ZmllbGRkYXRhIHZhbHVlcz0iMjAuNzUiLz4KPGZpbGwgY29sb3I9InJnYmEoMCwwLDAsMC4yKSIgZmlsbC1vcGFjaXR5PSIuMzMiPgo8cmVjdCB3aWR0aD0iMSIgaGVpZ2h0PSIxIi8+CjwvZmlsbD4KPC9maWxsPgo8L3N2Zz4=');
             background-repeat: repeat;
-            overflow-x: hidden; /* 防止 glitch 效果造成横向滚动条 */
         }
 
         .container {
             max-width: 1400px;
             margin: 0 auto;
-            padding: 20px;
+            /* 手机访问时，左右边距更小，留出更多空间 */
+            padding: 10px 10px 20px 10px; 
         }
 
-        /* --- 1. 互动标题样式 --- */
+        /* --- 1. 标题样式优化 --- */
         .header {
-            padding: 50px 20px 30px;
+            padding: 30px 10px 20px; /* 减少手机上的垂直填充 */
             text-align: center;
             border-bottom: 1px solid var(--color-border);
-            position: relative; /* 为 glitch 效果的伪元素定位提供上下文 */
         }
 
         .header-title {
             font-family: var(--font-mono);
-            font-size: 3.5em;
+            font-size: 2em; /* 手机上减小标题字号 */
             color: var(--color-text-light);
-            text-shadow: 0 0 5px var(--color-accent-red); /* 异常红色阴影 */
+            text-shadow: 0 0 5px var(--color-accent-red);
             cursor: pointer;
             transition: color 0.3s, text-shadow 0.3s;
-            letter-spacing: 5px;
+            letter-spacing: 3px; /* 手机上减小间距 */
             text-transform: uppercase;
-            position: relative;
-            display: inline-block; /* 确保伪元素可以相对于其定位 */
         }
 
         .header-title:hover {
@@ -64,186 +61,46 @@
             text-shadow: 0 0 10px var(--color-accent-red), 0 0 20px rgba(139, 0, 0, 0.4);
         }
 
-        /* Glitch 效果 */
-        .header-title.glitched {
-            animation: glitch-skew 1s infinite alternate linear; /* 整体倾斜效果 */
-        }
-        .header-title.glitched::before,
-        .header-title.glitched::after {
-            content: attr(data-text); /* 使用 data-text 属性作为伪元素内容 */
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: var(--color-dark-bg); /* 背景色，遮盖原始文本的部分 */
-            overflow: hidden;
-            clip-path: inset(0 0 100% 0); /* 初始不可见 */
-        }
-
-        .header-title.glitched::before {
-            left: 2px;
-            text-shadow: -1px 0 var(--color-accent-red); /* 红色通道 */
-            animation: glitch-anim-1 2s infinite linear alternate-reverse;
-        }
-
-        .header-title.glitched::after {
-            left: -2px;
-            text-shadow: 1px 0 #00ffff; /* 青色通道，模拟RGB分离 */
-            animation: glitch-anim-2 3s infinite linear alternate;
-        }
-
-        @keyframes glitch-anim-1 {
-            0% {
-                clip-path: inset(33% 0 66% 0);
-            }
-            10% {
-                clip-path: inset(10% 0 90% 0);
-            }
-            20% {
-                clip-path: inset(70% 0 10% 0);
-            }
-            30% {
-                clip-path: inset(20% 0 70% 0);
-            }
-            40% {
-                clip-path: inset(80% 0 5% 0);
-            }
-            50% {
-                clip-path: inset(45% 0 45% 0);
-            }
-            60% {
-                clip-path: inset(5% 0 90% 0);
-            }
-            70% {
-                clip-path: inset(60% 0 20% 0);
-            }
-            80% {
-                clip-path: inset(15% 0 75% 0);
-            }
-            90% {
-                clip-path: inset(90% 0 5% 0);
-            }
-            100% {
-                clip-path: inset(30% 0 60% 0);
-            }
-        }
-
-        @keyframes glitch-anim-2 {
-            0% {
-                clip-path: inset(60% 0 30% 0);
-            }
-            15% {
-                clip-path: inset(5% 0 85% 0);
-            }
-            25% {
-                clip-path: inset(80% 0 10% 0);
-            }
-            35% {
-                clip-path: inset(10% 0 80% 0);
-            }
-            45% {
-                clip-path: inset(65% 0 25% 0);
-            }
-            55% {
-                clip-path: inset(25% 0 65% 0);
-            }
-            65% {
-                clip-path: inset(90% 0 5% 0);
-            }
-            75% {
-                clip-path: inset(1% 0 99% 0);
-            }
-            85% {
-                clip-path: inset(70% 0 20% 0);
-            }
-            95% {
-                clip-path: inset(15% 0 75% 0);
-            }
-            100% {
-                clip-path: inset(40% 0 50% 0);
-            }
-        }
-
-        @keyframes glitch-skew {
-            0% {
-                transform: skewX(0deg);
-            }
-            5% {
-                transform: skewX(-5deg);
-            }
-            10% {
-                transform: skewX(2deg);
-            }
-            15% {
-                transform: skewX(-3deg);
-            }
-            20% {
-                transform: skewX(0deg);
-            }
-            /* 更多随机的倾斜，但主要保持在不倾斜状态 */
-            30% {
-                transform: skewX(0deg);
-            }
-            35% {
-                transform: skewX(4deg);
-            }
-            40% {
-                transform: skewX(-1deg);
-            }
-            45% {
-                transform: skewX(0deg);
-            }
-            50% {
-                transform: skewX(0deg);
-            }
-            55% {
-                transform: skewX(-2deg);
-            }
-            60% {
-                transform: skewX(1deg);
-            }
-            65% {
-                transform: skewX(0deg);
-            }
-            70% {
-                transform: skewX(0deg);
-            }
-            75% {
-                transform: skewX(3deg);
-            }
-            80% {
-                transform: skewX(-4deg);
-            }
-            85% {
-                transform: skewX(0deg);
-            }
-            90% {
-                transform: skewX(0deg);
-            }
-            95% {
-                transform: skewX(-1deg);
-            }
-            100% {
-                transform: skewX(0deg);
-            }
-        }
-
-
-        /* --- 2. 核心内容布局 --- */
+        /* --- 2. 核心内容布局 (重点 RWD 调整) --- */
         .main-grid {
+            /* 默认桌面布局：2:1 分栏 */
             display: grid;
-            grid-template-columns: 2fr 1fr; /* 左侧内容模块，右侧时间线 */
+            grid-template-columns: 2fr 1fr;
             gap: 40px;
             padding-top: 40px;
         }
 
         .content-area {
+            /* 桌面布局：两列最小 300px */
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 20px;
         }
-        /* --- 3. 可点开/可编辑模块样式 --- */
+        
+        /* 手机适配：900px 以下将布局改为单列，时间线在下方 */
+        @media (max-width: 900px) {
+            .main-grid {
+                grid-template-columns: 1fr; /* 变成单列布局 */
+                gap: 20px;
+            }
+            .content-area {
+                grid-template-columns: 1fr; /* 内容区也变成单列 */
+            }
+            .timeline-area {
+                 /* 调整时间线在上下的间距 */
+                padding-top: 20px; 
+            }
+            .header-title {
+                font-size: 2.5em; /* 在中等屏幕上略大 */
+            }
+        }
+        @media (max-width: 480px) {
+            .header-title {
+                font-size: 1.8em; /* 极小屏幕再次缩小标题字号 */
+            }
+        }
+
+        /* --- 3. 内容模块样式 --- */
         .content-module {
             background-color: #1a1a1a;
             border: 1px solid var(--color-border);
@@ -261,8 +118,8 @@
 
         .module-header {
             font-family: var(--font-mono);
-            color: var(--color-accent-green); /* 异常数据头 */
-            font-size: 1.5em;
+            color: var(--color-accent-green);
+            font-size: 1.4em; /* 略微减小字号 */
             margin-bottom: 10px;
             text-transform: uppercase;
         }
@@ -282,18 +139,18 @@
         }
 
         .content-module.active .module-details {
-            max-height: 500px; /* 展开后高度 */
+            max-height: 500px;
             transition: max-height 0.5s ease-in;
         }
         
-        /* --- 4. 互动按钮区域样式 --- */
+        /* --- 4. 互动按钮区域样式 (RWD 优化) --- */
         .action-grid {
-            grid-column: 1 / -1; /* 占据整行 */
+            grid-column: 1 / -1;
             display: flex;
-            flex-wrap: wrap;
+            flex-wrap: wrap; /* 允许按钮换行 */
             gap: 10px;
             margin-top: 20px;
-            padding: 20px;
+            padding: 15px; /* 手机上减小填充 */
             border: 1px solid var(--color-accent-red);
             background-color: #0d0d0d;
         }
@@ -302,12 +159,14 @@
             background-color: var(--color-dark-bg);
             color: var(--color-accent-green);
             border: 1px solid var(--color-accent-green);
-            padding: 8px 15px;
+            padding: 8px 10px; /* 手机上减少横向填充 */
             font-family: var(--font-mono);
-            font-size: 0.9em;
+            font-size: 0.85em; /* 手机上略微减小字号 */
             cursor: pointer;
             transition: all 0.2s;
             box-shadow: 0 0 3px var(--color-accent-green);
+            flex-grow: 1; /* 按钮可以稍微拉伸 */
+            min-width: 120px; /* 确保按钮不会太小 */
         }
 
         .action-button:hover {
@@ -316,6 +175,7 @@
             border-color: var(--color-accent-red);
             box-shadow: 0 0 10px var(--color-accent-red), 0 0 30px var(--color-accent-red);
         }
+        
         /* --- 5. 时间线样式 --- */
         .timeline-area {
             padding: 0 10px;
@@ -336,6 +196,7 @@
             border-left: 2px solid var(--color-accent-red);
         }
 
+        /* 确保时间轴圆点在小屏幕上仍然清晰 */
         .timeline-item::before {
             content: '';
             position: absolute;
@@ -355,28 +216,15 @@
         }
 
         .timeline-event {
-            font-size: 0.95em;
+            font-size: 0.9em; /* 手机上略微减小字号 */
             color: var(--color-text-light);
-        }
-
-        /* 响应式调整 */
-        @media (max-width: 900px) {
-            .main-grid {
-                grid-template-columns: 1fr;
-            }
-            .content-area {
-                grid-template-columns: 1fr;
-            }
-            .timeline-area {
-                padding-top: 40px;
-            }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <header class="header">
-            <h1 class="header-title glitched" id="main-title" data-text="档案代号：黑山羊与编号W-25">档案代号：黑山羊与编号W-25</h1>
+            <h1 class="header-title" id="main-title">档案代号：黑山羊与编号W-25</h1>
             <p style="font-family: var(--font-mono); color: var(--color-accent-green);">// DATA INTEGRITY: DEGRADED // ACCESS LEVEL: ALPHA //</p>
         </header>
 
@@ -448,26 +296,24 @@
         function toggleDetails(moduleElement) {
             moduleElement.classList.toggle('active');
         }
+        
+        // 存储原始标题文本，用于恢复
+        const ORIGINAL_TITLE_TEXT = "档案代号：黑山羊与编号W-25";
 
-        // JS 用于处理互动按钮的演示效果
+        // JS 用于处理互动按钮的演示效果 (已去除 Glitch 逻辑)
         function logAction(action) {
             const title = document.getElementById('main-title');
-            const originalText = title.getAttribute('data-text'); // 获取原始文本
             
-            // 暂时移除 glitch 类，让文本清晰显示
-            title.classList.remove('glitched');
-
+            // 切换到警告状态
             title.textContent = `[警告]：指令 "${action}" 已接收。请等待...`;
             title.style.color = 'var(--color-accent-red)';
             title.style.textShadow = '0 0 10px var(--color-accent-red)';
             
-            // 2秒后恢复原标题和颜色，并重新添加 glitch 类
+            // 2秒后恢复原标题和颜色
             setTimeout(() => {
-                title.textContent = originalText; // 恢复原始文本
-                title.setAttribute('data-text', originalText); // 确保 data-text 属性也恢复
+                title.textContent = ORIGINAL_TITLE_TEXT; // 恢复原始文本
                 title.style.color = 'var(--color-text-light)';
                 title.style.textShadow = '0 0 5px var(--color-accent-red)';
-                title.classList.add('glitched'); // 重新添加 glitch 效果
             }, 2000);
             
             console.log(`执行操作: ${action}`);
