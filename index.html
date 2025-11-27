@@ -1,6 +1,4 @@
-<!DOCTYPE html>
-<html lang="zh">
-<head>
+<html lang="zh"><head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>【异常档案】世界观索引</title>
@@ -29,14 +27,14 @@
             line-height: 1.6;
             background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPgo8ZmllbGRkYXRhIHZhbHVlcz0iMjAuNzUiLz4KPGZpbGwgY29sb3I9InJnYmEoMCwwLDAsMC4yKSIgZmlsbC1vcGFjaXR5PSIuMzMiPgo8cmVjdCB3aWR0aD0iMSIgaGVpZ2h0PSIxIi8+CjwvZmlsbD4KPC9zdmc+');
             background-repeat: repeat;
-            /* 手机优化 4：移除 iOS 默认点击高亮 */
+            /* 手机优化：移除 iOS 默认点击高亮 */
             -webkit-tap-highlight-color: transparent;
         }
 
         .container {
             max-width: 1400px;
             margin: 0 auto;
-            /* 手机优化 3：减少左右内边距，充分利用手机屏幕 */
+            /* 手机优化：减少左右内边距，充分利用手机屏幕 */
             padding: 0 5px 20px 5px; 
         }
 
@@ -54,7 +52,6 @@
             text-shadow: 0 0 5px var(--color-accent-red);
             cursor: pointer;
             transition: color 0.3s, text-shadow 0.3s;
-            /* 手机优化 3：减小间距，防止小屏幕换行 */
             letter-spacing: 2px; 
             text-transform: uppercase;
         }
@@ -95,7 +92,7 @@
             }
         }
         
-        /* 手机优化 3：极小屏幕的字体调整 */
+        /* 极小屏幕的字体调整 */
         @media (max-width: 480px) {
             .header-title {
                 font-size: 1.8em; 
@@ -126,17 +123,17 @@
             position: relative;
         }
 
-        /* 手机优化 2：限制 transform 仅在支持 hover 的设备上应用 */
+        /* 手机优化：限制 transform 仅在支持 hover 的设备上应用 */
         @media (hover: hover) {
             .content-module:hover {
                 box-shadow: 0 0 15px rgba(255, 255, 255, 0.05);
                 transform: translateY(-5px);
             }
         }
-        /* 手机优化 2：添加触摸设备的点击反馈 */
+        /* 手机优化：添加触摸设备的点击反馈 */
         .content-module:active {
             box-shadow: 0 0 10px rgba(255, 255, 255, 0.15);
-            transform: scale(0.99); /* 轻微按压感 */
+            transform: scale(0.99); 
         }
 
         .module-header {
@@ -162,7 +159,6 @@
         }
 
         .module-details p {
-            /* 手机优化 3：确保展开内容有足够的垂直空间 */
             margin-bottom: 10px;
         }
 
@@ -187,10 +183,10 @@
             background-color: var(--color-dark-bg);
             color: var(--color-accent-green);
             border: 1px solid var(--color-accent-green);
-            /* 手机优化 1：增加填充和最小尺寸，适配触摸目标 */
+            /* 手机优化：增加填充和最小尺寸，适配触摸目标 */
             padding: 10px 12px; 
-            min-height: 48px; /* 最小触摸高度 */
-            min-width: 48px;  /* 最小触摸宽度 */
+            min-height: 48px; 
+            min-width: 48px;  
             
             font-family: var(--font-mono);
             font-size: 0.9em;
@@ -255,68 +251,44 @@
 <body>
     <div class="container">
         <header class="header">
-            <h1 class="header-title" id="main-title">档案代号：黑山羊与编号W-25</h1>
+            <h1 class="header-title" id="main-title">有限认知分部补给仓库</h1>
             <p style="font-family: var(--font-mono); color: var(--color-accent-green);">// DATA INTEGRITY: DEGRADED // ACCESS LEVEL: ALPHA //</p>
         </header>
 
         <div class="main-grid">
             <section class="content-area">
+                
                 <article class="content-module" onclick="toggleDetails(this)">
-                    <h2 class="module-header">[怪诞组织名称]：有光委员会</h2>
-                    <p class="module-summary">一个追逐异常并试图用几何学解释一切的古老组织。点击查看内部纪律档案。</p>
+                    <h2 class="module-header">游戏地图：</h2>
+                    <p class="module-summary">一张以携带者为中心，半径500m，随移动实时更新的像素风格地图。可以显示附近道路、墙壁、河流、房间等的基本布局。地图范围内的平凡生命会以小人图标标记，并标出其视野范围。</p>
                     <div class="module-details">
-                        <p><strong>档案记录 001-A：</strong>该组织信奉“七维几何”，声称所有异常现象都是高维投影的结果。其成员行踪诡秘，常出现在历史的缝隙中。</p>
-                        <p><strong>关键人物：</strong>[代号：几何体]，身份不明，仅能通过签名中扭曲的符号识别。</p>
-                        <button class="action-button">查看关联档案</button>
+                        <p><strong>特工可以消耗一点任意品质（Quality） 的素质保证（Quality Assurance），来实现一项以下功能：</strong></p>
+                        <p>● 标记一个目标持续跟踪其位置（超出范围会以小箭头标记大概方向） </p>
+                        <p>● 显示两点之间的一条较短可用道路 </p>
+                        <p>● 原地建立传送锚点<p>● 在明显的10秒读条效果后前往传送锚点</p></p>
+                        <button class="action-button">●购买——25嘉奖</button>
                     </div>
                 </article>
+                
+                
 
-                <article class="content-module" onclick="toggleDetails(this)">
-                    <h2 class="module-header">实体代号：不蠕动的城市</h2>
-                    <p class="module-summary">一团不断扩张的有机体，偶尔会伪装成一座普通城市。其内在结构违反了所有生物学和物理学常识。</p>
-                    <div class="module-details">
-                        <p><strong>记录日期：</strong>[数据丢失]</p>
-                        <p><strong>异常特征：</strong>其街道会周期性地改变方向，建筑会在一夜之间变成非欧几何结构。居民报告称听到了来自“地基”的低语。</p>
-                        <button class="action-button">分析异常频率</button>
-                    </div>
-                </article>
-                <article class="content-module" onclick="toggleDetails(this)">
-                    <h2 class="module-header">地点档案：沉默的灯塔</h2>
-                    <p class="module-summary">位于[地理坐标]的一座废弃灯塔，被观测到可以短暂打开通往不同“梦境”的通道。高度危险。</p>
-                    <div class="module-details">
-                        <p><strong>历史记录：</strong>灯塔于1905年建成，1923年最后一次被点亮后自行熄灭。观测发现其光束并非电磁波，而是某种“认知修正波”。</p>
-                        <p><strong>建议处理：：</strong>隔离并使用[加密代码]进行每日检查。</p>
-                        <button class="action-button">启动隔离协议</button>
-                    </div>
-                </article>
+                
+                
 
-                <section class="action-grid">
-                    <p style="font-family: var(--font-mono); color: var(--color-accent-red); width: 100%;">// 互动控制台 // 警告：点击可能导致认知偏差 //</p>
-                    <button class="action-button" onclick="logAction('启动监测')">启动监测</button>
-                    <button class="action-button" onclick="logAction('尝试解除锁定')">尝试解除锁定</button>
-                    <button class="action-button" onclick="logAction('查看未分类文档')">查看未分类文档</button>
-                    <button class="action-button" onclick="logAction('访问备用服务器')">访问备用服务器</button>
-                    <button class="action-button" onclick="logAction('清除缓存')">清除缓存</button>
-                </section>
+                
 
             </section>
             <aside class="timeline-area">
-                <h3 class="timeline-header">// 档案关键时间线 //</h3>
+                <h3 class="timeline-header">// 分部时间线 //</h3>
                 <div class="timeline-item">
-                    <div class="timeline-date">公元前 300 年</div>
-                    <div class="timeline-event">原始教团首次提及“扭曲之门”的概念，并记录在粘土板上。</div>
+                    <div class="timeline-date">19xx</div>
+                    <div class="timeline-event">？？？？？？</div>
                 </div>
+                
+                
                 <div class="timeline-item">
-                    <div class="timeline-date">1955 年 03 月</div>
-                    <div class="timeline-event">首次出现[实体代号]的目击报告。报告被官方归类为“集体癔症”。</div>
-                </div>
-                <div class="timeline-item">
-                    <div class="timeline-date">2001 年 07 月</div>
-                    <div class="timeline-event">无光委员会的秘密基地被首次发现。基地内部的时间流速与外界不一致。</div>
-                </div>
-                <div class="timeline-item">
-                    <div class="timeline-date">至今 (数据异常)</div>
-                    <div class="timeline-event">蠕动的城市扩张到[地名]郊区，世界观核心事件开始...</div>
+                    <div class="timeline-date">2012年11月</div>
+                    <div class="timeline-event">？？？？？？</div>
                 </div>
             </aside>
         </div>
@@ -349,5 +321,81 @@
             console.log(`执行操作: ${action}`);
         }
     </script>
-</body>
-</html>
+<!-- Code injected by live-server -->
+<script>
+	// <![CDATA[  <-- For SVG support
+	if ('WebSocket' in window) {
+		(function () {
+			function refreshCSS() {
+				var sheets = [].slice.call(document.getElementsByTagName("link"));
+				var head = document.getElementsByTagName("head")[0];
+				for (var i = 0; i < sheets.length; ++i) {
+					var elem = sheets[i];
+					var parent = elem.parentElement || head;
+					parent.removeChild(elem);
+					var rel = elem.rel;
+					if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
+						var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
+						elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
+					}
+					parent.appendChild(elem);
+				}
+			}
+			var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
+			var address = protocol + window.location.host + window.location.pathname + '/ws';
+			var socket = new WebSocket(address);
+			socket.onmessage = function (msg) {
+				if (msg.data == 'reload') window.location.reload();
+				else if (msg.data == 'refreshcss') refreshCSS();
+			};
+			if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
+				console.log('Live reload enabled.');
+				sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
+			}
+		})();
+	}
+	else {
+		console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
+	}
+	// ]]>
+</script>
+
+<!-- Code injected by live-server -->
+<script>
+	// <![CDATA[  <-- For SVG support
+	if ('WebSocket' in window) {
+		(function () {
+			function refreshCSS() {
+				var sheets = [].slice.call(document.getElementsByTagName("link"));
+				var head = document.getElementsByTagName("head")[0];
+				for (var i = 0; i < sheets.length; ++i) {
+					var elem = sheets[i];
+					var parent = elem.parentElement || head;
+					parent.removeChild(elem);
+					var rel = elem.rel;
+					if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
+						var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
+						elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
+					}
+					parent.appendChild(elem);
+				}
+			}
+			var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
+			var address = protocol + window.location.host + window.location.pathname + '/ws';
+			var socket = new WebSocket(address);
+			socket.onmessage = function (msg) {
+				if (msg.data == 'reload') window.location.reload();
+				else if (msg.data == 'refreshcss') refreshCSS();
+			};
+			if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
+				console.log('Live reload enabled.');
+				sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
+			}
+		})();
+	}
+	else {
+		console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
+	}
+	// ]]>
+</script>
+<div class="xl-chrome-ext-bar_4DB361DE-01F7-4376-B494-639E489D19ED" id="xl_chrome_ext_4DB361DE-01F7-4376-B494-639E489D19ED" data-v-app="" style="display: block;"><div class=""><div id="xl_chrome_ext_video_tag_wrapper_4DB361DE-01F7-4376-B494-639E489D19ED" config="[object Object]" uiversion="v2" exception="false" latestvideosrc="" isshowvideotag="false" isshowdownloadbar="true" isshowcloudaddbar="false"><div class="_video_op_wrapper_96mx8_1" config="[object Object]" uiversion="v2" style="display: none;"><ul class="_video_op_list_96mx8_17"><li class="_op_item_96mx8_39 _download_96mx8_45"><span class="_op_icon_96mx8_25"></span><span class="_op_text_96mx8_31">下载</span></li><li class="_op_item_96mx8_39 _screen_96mx8_51"><span class="_op_icon_96mx8_25"></span><span class="_op_text_96mx8_31">投屏</span></li></ul></div></div><div class="badge_wrapper_4DB361DE-01F7-4376-B494-639E489D19ED _badge_wrapper_wnbzb_1" id="badge_wrapper_4DB361DE-01F7-4376-B494-639E489D19ED"><div class="_logo_wnbzb_24"></div><span class="_line_wnbzb_32"></span><div class="_text_wrapper_wnbzb_39"><span class="_download_icon_wnbzb_51"></span><span class="_text_wnbzb_39">高速下载</span></div></div><!----><!----><!----><!----><div class="_container_wq4mj_4"><!----></div></div></div></body></html>
