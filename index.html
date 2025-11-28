@@ -1,559 +1,579 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>正在访问有限认知分部</title>
+    <title>::: 有限认知分部 / 非标准连接 :::</title>
+    <!-- 引入 Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 使用 Inter 字体作为基准，但通过 CSS Glitch 效果进行风格化 -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        /* --- 字体及配色方案 --- */
-        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;700&family=Share+Tech+Mono&display=swap');
-
-        :root {
-            --color-dark-bg: #111111;
-            --color-text-light: #e0e0e0;
-            --color-accent-red: #8b0000; /* 故障/警告色 */
-            --color-accent-green: #008000; /* 数据/正常色 */
-            --color-border: #444444;
-            --font-serif: 'Cormorant Garamond', serif;
-            --font-mono: 'Share Tech Mono', monospace;
+        /* 自定义故障（Glitch）动画 */
+        .glitch-text {
+            font-family: 'Inter', sans-serif;
+            text-shadow: 
+                1px 0 0 #f0f, 
+                -2px 0 0 #0ff;
+            animation: 
+                glitch-anim-1 2s infinite alternate-reverse linear,
+                flicker 0.1s infinite;
         }
 
-        /* --- 全局样式 --- */
-        body {
-            background-color: var(--color-dark-bg);
-            color: var(--color-text-light);
-            font-family: var(--font-serif);
-            margin: 0;
-            padding: 0;
-            line-height: 1.6;
-            -webkit-tap-highlight-color: transparent; /* 手机优化：移除点击高亮 */
-        }
-        
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 10px;
-        }
-
-        /* --- 1. 引导页（Intro Screen）样式 --- */
-        #intro-screen {
-            height: 100vh; /* 确保占满整个手机屏幕高度 */
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            position: relative;
-            overflow: hidden; /* 防止故障动画溢出 */
-            transition: opacity 1s;
-        }
-
-        /* 故障风格标题 */
-        #intro-title {
-            font-family: var(--font-mono);
-            color: var(--color-text-light);
-            font-size: 2.2em;
-            text-shadow: 0 0 5px var(--color-accent-red);
-            letter-spacing: 5px;
-            margin-bottom: 30px;
-            animation: flicker 1.5s infinite alternate; /* 闪烁动画 */
-        }
-        /* 手机适配 */
-        @media (max-width: 480px) {
-            #intro-title {
-                font-size: 1.8em;
-                letter-spacing: 3px;
-                padding: 0 10px;
-            }
-        }
-
-        /* 快速变化的时间条 */
-        #time-bar {
-            font-family: var(--font-mono);
-            font-size: 1.5em;
-            color: var(--color-accent-green);
-            background: #1a1a1a;
-            padding: 10px 20px;
-            border: 1px solid var(--color-accent-green);
-            margin-bottom: 40px;
-        }
-
-        /* 按钮样式 */
-        #sync-button {
-            background-color: var(--color-accent-red);
-            color: var(--color-text-light);
-            border: none;
-            padding: 12px 30px;
-            font-family: var(--font-mono);
-            font-size: 1em;
-            cursor: pointer;
-            transition: background-color 0.3s, box-shadow 0.3s;
-            min-height: 48px; /* 手机优化 */
-        }
-
-        #sync-button:hover:not(:disabled) {
-            background-color: #ff3333;
-            box-shadow: 0 0 15px rgba(255, 51, 51, 0.6);
-        }
-        #sync-button:disabled {
-            background-color: #333;
-            cursor: not-allowed;
-        }
-
-        /* 进度条样式 */
-        #loading-progress {
-            width: 80%;
-            max-width: 400px;
-            height: 8px;
-            background: var(--color-border);
-            margin-top: 20px;
-            overflow: hidden;
-            opacity: 0;
-            transition: opacity 0.5s;
-        }
-        #progress-bar {
+        .glitch-text::before,
+        .glitch-text::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
             height: 100%;
-            width: 0;
-            background-color: var(--color-accent-green);
-            transition: width 0.1s linear;
+            pointer-events: none;
+            clip: rect(0, 900px, 0, 0);
         }
 
-        /* 故障闪烁动画 */
+        .glitch-text::before {
+            text-shadow: 3px 0 0 #ff00ff;
+            animation: glitch-anim-2 3s infinite alternate-reverse linear;
+        }
+
+        .glitch-text::after {
+            text-shadow: -3px 0 0 #00ffff;
+            animation: glitch-anim-3 4s infinite alternate-reverse linear;
+        }
+
+        @keyframes glitch-anim-1 {
+            0% { clip: rect(24px, 9999px, 83px, 0); transform: skew(0.5deg); }
+            10% { clip: rect(51px, 9999px, 60px, 0); transform: skew(0.1deg); }
+            20% { clip: rect(33px, 9999px, 39px, 0); transform: skew(1.2deg); }
+            30% { clip: rect(72px, 9999px, 73px, 0); transform: skew(0.7deg); }
+            40% { clip: rect(28px, 9999px, 94px, 0); transform: skew(-0.5deg); }
+            50% { clip: rect(10px, 9999px, 31px, 0); transform: skew(0.2deg); }
+            60% { clip: rect(65px, 9999px, 72px, 0); transform: skew(-1.1deg); }
+            70% { clip: rect(88px, 9999px, 99px, 0); transform: skew(0.9deg); }
+            80% { clip: rect(14px, 9999px, 57px, 0); transform: skew(-0.8deg); }
+            90% { clip: rect(30px, 9999px, 80px, 0); transform: skew(0.3deg); }
+            100% { clip: rect(18px, 9999px, 45px, 0); transform: skew(-0.2deg); }
+        }
+
+        @keyframes glitch-anim-2 {
+            0% { clip: rect(31px, 9999px, 40px, 0); transform: translate(-5px); }
+            20% { clip: rect(79px, 9999px, 90px, 0); transform: translate(5px); }
+            40% { clip: rect(10px, 9999px, 20px, 0); transform: translate(-10px); }
+            60% { clip: rect(50px, 9999px, 60px, 0); transform: translate(10px); }
+            80% { clip: rect(95px, 9999px, 105px, 0); transform: translate(-5px); }
+            100% { clip: rect(22px, 9999px, 33px, 0); transform: translate(5px); }
+        }
+
+        @keyframes glitch-anim-3 {
+            0% { clip: rect(54px, 9999px, 63px, 0); transform: translate(5px); }
+            20% { clip: rect(12px, 9999px, 20px, 0); transform: translate(-5px); }
+            40% { clip: rect(70px, 9999px, 80px, 0); transform: translate(10px); }
+            60% { clip: rect(35px, 9999px, 45px, 0); transform: translate(-10px); }
+            80% { clip: rect(88px, 9999px, 98px, 0); transform: translate(5px); }
+            100% { clip: rect(41px, 9999px, 51px, 0); transform: translate(-5px); }
+        }
+
         @keyframes flicker {
-            0%, 100% { opacity: 1; text-shadow: 0 0 5px var(--color-accent-red); }
-            50% { opacity: 0.8; text-shadow: 0 0 15px var(--color-accent-red), 0 0 2px #fff; }
-            52% { opacity: 1; text-shadow: none; }
+            0% { opacity: 0.9; }
+            5% { opacity: 0.8; }
+            10% { opacity: 1; }
+            15% { opacity: 0.7; }
+            20% { opacity: 1; }
+            25% { opacity: 0.8; }
+            30% { opacity: 0.9; }
+            100% { opacity: 1; }
         }
 
-        /* 向下箭头指示 */
-        #down-arrow {
-            position: absolute;
-            bottom: 5vh;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 2em;
-            color: var(--color-accent-green);
-            opacity: 0;
-            animation: pulse 1.5s infinite;
-            cursor: pointer;
-            transition: opacity 1s;
-        }
-        @keyframes pulse {
-            0% { transform: scale(1) translateX(-50%); }
-            50% { transform: scale(1.1) translateX(-50%); }
-            100% { transform: scale(1) translateX(-50%); }
+        .no-glitch {
+            animation: none !important;
+            text-shadow: none !important;
         }
 
-        /* --- 2. 主内容区域样式 --- */
-        #main-content {
-            padding-top: 50px;
-            min-height: 100vh; /* 确保内容区足够长 */
-            opacity: 0;
-            transition: opacity 1s;
+        /* 隐藏滚动条但允许内容滚动 */
+        body {
+            overflow-y: scroll;
+            -ms-overflow-style: none; /* IE and Edge */
+            scrollbar-width: none; /* Firefox */
         }
 
-        .section-title {
-            font-family: var(--font-mono);
-            color: var(--color-accent-red);
-            font-size: 1.8em;
-            text-align: center;
-            margin-bottom: 40px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid var(--color-accent-red);
-            letter-spacing: 2px;
-        }
-
-        /* 内容模块通用样式 (复用前次优化) */
-        .content-module {
-            background-color: #1a1a1a;
-            border: 1px solid var(--color-border);
-            padding: 20px;
-            margin-bottom: 20px;
-            cursor: pointer;
-            overflow: hidden;
-            position: relative;
-        }
-        .content-module:active {
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.15);
-            transform: scale(0.99); /* 手机优化：触摸反馈 */
-        }
-        .module-header {
-            font-family: var(--font-mono);
-            color: var(--color-accent-green);
-            font-size: 1.2em;
-            margin-bottom: 10px;
-            text-transform: uppercase;
-        }
-        .module-summary {
-            font-size: 0.9em;
-            color: var(--color-text-light);
-        }
-        .module-details {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.5s ease-out;
-            border-top: 1px dashed var(--color-accent-green);
-            padding-top: 10px;
-            margin-top: 15px;
-        }
-        .content-module.active .module-details {
-            max-height: 800px; /* 足够容纳文本 */
-            transition: max-height 0.7s ease-in;
+        body::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, Opera */
         }
         
-        /* 组织阵营 Tab 样式 */
-        .tabs {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-        .tab-button {
-            background-color: #222;
-            color: var(--color-accent-green);
-            border: 1px solid var(--color-accent-green);
-            padding: 8px 15px;
-            font-family: var(--font-mono);
-            cursor: pointer;
-            min-height: 40px; /* 手机优化 */
-            transition: all 0.2s;
-        }
-        .tab-button.active, .tab-button:hover {
-            background-color: var(--color-accent-green);
-            color: var(--color-dark-bg);
-            box-shadow: 0 0 5px var(--color-accent-green);
-        }
-        .tab-content {
-            background-color: #1a1a1a;
-            padding: 20px;
-            border: 1px solid var(--color-accent-red);
-        }
-        .tab-content h3 {
-            color: var(--color-accent-red);
-            margin-top: 0;
-            font-family: var(--font-mono);
-        }
-
-        /* 机密档案缩略图样式 */
-        .archive-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* 手机上至少 150px 宽 */
-            gap: 15px;
-        }
-        .archive-module {
-            background-color: #0d0d0d;
-            border: 2px solid var(--color-accent-red);
-            padding: 15px;
-            cursor: pointer;
-            height: 180px; /* 缩略图高度 */
-            overflow: hidden;
-            position: relative;
-            transition: all 0.3s;
-        }
-        .archive-module.active {
-            height: auto; /* 展开后高度自适应 */
-            grid-column: 1 / -1; /* 展开后占据全宽 */
-            border-color: var(--color-accent-green);
-        }
-        .archive-module p {
-            font-size: 0.8em;
-            color: #ccc;
-            opacity: 0.5;
-            max-height: 100px;
-            overflow: hidden;
-        }
-        .archive-module.active p {
-            max-height: none;
-            opacity: 1;
-            font-size: 0.9em;
-        }
-        .archive-module h4 {
-            font-family: var(--font-mono);
-            color: var(--color-accent-red);
-            margin-top: 0;
-        }
-
-        /* 展开提示文本 */
-        .expand-hint {
-            position: absolute;
-            bottom: 5px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 0.7em;
-            color: var(--color-accent-red);
-            font-family: var(--font-mono);
-            opacity: 0.7;
-        }
-        .archive-module.active .expand-hint {
+        /* 隐藏 Details 箭头 */
+        details > summary::-webkit-details-marker {
             display: none;
         }
-
     </style>
 </head>
-<body>
-    
-    <!-- 全屏引导页 -->
-    <div id="intro-screen">
-        <h1 id="intro-title">正在访问有限认知分部</h1>
-        
-        <p style="font-family: var(--font-mono); color: var(--color-accent-red;">// ERROR: TIME-SYNCHRONIZATION FAILURE //</p>
-        
-        <div id="time-bar">
-            <!-- 时间条显示，初始内容为加载中 -->
-            <span id="time-display">YEAR: 9999-01-01 00:00:00</span>
-        </div>
-        
-        <button id="sync-button" onclick="startSync()">同步时间线</button>
-        
-        <div id="loading-progress">
-            <div id="progress-bar"></div>
-        </div>
+<body class="bg-gray-900 text-cyan-400 font-mono tracking-wider">
 
-        <div id="down-arrow" onclick="scrollToContent()">▼</div>
+    <!-- 1. 标题/加载页面 - 故障模式 -->
+    <div id="splash-screen" class="min-h-screen h-screen w-full flex flex-col justify-center items-center p-6 transition-opacity duration-1000">
+        <div class="max-w-md w-full text-center">
+            
+            <!-- 标题：::: 有限认知分部 / 非标准连接 ::: (Glitch Effect) -->
+            <h1 id="glitch-title" data-text="::: 有限认知分部 / 非标准连接 :::" 
+                class="glitch-text relative text-4xl sm:text-5xl font-bold mb-10 leading-tight inline-block mx-auto text-center">
+                ::: 有限认知分部 / 非标准连接 :::
+            </h1>
+            
+            <!-- 快速变化的时间条 (已移除 [ 纪元时间戳 ] 标签) -->
+            <div class="text-xl sm:text-2xl mb-8 p-3 border-2 border-cyan-400/50 bg-gray-800/50 shadow-lg shadow-cyan-500/20">
+                <!-- 仅保留闪烁的数字 -->
+                <span id="glitch-time" class="text-yellow-400 glitch-text" data-text="0000.00.00 00:00:00">0000.00.00 00:00:00</span>
+            </div>
+
+            <!-- 确认接入指令 按钮 -->
+            <button id="sync-button" 
+                    class="w-full py-3 px-6 text-lg bg-cyan-600 hover:bg-cyan-700 active:bg-cyan-800 text-gray-900 font-bold rounded-lg shadow-xl shadow-cyan-500/50 transform transition duration-300 hover:scale-[1.01] disabled:opacity-50 disabled:cursor-not-allowed">
+                确认接入指令
+            </button>
+
+            <!-- 加载进度条 -->
+            <div id="loading-container" class="mt-8 hidden">
+                <p class="text-sm mb-2 text-cyan-400/70">正在重写时间线参数...</p>
+                <div class="w-full h-3 bg-gray-700 rounded-full overflow-hidden border border-cyan-400/30">
+                    <div id="loading-bar" class="h-full bg-green-500 transition-all duration-100 ease-linear" style="width: 0%"></div>
+                </div>
+                <p id="loading-text" class="text-xs mt-2 text-green-400">0%</p>
+            </div>
+            
+        </div>
+        
+        <!-- 加载完成后显示的向下箭头 -->
+        <a id="scroll-indicator" href="#content-start" class="hidden absolute bottom-8 animate-bounce text-4xl text-green-500/80 hover:text-green-400 transition-colors duration-300">
+            &#x2B07; <!-- Unicode for Down Arrow -->
+        </a>
     </div>
 
-    <!-- 主内容区域 (初始隐藏) -->
-    <div id="main-content" class="container">
-        
-        <!-- 模块 1: 补给仓库 -->
-        <section>
-            <h2 class="section-title">// 补给仓库 · R-型清单 //</h2>
-            <p class="module-summary" style="text-align: center; margin-bottom: 25px;">[简略目录]：安全屋物资、非致命性工具、高价值异常物。</p>
+    <!-- 2. 主内容模块 -->
+    <div id="main-content" class="min-h-screen bg-gray-900 p-6 sm:p-12 transition-opacity duration-1000 opacity-0 pointer-events-none">
+        <a id="content-start" class="invisible"></a>
+
+        <!-- 导言 (已恢复为用户指定的静态文本) -->
+        <div class="max-w-4xl mx-auto mb-16 border-b border-cyan-400/30 pb-8">
+            <h2 id="final-time-h2" class="text-3xl font-bold text-red-500/80 mb-4 tracking-wider">::: 认知稳定，权限开放 :::</h2>
+            <p class="text-gray-300 text-lg leading-relaxed">
+                当前数据同步至纪元2012年11月。以下信息已通过校验，但其真实性与源头稳定性仍处于低置信区间。请按需查阅，并严格遵循既定信息使用协议。
+            </p>
+        </div>
+
+        <!-- 模块 1: 补给仓库 (Supply Depot) -->
+        <div class="max-w-4xl mx-auto mb-16">
+            <h3 class="text-2xl font-bold text-cyan-400 border-b border-cyan-400 pb-2 mb-6"># 补给仓库 [001.01]</h3>
             
-            <div class="archive-grid">
-                <article class="content-module archive-module" onclick="toggleDetails(this)">
-                    <h4>安全屋 R01-B</h4>
-                    <p>状态：已启用。物资：饮用水（充足），应急食品（低），通讯模块（离线）。安全检查日期：2012-11-20。</p>
-                    <span class="expand-hint">点击展开</span>
-                    <div class="module-details">
-                        <p><strong>详细记录：</strong>安全屋的空气过滤系统已出现损坏迹象，建议在下次补给任务中优先更换。发现墙体有生物腐蚀痕迹，痕迹未扩散。</p>
-                        <button class="tab-button" style="margin-top: 10px;">请求维护</button>
-                    </div>
-                </article>
-
-                <article class="content-module archive-module" onclick="toggleDetails(this)">
-                    <h4>工具箱 T-非致命</h4>
-                    <p>清单：镇静枪（50%电量），认知干扰器（型号：'耳语'），生物追踪信标（型号：'萤火虫'）。</p>
-                    <span class="expand-hint">点击展开</span>
-                    <div class="module-details">
-                        <p><strong>详细记录：</strong>'耳语'干扰器上次使用记录不明，请在使用前进行全面的频率校准。信标数量不足，仅剩一枚，应在下次任务中回收。</p>
-                        <button class="tab-button" style="margin-top: 10px;">核对数量</button>
-                    </div>
-                </article>
-
-                <article class="content-module archive-module" onclick="toggleDetails(this)">
-                    <h4>异常物 A-003</h4>
-                    <p>代号：破碎的镜面。描述：一块能够轻微修改使用者对自身认知的镜子。当前储存在防辐射箱中。风险等级：中。</p>
-                    <span class="expand-hint">点击展开</span>
-                    <div class="module-details">
-                        <p><strong>详细记录：</strong>A-003 已被证实会通过视觉反馈影响大脑前额叶皮层，导致目标认为自身存在缺陷。接触时间限制：不超过10秒。</p>
-                        <button class="tab-button" style="margin-top: 10px;">查看使用协议</button>
-                    </div>
-                </article>
+            <!-- 简略目录 -->
+            <div class="bg-gray-800 p-4 mb-6 rounded-lg border border-gray-700">
+                <p class="text-sm text-gray-500 mb-2">:: 目录索引 ::</p>
+                <p class="text-sm text-gray-400">
+                    <span class="mr-4">A-01: 游戏地图</span> | 
+                    <span class="mr-4">A-02: 记忆碎片</span> | 
+                    <span class="mr-4">B-03: 异常源定位器</span>
+                </p>
             </div>
-        </section>
 
-        <!-- 模块 2: 组织阵营 -->
-        <section style="margin-top: 50px;">
-            <h2 class="section-title">// 组织阵营 · 认知侧写 //</h2>
+            <!-- 可展开的小模块 (Accordion Style) -->
+            <div class="space-y-4">
+                
+                <!-- A-01: 游戏地图 (价格改为非交互式徽章) -->
+                <details class="bg-gray-800 rounded-lg shadow-lg overflow-hidden transition-all duration-300 open:shadow-cyan-500/30 border border-cyan-500/20">
+                    <!-- 非交互式价格标签和指示器位于 Summary 内部右侧 -->
+                    <summary class="flex justify-between items-center p-4 cursor-pointer hover:bg-gray-700 transition-colors duration-200 text-yellow-300 font-bold">
+                        <span>[ A-01 ] 游戏地图 (Game Map)</span>
+                        <div class="flex items-center space-x-4">
+                            <!-- 非交互式价格徽章 (Badge) -->
+                            <span class="px-3 py-1 text-xs bg-gray-700 text-green-400 font-semibold rounded-full border border-green-500/50 tracking-wider">
+                                $25
+                            </span>
+                            <!-- 展开/收起指示器 -->
+                            <span class="text-xl transform transition-transform duration-300 summary-indicator">&#x25BC;</span>
+                        </div>
+                    </summary>
+                    <div class="p-4 bg-gray-900 text-gray-400 border-t border-cyan-500/20">
+                        <p class="text-sm leading-relaxed mb-4">
+                            一张以携带者为中心，半径500m，随移动实时更新的像素风格地图。可以显示附近道路、墙壁、河流、房间等的基本布局。地图范围内的平凡生命会以小人图标标记，并标出其视野范围。
+                            <br><br>
+                            特工可以消耗一点任意品质（Quality）的素质保证（Quality Assurance），来实现一项以下功能：
+                        </p>
+                        <!-- 使用自定义的右三角箭头 (►) 作为列表标记 -->
+                        <ul class="text-sm list-none pl-4 space-y-2">
+                            <li class="flex items-start">
+                                <span class="text-green-400 mr-2 mt-px text-sm">►</span>
+                                <span>标记一个目标持续跟踪其位置（超出范围会以小箭头标记大概方向）</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-green-400 mr-2 mt-px text-sm">►</span>
+                                <span>显示两点之间的一条较短可用道路</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-green-400 mr-2 mt-px text-sm">►</span>
+                                <span>原地建立传送锚点</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-green-400 mr-2 mt-px text-sm">►</span>
+                                <span>在明显的10秒读条效果后前往传送锚点</span>
+                            </li>
+                        </ul>
+                        
+                    </div>
+                </details>
+
+                <!-- A-02: 记忆碎片包 -->
+                <details class="bg-gray-800 rounded-lg shadow-lg overflow-hidden transition-all duration-300 border border-cyan-500/20">
+                    <summary class="flex justify-between items-center p-4 cursor-pointer hover:bg-gray-700 transition-colors duration-200 text-yellow-300 font-bold">
+                        <span>[ A-02 ] 记忆碎片包 (Memory Shard Pack)</span>
+                        <span class="text-xl transform transition-transform duration-300 summary-indicator">&#x25BC;</span>
+                    </summary>
+                    <div class="p-4 bg-gray-900 text-gray-400 border-t border-cyan-500/20">
+                        <p class="text-sm">
+                            由回收站回收的无用信息片段，经高熵处理后用于掩盖敏感数据。使用时可能会触发随机且毫无意义的童年记忆或过往人生路径。
+                        </p>
+                    </div>
+                </details>
+                
+                <!-- B-03 模块：背景色已还原为标准深灰，标题字体颜色更改为红色 -->
+                <details class="bg-gray-800 rounded-lg shadow-lg overflow-hidden transition-all duration-300 open:shadow-yellow-500/30 border border-yellow-500/20">
+                    <summary class="flex justify-between items-center p-4 cursor-pointer hover:bg-gray-700 transition-colors duration-200 text-red-400 font-bold">
+                        <span>[ B-03 ] 异常源定位器 (Anomaly Locator)</span>
+                        <span class="text-xl transform transition-transform duration-300 summary-indicator">&#x25BC;</span>
+                    </summary>
+                    <div class="p-4 bg-gray-900 text-gray-400 border-t border-yellow-500/20">
+                        <p class="text-sm">
+                            一个校准频率偏移的设备。请注意，它找到的“异常”可能只是你所处时间线的正常现象。设备状态：不稳定，持续过热。
+                        </p>
+                    </div>
+                </details>
+            </div>
+        </div>
+
+        <!-- 模块 2: 组织阵营 (Organizational Factions) -->
+        <div class="max-w-4xl mx-auto mb-16">
+            <h3 class="text-2xl font-bold text-cyan-400 border-b border-cyan-400 pb-2 mb-6"># 组织阵营 [002.01]</h3>
             
-            <div class="tabs">
-                <button class="tab-button active" data-org="committee" onclick="switchOrg(this, 'committee')">无光委员会</button>
-                <button class="tab-button" data-org="crows" onclick="switchOrg(this, 'crows')">乌鸦物流</button>
-                <button class="tab-button" data-org="church" onclick="switchOrg(this, 'church')">旧日教会</button>
+            <!-- 标签切换 (Tabs) -->
+            <div id="factions-tabs" class="flex space-x-2 sm:space-x-4 mb-6 overflow-x-auto pb-2">
+                <button data-faction="division" class="tab-button active-tab">有限认知分部</button>
+                <button data-faction="syndicate" class="tab-button">灰质财团</button>
+                <button data-faction="watchers" class="tab-button">时空观察者</button>
             </div>
 
-            <div id="org-content" class="tab-content">
-                <!-- 内容将由 JS 插入 -->
+            <!-- 阵营简介内容 -->
+            <div id="faction-content-division" class="faction-content bg-gray-800 p-6 rounded-xl border border-red-500/30 shadow-2xl shadow-red-500/10">
+                <h4 class="text-xl text-red-400 font-bold mb-3">有限认知分部 (The Division)</h4>
+                <p class="text-gray-400 text-sm leading-relaxed">
+                    本部门。致力于在多重时间线的混乱中，建立一个“有限但可控”的认知框架。我们的目标不是理解宇宙，而是防止它彻底崩溃成一堆无法被人类心智处理的矛盾。核心原则：无知即稳定。
+                </p>
             </div>
-        </section>
-        
-        <!-- 模块 3: 机密档案库 -->
-        <section style="margin-top: 50px;">
-            <h2 class="section-title">// 机密档案库 · 仅限阅读 //</h2>
-            <div class="archive-grid">
-                <article class="archive-module" onclick="toggleDetails(this)">
-                    <h4>档案 D-47：黑雾蔓延</h4>
-                    <p>记录了黑雾首次在[地名]出现的完整报告，包括对当地动植物的异变影响，以及委员会早期处理的失败案例。内含多处被手动涂改和擦除的字段。</p>
-                    <span class="expand-hint">点击展开</span>
-                    <div class="module-details">
-                        <p><strong>分析结论：</strong>黑雾并非传统意义上的气体或生物，更像是一种信息流的泄漏。接触者会在数小时内出现对现实世界的强烈不信任感。</p>
-                    </div>
-                </article>
 
-                <article class="archive-module" onclick="toggleDetails(this)">
-                    <h4>档案 S-11：城市低语</h4>
-                    <p>关于实体代号“蠕动的城市”的声学研究报告。音频分析师在深度分析时报告了幻听症状，包括非人类语言的重复短语，及高频的机械脉冲。</p>
-                    <span class="expand-hint">点击展开</span>
-                    <div class="module-details">
-                        <p><strong>研究笔记：</strong>低语似乎与城市的扩张速度呈正相关。我们尝试播放反向低语来干扰其信息流，但导致了[数据删除]事件，应立即停止。</p>
-                    </div>
-                </article>
-
-                <article class="archive-module" onclick="toggleDetails(this)">
-                    <h4>档案 L-05：灯塔光束</h4>
-                    <p>关于沉默的灯塔发出的“认知修正波”的初步报告。该光束似乎能重写附近观察者的短期记忆，但无法影响长期记忆储存器。</p>
-                    <span class="expand-hint">点击展开</span>
-                    <div class="module-details">
-                        <p><strong>测试记录：</strong>实验目标 A 在接触光束后忘记了自己是谁，但在听到自己的名字后立即恢复。结论：该波只影响主动认知，不影响预先存储的标签。</p>
-                    </div>
-                </article>
+            <div id="faction-content-syndicate" class="faction-content hidden bg-gray-800 p-6 rounded-xl border border-red-500/30">
+                <h4 class="text-xl text-red-400 font-bold mb-3">灰质财团 (Grey Matter Syndicate)</h4>
+                <p class="text-gray-400 text-sm leading-relaxed">
+                    一个利用异常现象进行非法时间线交易的实体。他们贩卖“预知片段”和“因果债券”，将现实的确定性视为可交易的商品。高度危险，涉嫌多起现实结构局部坍塌事件。
+                </p>
             </div>
-        </section>
-        
-        <footer style="text-align: center; padding: 40px 0; font-family: var(--font-mono); font-size: 0.8em; color: var(--color-border);">
-            // END OF LINE // SECURITY LEVEL: OFFLINE //
-        </footer>
+
+            <div id="faction-content-watchers" class="faction-content hidden bg-gray-800 p-6 rounded-xl border border-red-500/30">
+                <h4 class="text-xl text-red-400 font-bold mb-3">时空观察者 (The Chronal Watchers)</h4>
+                <p class="text-gray-400 text-sm leading-relaxed">
+                    自称是“原始时间线维护者”。他们漂浮在所有时间线的边缘，只记录、不干预。对他们的存在尚无确切证据，但他们的记录偶尔会以加密数据的形式渗透到我们的网络中。
+                </p>
+            </div>
+        </div>
+
+        <!-- 模块 3: 机密档案 (Confidential Archives) -->
+        <div class="max-w-4xl mx-auto mb-16">
+            <h3 class="text-2xl font-bold text-cyan-400 border-b border-cyan-400 pb-2 mb-6"># 机密档案库 [003.01]</h3>
+            
+            <div id="archives-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- 档案 1: 碎裂星云事件 -->
+                <div class="archive-card bg-gray-800 rounded-lg overflow-hidden shadow-lg border border-cyan-500/30 cursor-pointer hover:shadow-cyan-500/50 transition-all duration-300">
+                    <div class="p-4">
+                        <h4 class="text-lg font-bold text-red-400 mb-2">档案: S-77</h4>
+                        <p class="text-sm text-gray-500 mb-3">碎裂星云事件报告</p>
+                        <p class="text-xs text-gray-400 line-clamp-3">
+                            <span class="text-yellow-400">摘要:</span> 2012年11月，在欧洲上空监测到无法解释的重力场波动，导致短暂的物理定律松弛。报告提及“天空如玻璃般破碎”的目击者描述。文件容量：极高。
+                        </p>
+                    </div>
+                    <button class="expand-button w-full bg-gray-700 py-2 text-sm text-cyan-300 hover:bg-cyan-700 hover:text-gray-900 transition-colors duration-200" data-id="archive1">
+                        展开文本
+                    </button>
+                </div>
+
+                <!-- 档案 2: 非物质信使 -->
+                <div class="archive-card bg-gray-800 rounded-lg overflow-hidden shadow-lg border border-cyan-500/30 cursor-pointer hover:shadow-cyan-500/50 transition-all duration-300">
+                    <div class="p-4">
+                        <h4 class="text-lg font-bold text-red-400 mb-2">档案: P-19</h4>
+                        <p class="text-sm text-gray-500 mb-3">非物质信使实验记录</p>
+                        <p class="text-xs text-gray-400 line-clamp-3">
+                            <span class="text-yellow-400">摘要:</span> 对一种无法被电磁波段捕获的“信使”的持续研究。信使似乎携带了来自未来或过去的道德指令。所有尝试解码的探员都出现了同一种手部震颤。
+                        </p>
+                    </div>
+                    <button class="expand-button w-full bg-gray-700 py-2 text-sm text-cyan-300 hover:bg-cyan-700 hover:text-gray-900 transition-colors duration-200" data-id="archive2">
+                        展开文本
+                    </button>
+                </div>
+
+                <!-- 档案 3: 循环梦境 -->
+                <div class="archive-card bg-gray-800 rounded-lg overflow-hidden shadow-lg border border-cyan-500/30 cursor-pointer hover:shadow-cyan-500/50 transition-all duration-300">
+                    <div class="p-4">
+                        <h4 class="text-lg font-bold text-red-400 mb-2">档案: M-04</h4>
+                        <p class="text-sm text-gray-500 mb-3">循环梦境个体评估</p>
+                        <p class="text-xs text-gray-400 line-clamp-3">
+                            <span class="text-yellow-400">摘要:</span> 对一名声称每天晚上都在同一个地点、做同一件事（吃一个不存在的苹果）的个体的评估报告。该个体似乎是时间线循环的稳定锚点。
+                        </p>
+                    </div>
+                    <button class="expand-button w-full bg-gray-700 py-2 text-sm text-cyan-300 hover:bg-cyan-700 hover:text-gray-900 transition-colors duration-200" data-id="archive3">
+                        展开文本
+                    </button>
+                </div>
+            </div>
+
+            <!-- 档案展开区域 -->
+            <div id="expanded-archive-area" class="mt-8 p-6 bg-gray-900 border-2 border-red-500/50 rounded-lg shadow-xl shadow-red-500/20 hidden">
+                <h4 id="expanded-archive-title" class="text-2xl text-red-400 mb-4 border-b border-red-500/30 pb-2"></h4>
+                <p id="expanded-archive-text" class="text-gray-300 whitespace-pre-wrap leading-loose text-sm"></p>
+                <button id="close-archive-button" class="mt-4 px-4 py-2 bg-red-600 text-white text-sm rounded hover:bg-red-700 transition-colors duration-200">
+                    [ 关闭档案 ]
+                </button>
+            </div>
+        </div>
     </div>
 
     <script>
-        const TIME_DISPLAY = document.getElementById('time-display');
-        const SYNC_BUTTON = document.getElementById('sync-button');
-        const LOADING_PROGRESS = document.getElementById('loading-progress');
-        const PROGRESS_BAR = document.getElementById('progress-bar');
-        const INTRO_SCREEN = document.getElementById('intro-screen');
-        const MAIN_CONTENT = document.getElementById('main-content');
-        const DOWN_ARROW = document.getElementById('down-arrow');
-        const ORG_CONTENT = document.getElementById('org-content');
+        const splashScreen = document.getElementById('splash-screen');
+        const glitchTitle = document.getElementById('glitch-title');
+        const glitchTime = document.getElementById('glitch-time');
+        const syncButton = document.getElementById('sync-button');
+        const loadingContainer = document.getElementById('loading-container');
+        const loadingBar = document.getElementById('loading-bar');
+        const loadingText = document.getElementById('loading-text');
+        const scrollIndicator = document.getElementById('scroll-indicator');
+        const mainContent = document.getElementById('main-content');
+        const finalTimeH2 = document.getElementById('final-time-h2');
         
         let glitchInterval;
-        let progress = 0;
-        let isSynced = false;
+        let lastGlitchValue = 0;
+        let isSyncing = false;
 
-        // --- 1. 初始故障效果 ---
-        function startGlitch() {
-            glitchInterval = setInterval(() => {
-                // 快速变化的时间条：不合理的数字变化
-                const year = Math.floor(Math.random() * 8000) + 1000;
-                const month = String(Math.floor(Math.random() * 12) + 1).padStart(2, '0');
-                const day = String(Math.floor(Math.random() * 30) + 1).padStart(2, '0');
-                const hour = String(Math.floor(Math.random() * 24)).padStart(2, '0');
-                const minute = String(Math.floor(Math.random() * 60)).padStart(2, '0');
-                const second = String(Math.floor(Math.random() * 60)).padStart(2, '0');
-                
-                TIME_DISPLAY.textContent = `YEAR: ${year}-${month}-${day} ${hour}:${minute}:${second}`;
-            }, 50); // 每50毫秒更新一次
+        // --- 数据存储 ---
+        const ARCHIVE_DATA = {
+            archive1: {
+                title: "档案 S-77: 碎裂星云事件报告",
+                text: "记录日期: 2012年11月22日 04:47:11\n\n[机密等级: 5/5 - 绝对不可知]\n\n事件摘要：位于格陵兰海的监测站记录到时空结构出现局部撕裂，持续时间约为4.3秒。目击者（一名渔民，代号'Maelstrom'）报告天空在撕裂期间呈现出'一万个时钟'同时破碎的景象。\n\n分析：重力常数在撕裂期间波动了±0.00000001%。这足以导致水分子在短时间内无法保持液态。任何企图通过常规手段理解此次事件的尝试都被判定为高风险的认知污染。建议将此档案标记为'非事件'，并在所有官方记录中将其替换为'天气反常'。",
+            },
+            archive2: {
+                title: "档案 P-19: 非物质信使实验记录",
+                text: "记录日期: 2012年11月10日 11:59:00\n\n[机密等级: 3/5 - 需授权]\n\n实验目的：捕获并分析代号'低语'的非物质信使。信使不遵循任何已知宇宙定律，通过潜意识共振传递信息。\n\n实验结果：信使传递的信息被探员L-03记录为一串二进制代码。解码后得到：'他们看到了你'。随后，L-03的手部开始出现不可控的、无规律的震颤。此震颤与心跳或呼吸均不相关。L-03已被隔离，信使被判定为具有高认知侵入性。实验终止，建议将所有捕获尝试降级为被动监测。",
+            },
+            archive3: {
+                title: "档案 M-04: 循环梦境个体评估",
+                text: "记录日期: 2012年11月05日 19:30:00\n\n[机密等级: 4/5 - 敏感]\n\n个体代号: '锚点'\n\n评估：锚点是一个活生生的、自洽的时间循环。他所处的梦境（位于一个不存在的灰色小镇，始终在一家咖啡馆里吃苹果）是他时间线中唯一稳定的点。如果锚点被唤醒或打破循环，该时间线将面临不可预测的重写风险。评估建议：保持距离，被动观察。如果他向你提及任何关于'正确的时钟'的信息，立即终止对话。",
+            },
+        };
+
+        // --- 故障时间函数 ---
+
+        function formatTargetTime(date) {
+            const year = String(date.getFullYear()).padStart(4, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            return `${year}/${month}/XX`; // 隐藏日期
+        }
+        
+        function updateGlitchTime() {
+            if (isSyncing) return;
+
+            const now = new Date();
+            const baseTime = now.getTime();
+            
+            // 生成一个不合理的、快速变化的数字，作为时间条的“纪元时间戳”
+            const offset = Math.floor(Math.random() * 9999999999999999);
+            const glitchDate = new Date(baseTime + offset);
+            
+            // 生成一个随机的小数字，避免数字变化停滞
+            const randomChange = Math.random() * 50 - 25; // 变化范围 -25 to 25
+            lastGlitchValue += randomChange;
+            
+            // 用当前时间结构包裹随机纪元
+            let year = String(glitchDate.getFullYear()).slice(-4);
+            let month = String(glitchDate.getMonth() + 1).padStart(2, '0');
+            let day = String(glitchDate.getDate()).padStart(2, '0');
+            let hour = String(glitchDate.getHours()).padStart(2, '0');
+            let minute = String(glitchDate.getMinutes()).padStart(2, '0');
+            let second = String(glitchDate.getSeconds()).padStart(2, '0');
+
+            // 故意引入数字错乱效果
+            const dateString = `${year}.${month}.${day} ${hour}:${minute}:${second}`;
+            let glitchedString = '';
+            for (let i = 0; i < dateString.length; i++) {
+                if (Math.random() < 0.15) { // 15%的概率替换为随机数字
+                    glitchedString += Math.floor(Math.random() * 10);
+                } else if (Math.random() < 0.05) { // 5%的概率替换为特殊字符
+                    glitchedString += (i % 3 === 0) ? ':' : '.';
+                } else {
+                    glitchedString += dateString[i];
+                }
+            }
+
+            glitchTime.textContent = glitchedString;
+            glitchTime.setAttribute('data-text', glitchedString);
         }
 
-        // --- 2. 同步时间线操作 ---
-        function startSync() {
-            if (isSynced) return;
-            isSynced = true;
-            
-            clearInterval(glitchInterval); // 停止故障效果
-            SYNC_BUTTON.disabled = true;
-            SYNC_BUTTON.textContent = '同步中...';
-            LOADING_PROGRESS.style.opacity = 1;
+        // --- 同步函数 ---
 
-            // 获取当前时间戳
+        function synchronizeTimeline() {
+            if (isSyncing) return;
+            isSyncing = true;
+            syncButton.disabled = true;
+            // 按钮文本更改：从 “确认接入指令” 到 “正在执行指令...”
+            syncButton.textContent = '正在执行指令...'; 
+            loadingContainer.classList.remove('hidden');
+            
+            // 停止故障时间更新
+            clearInterval(glitchInterval);
+
+            // 移除故障CSS类
+            glitchTitle.classList.remove('glitch-text');
+            glitchTime.classList.remove('glitch-text');
+            glitchTitle.classList.add('no-glitch');
+            glitchTime.classList.add('no-glitch');
+
+            let progress = 0;
+            const duration = 2500; // 2.5秒加载
+            const startTime = performance.now();
+
+            function animateLoading(currentTime) {
+                if (progress >= 100) return;
+
+                const elapsed = currentTime - startTime;
+                progress = Math.min(100, (elapsed / duration) * 100);
+                
+                loadingBar.style.width = `${progress}%`;
+                loadingText.textContent = `${Math.floor(progress)}%`;
+
+                if (progress < 100) {
+                    requestAnimationFrame(animateLoading);
+                } else {
+                    finishSynchronization();
+                }
+            }
+            
+            requestAnimationFrame(animateLoading);
+        }
+
+        function finishSynchronization() {
             const now = new Date();
             
-            // 计算最终目标时间：2012年11月，日期/时/分/秒与当前时间相同
-            const targetDate = new Date(2012, 10, now.getDate(), now.getHours(), now.getMinutes(), now.getSeconds());
+            // 计算目标时间: 2012年11月 (保留计算，但不用于更新H2标题)
+            const targetDate = new Date(now);
+            targetDate.setFullYear(2012);
+            targetDate.setMonth(10); // 10 is November
 
-            // 进度条动画
-            let progressInterval = setInterval(() => {
-                progress += 1;
-                PROGRESS_BAR.style.width = `${progress}%`;
+            // 按钮文本更改：从 “正在执行指令...” 到 “接入已确认”
+            syncButton.textContent = '接入已确认';
+            syncButton.classList.remove('bg-cyan-600', 'hover:bg-cyan-700');
+            syncButton.classList.add('bg-green-600');
+            
+            // 显示向下箭头
+            scrollIndicator.classList.remove('hidden');
+            
+            // 平滑过渡到主内容可读状态
+            setTimeout(() => {
+                splashScreen.classList.add('opacity-0', 'pointer-events-none', 'absolute');
+                mainContent.classList.remove('opacity-0', 'pointer-events-none');
+            }, 1000); // 等待1秒让用户看到最终状态
+        }
 
-                if (progress >= 100) {
-                    clearInterval(progressInterval);
-                    finishSync(targetDate);
+        // --- 模块 2: 组织阵营 逻辑 ---
+
+        const tabButtons = document.querySelectorAll('.tab-button');
+        const factionContents = document.querySelectorAll('.faction-content');
+        const defaultActiveFaction = 'division';
+
+        // 样式初始化
+        tabButtons.forEach(button => {
+            button.className = 'tab-button px-4 py-2 text-sm sm:text-base rounded-md font-semibold transition-colors duration-200 bg-gray-700 text-cyan-400 hover:bg-cyan-800/50';
+        });
+
+        const activeTabClass = 'bg-red-600 text-white shadow-lg shadow-red-500/30 hover:bg-red-700';
+
+        function switchFaction(factionId) {
+            factionContents.forEach(content => {
+                content.classList.add('hidden');
+                content.classList.remove('shadow-2xl', 'shadow-red-500/10');
+            });
+
+            tabButtons.forEach(button => {
+                button.classList.remove(...activeTabClass.split(' '));
+                button.classList.add('bg-gray-700', 'text-cyan-400');
+            });
+
+            document.getElementById(`faction-content-${factionId}`).classList.remove('hidden');
+            document.getElementById(`faction-content-${factionId}`).classList.add('shadow-2xl', 'shadow-red-500/10');
+            document.querySelector(`.tab-button[data-faction="${factionId}"]`).classList.add(...activeTabClass.split(' '));
+            document.querySelector(`.tab-button[data-faction="${factionId}"]`).classList.remove('bg-gray-700', 'text-cyan-400');
+        }
+
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                switchFaction(button.getAttribute('data-faction'));
+            });
+        });
+
+        // 初始激活默认标签
+        switchFaction(defaultActiveFaction);
+
+
+        // --- 模块 3: 机密档案 逻辑 ---
+
+        const expandButtons = document.querySelectorAll('.expand-button');
+        const expandedArchiveArea = document.getElementById('expanded-archive-area');
+        const expandedArchiveTitle = document.getElementById('expanded-archive-title');
+        const expandedArchiveText = document.getElementById('expanded-archive-text');
+        const closeArchiveButton = document.getElementById('close-archive-button');
+
+        expandButtons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                const archiveId = e.target.getAttribute('data-id');
+                const data = ARCHIVE_DATA[archiveId];
+                
+                expandedArchiveTitle.textContent = data.title;
+                expandedArchiveText.textContent = data.text;
+                expandedArchiveArea.classList.remove('hidden');
+                
+                // 滚动到档案区域
+                expandedArchiveArea.scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+
+        closeArchiveButton.addEventListener('click', () => {
+            expandedArchiveArea.classList.add('hidden');
+            expandedArchiveTitle.textContent = '';
+            expandedArchiveText.textContent = '';
+        });
+
+        // --- 初始化事件监听 ---
+        
+        // 确保 Details 展开时，箭头方向变化
+        document.querySelectorAll('details').forEach(details => {
+            details.addEventListener('toggle', () => {
+                const indicator = details.querySelector('.summary-indicator');
+                if (details.open) {
+                    indicator.style.transform = 'rotate(180deg)';
+                } else {
+                    indicator.style.transform = 'rotate(0deg)';
                 }
-            }, 50);
-        }
+            });
+        });
 
-        function finishSync(targetDate) {
-            
-            // 格式化目标日期
-            const year = targetDate.getFullYear();
-            const month = String(targetDate.getMonth() + 1).padStart(2, '0'); // 11月是索引 10
-            const day = String(targetDate.getDate()).padStart(2, '0');
-            const hour = String(targetDate.getHours()).padStart(2, '0');
-            const minute = String(targetDate.getMinutes()).padStart(2, '0');
-            const second = String(targetDate.getSeconds()).padStart(2, '0');
+        syncButton.addEventListener('click', synchronizeTimeline);
 
-            // 最终显示的时间
-            TIME_DISPLAY.textContent = `TARGET: ${year}-${month}-${day} ${hour}:${minute}:${second}`;
-            TIME_DISPLAY.style.color = 'var(--color-accent-green)'; // 切换为正常颜色
-            
-            // 移除故障动画
-            document.getElementById('intro-title').style.animation = 'none';
-
-            SYNC_BUTTON.textContent = '时间线已锁定';
-            SYNC_BUTTON.style.backgroundColor = 'var(--color-accent-green)';
-            SYNC_BUTTON.style.color = 'var(--color-dark-bg)';
-            SYNC_BUTTON.style.boxShadow = '0 0 10px var(--color-accent-green)';
-
-            // 延迟显示内容
-            setTimeout(() => {
-                // 显示向下箭头
-                DOWN_ARROW.style.opacity = 1;
-                // 使内容可见
-                MAIN_CONTENT.style.opacity = 1;
-            }, 500);
-        }
-
-        // --- 3. 内容区互动逻辑 ---
-
-        // 展开/折叠模块
-        function toggleDetails(moduleElement) {
-            moduleElement.classList.toggle('active');
-        }
-
-        // 滚动到主内容
-        function scrollToContent() {
-            // 隐藏引导页
-            INTRO_SCREEN.style.opacity = 0; 
-            setTimeout(() => {
-                INTRO_SCREEN.style.display = 'none';
-                MAIN_CONTENT.scrollIntoView({ behavior: 'smooth' });
-            }, 500); 
-        }
-
-        // 组织阵营数据
-        const orgData = {
-            committee: {
-                title: "无光委员会 (The Committee of No Light)",
-                description: "信奉高维几何学的古老精英组织，致力于将所有异常现象归类为跨维度投影。他们的目标是“校准”现实，消除所有不符合七维宇宙规则的变量。",
-                key_members: "几何体 (Geometrist), 坐标系 (The Coordinate)"
-            },
-            crows: {
-                title: "乌鸦物流 (Crow Logistics)",
-                description: "一个表面上从事普通物流运输，实际上垄断了异常物品运输和地下信息传递的组织。他们信奉效率和平衡，不对任何阵营效忠，只为最高出价者服务。",
-                key_members: "信使 (The Courier), 货单 (The Manifest)"
-            },
-            church: {
-                title: "旧日教会 (The Church of Bygone Days)",
-                description: "末世论邪教，崇拜在时间线异常前就已经存在的实体。他们认为 2012 年是时间线正式“断裂”的标志，并试图通过献祭来加速旧日回归，迎接真正的末日。",
-                key_members: "大牧师 (The Grand Pastor), 献祭者 (The Oblation)"
-            }
-        };
-
-        // 切换组织阵营内容
-        function switchOrg(button, orgKey) {
-            // 移除所有按钮的 active 类
-            document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
-            // 激活当前按钮
-            button.classList.add('active');
-
-            const data = orgData[orgKey];
-            ORG_CONTENT.innerHTML = `
-                <h3>${data.title}</h3>
-                <p>${data.description}</p>
-                <p style="font-family: var(--font-mono); color: var(--color-text-light);">
-                    <strong style="color: var(--color-accent-red);">// 关键人物 //</strong><br>
-                    ${data.key_members}
-                </p>
-            `;
-        }
-
-        // --- 4. 启动脚本 ---
+        // 页面加载完成后启动故障时间更新
         window.onload = function() {
-            startGlitch();
-            // 默认加载第一个组织的内容
-            switchOrg(document.querySelector('.tab-button[data-org="committee"]'), 'committee'); 
-        };
+            updateGlitchTime(); // 立即执行一次
+            glitchInterval = setInterval(updateGlitchTime, 100); // 每100ms更新一次
+        }
     </script>
 </body>
 </html>
