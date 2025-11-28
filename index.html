@@ -1,23 +1,24 @@
-<html lang="zh"><head>
+<!DOCTYPE html>
+<html lang="zh">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>【异常档案】世界观索引</title>
+    <title>正在访问有限认知分部</title>
     <style>
-        /* 引入字体：衬线体（怪诞/古老）和等宽体（数据/异常） */
+        /* --- 字体及配色方案 --- */
         @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;700&family=Share+Tech+Mono&display=swap');
 
         :root {
-            /* 新怪谈配色方案 */
-            --color-dark-bg: #111111; /* 深黑底色 */
-            --color-text-light: #e0e0e0; /* 档案纸张的颜色 */
-            --color-accent-red: #8b0000; /* 异常/警告色 */
-            --color-accent-green: #556b2f; /* 霉变/旧数据色 */
-            --color-border: #444444; /* 边框 */
+            --color-dark-bg: #111111;
+            --color-text-light: #e0e0e0;
+            --color-accent-red: #8b0000; /* 故障/警告色 */
+            --color-accent-green: #008000; /* 数据/正常色 */
+            --color-border: #444444;
             --font-serif: 'Cormorant Garamond', serif;
             --font-mono: 'Share Tech Mono', monospace;
         }
 
-        /* 基础样式：引入噪点/静电背景 */
+        /* --- 全局样式 --- */
         body {
             background-color: var(--color-dark-bg);
             color: var(--color-text-light);
@@ -25,377 +26,534 @@
             margin: 0;
             padding: 0;
             line-height: 1.6;
-            background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPgo8ZmllbGRkYXRhIHZhbHVlcz0iMjAuNzUiLz4KPGZpbGwgY29sb3I9InJnYmEoMCwwLDAsMC4yKSIgZmlsbC1vcGFjaXR5PSIuMzMiPgo8cmVjdCB3aWR0aD0iMSIgaGVpZ2h0PSIxIi8+CjwvZmlsbD4KPC9zdmc+');
-            background-repeat: repeat;
-            /* 手机优化：移除 iOS 默认点击高亮 */
-            -webkit-tap-highlight-color: transparent;
+            -webkit-tap-highlight-color: transparent; /* 手机优化：移除点击高亮 */
         }
-
+        
         .container {
             max-width: 1400px;
             margin: 0 auto;
-            /* 手机优化：减少左右内边距，充分利用手机屏幕 */
-            padding: 0 5px 20px 5px; 
+            padding: 0 10px;
         }
 
-        /* --- 1. 标题样式优化 --- */
-        .header {
-            padding: 30px 10px 20px;
+        /* --- 1. 引导页（Intro Screen）样式 --- */
+        #intro-screen {
+            height: 100vh; /* 确保占满整个手机屏幕高度 */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
             text-align: center;
-            border-bottom: 1px solid var(--color-border);
+            position: relative;
+            overflow: hidden; /* 防止故障动画溢出 */
+            transition: opacity 1s;
         }
 
-        .header-title {
+        /* 故障风格标题 */
+        #intro-title {
             font-family: var(--font-mono);
-            font-size: 2em; 
             color: var(--color-text-light);
+            font-size: 2.2em;
             text-shadow: 0 0 5px var(--color-accent-red);
-            cursor: pointer;
-            transition: color 0.3s, text-shadow 0.3s;
-            letter-spacing: 2px; 
-            text-transform: uppercase;
+            letter-spacing: 5px;
+            margin-bottom: 30px;
+            animation: flicker 1.5s infinite alternate; /* 闪烁动画 */
         }
-
-        .header-title:hover {
-            color: var(--color-accent-red);
-            text-shadow: 0 0 10px var(--color-accent-red), 0 0 20px rgba(139, 0, 0, 0.4);
-        }
-
-        /* --- 2. 核心内容布局 (RWD 调整) --- */
-        .main-grid {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 40px;
-            padding-top: 40px;
-        }
-
-        .content-area {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-        }
-        
-        /* 900px 以下将布局改为单列，时间线在下方 */
-        @media (max-width: 900px) {
-            .main-grid {
-                grid-template-columns: 1fr; 
-                gap: 20px;
-            }
-            .content-area {
-                grid-template-columns: 1fr; 
-            }
-            .timeline-area {
-                padding-top: 20px; 
-            }
-            .header-title {
-                font-size: 2.5em; 
-            }
-        }
-        
-        /* 极小屏幕的字体调整 */
+        /* 手机适配 */
         @media (max-width: 480px) {
-            .header-title {
-                font-size: 1.8em; 
-            }
-        }
-        @media (max-width: 400px) {
-            .header-title {
-                font-size: 1.6em; 
-            }
-            .module-header {
-                font-size: 1.2em;
-            }
-            .module-summary,
-            .timeline-event,
-            .timeline-date {
-                font-size: 0.85em;
+            #intro-title {
+                font-size: 1.8em;
+                letter-spacing: 3px;
+                padding: 0 10px;
             }
         }
 
-        /* --- 3. 内容模块样式 --- */
+        /* 快速变化的时间条 */
+        #time-bar {
+            font-family: var(--font-mono);
+            font-size: 1.5em;
+            color: var(--color-accent-green);
+            background: #1a1a1a;
+            padding: 10px 20px;
+            border: 1px solid var(--color-accent-green);
+            margin-bottom: 40px;
+        }
+
+        /* 按钮样式 */
+        #sync-button {
+            background-color: var(--color-accent-red);
+            color: var(--color-text-light);
+            border: none;
+            padding: 12px 30px;
+            font-family: var(--font-mono);
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s, box-shadow 0.3s;
+            min-height: 48px; /* 手机优化 */
+        }
+
+        #sync-button:hover:not(:disabled) {
+            background-color: #ff3333;
+            box-shadow: 0 0 15px rgba(255, 51, 51, 0.6);
+        }
+        #sync-button:disabled {
+            background-color: #333;
+            cursor: not-allowed;
+        }
+
+        /* 进度条样式 */
+        #loading-progress {
+            width: 80%;
+            max-width: 400px;
+            height: 8px;
+            background: var(--color-border);
+            margin-top: 20px;
+            overflow: hidden;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+        #progress-bar {
+            height: 100%;
+            width: 0;
+            background-color: var(--color-accent-green);
+            transition: width 0.1s linear;
+        }
+
+        /* 故障闪烁动画 */
+        @keyframes flicker {
+            0%, 100% { opacity: 1; text-shadow: 0 0 5px var(--color-accent-red); }
+            50% { opacity: 0.8; text-shadow: 0 0 15px var(--color-accent-red), 0 0 2px #fff; }
+            52% { opacity: 1; text-shadow: none; }
+        }
+
+        /* 向下箭头指示 */
+        #down-arrow {
+            position: absolute;
+            bottom: 5vh;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 2em;
+            color: var(--color-accent-green);
+            opacity: 0;
+            animation: pulse 1.5s infinite;
+            cursor: pointer;
+            transition: opacity 1s;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1) translateX(-50%); }
+            50% { transform: scale(1.1) translateX(-50%); }
+            100% { transform: scale(1) translateX(-50%); }
+        }
+
+        /* --- 2. 主内容区域样式 --- */
+        #main-content {
+            padding-top: 50px;
+            min-height: 100vh; /* 确保内容区足够长 */
+            opacity: 0;
+            transition: opacity 1s;
+        }
+
+        .section-title {
+            font-family: var(--font-mono);
+            color: var(--color-accent-red);
+            font-size: 1.8em;
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--color-accent-red);
+            letter-spacing: 2px;
+        }
+
+        /* 内容模块通用样式 (复用前次优化) */
         .content-module {
             background-color: #1a1a1a;
             border: 1px solid var(--color-border);
             padding: 20px;
+            margin-bottom: 20px;
             cursor: pointer;
-            transition: box-shadow 0.3s, transform 0.3s;
             overflow: hidden;
             position: relative;
         }
-
-        /* 手机优化：限制 transform 仅在支持 hover 的设备上应用 */
-        @media (hover: hover) {
-            .content-module:hover {
-                box-shadow: 0 0 15px rgba(255, 255, 255, 0.05);
-                transform: translateY(-5px);
-            }
-        }
-        /* 手机优化：添加触摸设备的点击反馈 */
         .content-module:active {
             box-shadow: 0 0 10px rgba(255, 255, 255, 0.15);
-            transform: scale(0.99); 
+            transform: scale(0.99); /* 手机优化：触摸反馈 */
         }
-
         .module-header {
             font-family: var(--font-mono);
             color: var(--color-accent-green);
-            font-size: 1.4em;
+            font-size: 1.2em;
             margin-bottom: 10px;
             text-transform: uppercase;
         }
-
         .module-summary {
             font-size: 0.9em;
             color: var(--color-text-light);
-            margin-bottom: 15px;
         }
-
         .module-details {
             max-height: 0;
             overflow: hidden;
             transition: max-height 0.5s ease-out;
             border-top: 1px dashed var(--color-accent-green);
             padding-top: 10px;
+            margin-top: 15px;
         }
-
-        .module-details p {
-            margin-bottom: 10px;
-        }
-
         .content-module.active .module-details {
-            max-height: 500px;
-            transition: max-height 0.5s ease-in;
+            max-height: 800px; /* 足够容纳文本 */
+            transition: max-height 0.7s ease-in;
         }
         
-        /* --- 4. 互动按钮区域样式 --- */
-        .action-grid {
-            grid-column: 1 / -1;
+        /* 组织阵营 Tab 样式 */
+        .tabs {
             display: flex;
-            flex-wrap: wrap; 
+            flex-wrap: wrap;
             gap: 10px;
-            margin-top: 20px;
-            padding: 15px; 
-            border: 1px solid var(--color-accent-red);
-            background-color: #0d0d0d;
+            margin-bottom: 20px;
         }
-
-        .action-button {
-            background-color: var(--color-dark-bg);
+        .tab-button {
+            background-color: #222;
             color: var(--color-accent-green);
             border: 1px solid var(--color-accent-green);
-            /* 手机优化：增加填充和最小尺寸，适配触摸目标 */
-            padding: 10px 12px; 
-            min-height: 48px; 
-            min-width: 48px;  
-            
+            padding: 8px 15px;
             font-family: var(--font-mono);
-            font-size: 0.9em;
             cursor: pointer;
+            min-height: 40px; /* 手机优化 */
             transition: all 0.2s;
-            box-shadow: 0 0 3px var(--color-accent-green);
-            flex-grow: 1; 
-            min-width: 120px; 
         }
-
-        .action-button:hover {
-            background-color: var(--color-accent-red);
-            color: var(--color-text-light);
-            border-color: var(--color-accent-red);
-            box-shadow: 0 0 10px var(--color-accent-red), 0 0 30px var(--color-accent-red);
+        .tab-button.active, .tab-button:hover {
+            background-color: var(--color-accent-green);
+            color: var(--color-dark-bg);
+            box-shadow: 0 0 5px var(--color-accent-green);
         }
-        
-        /* --- 5. 时间线样式 --- */
-        .timeline-area {
-            padding: 0 10px;
+        .tab-content {
+            background-color: #1a1a1a;
+            padding: 20px;
+            border: 1px solid var(--color-accent-red);
         }
-
-        .timeline-header {
+        .tab-content h3 {
+            color: var(--color-accent-red);
+            margin-top: 0;
             font-family: var(--font-mono);
-            color: var(--color-accent-green);
-            margin-bottom: 20px;
-            text-align: center;
-            text-transform: uppercase;
         }
 
-        .timeline-item {
+        /* 机密档案缩略图样式 */
+        .archive-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* 手机上至少 150px 宽 */
+            gap: 15px;
+        }
+        .archive-module {
+            background-color: #0d0d0d;
+            border: 2px solid var(--color-accent-red);
+            padding: 15px;
+            cursor: pointer;
+            height: 180px; /* 缩略图高度 */
+            overflow: hidden;
             position: relative;
-            padding-left: 20px;
-            margin-bottom: 25px;
-            border-left: 2px solid var(--color-accent-red);
+            transition: all 0.3s;
         }
-
-        .timeline-item::before {
-            content: '';
-            position: absolute;
-            left: -6px;
-            top: 5px;
-            width: 10px;
-            height: 10px;
-            background-color: var(--color-accent-red);
-            border-radius: 50%;
+        .archive-module.active {
+            height: auto; /* 展开后高度自适应 */
+            grid-column: 1 / -1; /* 展开后占据全宽 */
+            border-color: var(--color-accent-green);
         }
-
-        .timeline-date {
+        .archive-module p {
             font-size: 0.8em;
+            color: #ccc;
+            opacity: 0.5;
+            max-height: 100px;
+            overflow: hidden;
+        }
+        .archive-module.active p {
+            max-height: none;
+            opacity: 1;
+            font-size: 0.9em;
+        }
+        .archive-module h4 {
             font-family: var(--font-mono);
             color: var(--color-accent-red);
-            margin-bottom: 5px;
+            margin-top: 0;
         }
 
-        .timeline-event {
-            font-size: 0.9em;
-            color: var(--color-text-light);
+        /* 展开提示文本 */
+        .expand-hint {
+            position: absolute;
+            bottom: 5px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.7em;
+            color: var(--color-accent-red);
+            font-family: var(--font-mono);
+            opacity: 0.7;
         }
+        .archive-module.active .expand-hint {
+            display: none;
+        }
+
     </style>
 </head>
 <body>
-    <div class="container">
-        <header class="header">
-            <h1 class="header-title" id="main-title">有限认知分部补给仓库</h1>
-            <p style="font-family: var(--font-mono); color: var(--color-accent-green);">// DATA INTEGRITY: DEGRADED // ACCESS LEVEL: ALPHA //</p>
-        </header>
+    
+    <!-- 全屏引导页 -->
+    <div id="intro-screen">
+        <h1 id="intro-title">正在访问有限认知分部</h1>
+        
+        <p style="font-family: var(--font-mono); color: var(--color-accent-red;">// ERROR: TIME-SYNCHRONIZATION FAILURE //</p>
+        
+        <div id="time-bar">
+            <!-- 时间条显示，初始内容为加载中 -->
+            <span id="time-display">YEAR: 9999-01-01 00:00:00</span>
+        </div>
+        
+        <button id="sync-button" onclick="startSync()">同步时间线</button>
+        
+        <div id="loading-progress">
+            <div id="progress-bar"></div>
+        </div>
 
-        <div class="main-grid">
-            <section class="content-area">
-                
-                <article class="content-module" onclick="toggleDetails(this)">
-                    <h2 class="module-header">游戏地图：</h2>
-                    <p class="module-summary">一张以携带者为中心，半径500m，随移动实时更新的像素风格地图。可以显示附近道路、墙壁、河流、房间等的基本布局。地图范围内的平凡生命会以小人图标标记，并标出其视野范围。</p>
+        <div id="down-arrow" onclick="scrollToContent()">▼</div>
+    </div>
+
+    <!-- 主内容区域 (初始隐藏) -->
+    <div id="main-content" class="container">
+        
+        <!-- 模块 1: 补给仓库 -->
+        <section>
+            <h2 class="section-title">// 补给仓库 · R-型清单 //</h2>
+            <p class="module-summary" style="text-align: center; margin-bottom: 25px;">[简略目录]：安全屋物资、非致命性工具、高价值异常物。</p>
+            
+            <div class="archive-grid">
+                <article class="content-module archive-module" onclick="toggleDetails(this)">
+                    <h4>安全屋 R01-B</h4>
+                    <p>状态：已启用。物资：饮用水（充足），应急食品（低），通讯模块（离线）。安全检查日期：2012-11-20。</p>
+                    <span class="expand-hint">点击展开</span>
                     <div class="module-details">
-                        <p><strong>特工可以消耗一点任意品质（Quality） 的素质保证（Quality Assurance），来实现一项以下功能：</strong></p>
-                        <p>● 标记一个目标持续跟踪其位置（超出范围会以小箭头标记大概方向） </p>
-                        <p>● 显示两点之间的一条较短可用道路 </p>
-                        <p>● 原地建立传送锚点<p>● 在明显的10秒读条效果后前往传送锚点</p></p>
-                        <button class="action-button">●购买——25嘉奖</button>
+                        <p><strong>详细记录：</strong>安全屋的空气过滤系统已出现损坏迹象，建议在下次补给任务中优先更换。发现墙体有生物腐蚀痕迹，痕迹未扩散。</p>
+                        <button class="tab-button" style="margin-top: 10px;">请求维护</button>
                     </div>
                 </article>
-                
-                
 
-                
-                
+                <article class="content-module archive-module" onclick="toggleDetails(this)">
+                    <h4>工具箱 T-非致命</h4>
+                    <p>清单：镇静枪（50%电量），认知干扰器（型号：'耳语'），生物追踪信标（型号：'萤火虫'）。</p>
+                    <span class="expand-hint">点击展开</span>
+                    <div class="module-details">
+                        <p><strong>详细记录：</strong>'耳语'干扰器上次使用记录不明，请在使用前进行全面的频率校准。信标数量不足，仅剩一枚，应在下次任务中回收。</p>
+                        <button class="tab-button" style="margin-top: 10px;">核对数量</button>
+                    </div>
+                </article>
 
-                
+                <article class="content-module archive-module" onclick="toggleDetails(this)">
+                    <h4>异常物 A-003</h4>
+                    <p>代号：破碎的镜面。描述：一块能够轻微修改使用者对自身认知的镜子。当前储存在防辐射箱中。风险等级：中。</p>
+                    <span class="expand-hint">点击展开</span>
+                    <div class="module-details">
+                        <p><strong>详细记录：</strong>A-003 已被证实会通过视觉反馈影响大脑前额叶皮层，导致目标认为自身存在缺陷。接触时间限制：不超过10秒。</p>
+                        <button class="tab-button" style="margin-top: 10px;">查看使用协议</button>
+                    </div>
+                </article>
+            </div>
+        </section>
 
-            </section>
-            <aside class="timeline-area">
-                <h3 class="timeline-header">// 分部时间线 //</h3>
-                <div class="timeline-item">
-                    <div class="timeline-date">19xx</div>
-                    <div class="timeline-event">？？？？？？</div>
-                </div>
-                
-                
-                <div class="timeline-item">
-                    <div class="timeline-date">2012年11月</div>
-                    <div class="timeline-event">？？？？？？</div>
-                </div>
-            </aside>
-        </div>
+        <!-- 模块 2: 组织阵营 -->
+        <section style="margin-top: 50px;">
+            <h2 class="section-title">// 组织阵营 · 认知侧写 //</h2>
+            
+            <div class="tabs">
+                <button class="tab-button active" data-org="committee" onclick="switchOrg(this, 'committee')">无光委员会</button>
+                <button class="tab-button" data-org="crows" onclick="switchOrg(this, 'crows')">乌鸦物流</button>
+                <button class="tab-button" data-org="church" onclick="switchOrg(this, 'church')">旧日教会</button>
+            </div>
+
+            <div id="org-content" class="tab-content">
+                <!-- 内容将由 JS 插入 -->
+            </div>
+        </section>
+        
+        <!-- 模块 3: 机密档案库 -->
+        <section style="margin-top: 50px;">
+            <h2 class="section-title">// 机密档案库 · 仅限阅读 //</h2>
+            <div class="archive-grid">
+                <article class="archive-module" onclick="toggleDetails(this)">
+                    <h4>档案 D-47：黑雾蔓延</h4>
+                    <p>记录了黑雾首次在[地名]出现的完整报告，包括对当地动植物的异变影响，以及委员会早期处理的失败案例。内含多处被手动涂改和擦除的字段。</p>
+                    <span class="expand-hint">点击展开</span>
+                    <div class="module-details">
+                        <p><strong>分析结论：</strong>黑雾并非传统意义上的气体或生物，更像是一种信息流的泄漏。接触者会在数小时内出现对现实世界的强烈不信任感。</p>
+                    </div>
+                </article>
+
+                <article class="archive-module" onclick="toggleDetails(this)">
+                    <h4>档案 S-11：城市低语</h4>
+                    <p>关于实体代号“蠕动的城市”的声学研究报告。音频分析师在深度分析时报告了幻听症状，包括非人类语言的重复短语，及高频的机械脉冲。</p>
+                    <span class="expand-hint">点击展开</span>
+                    <div class="module-details">
+                        <p><strong>研究笔记：</strong>低语似乎与城市的扩张速度呈正相关。我们尝试播放反向低语来干扰其信息流，但导致了[数据删除]事件，应立即停止。</p>
+                    </div>
+                </article>
+
+                <article class="archive-module" onclick="toggleDetails(this)">
+                    <h4>档案 L-05：灯塔光束</h4>
+                    <p>关于沉默的灯塔发出的“认知修正波”的初步报告。该光束似乎能重写附近观察者的短期记忆，但无法影响长期记忆储存器。</p>
+                    <span class="expand-hint">点击展开</span>
+                    <div class="module-details">
+                        <p><strong>测试记录：</strong>实验目标 A 在接触光束后忘记了自己是谁，但在听到自己的名字后立即恢复。结论：该波只影响主动认知，不影响预先存储的标签。</p>
+                    </div>
+                </article>
+            </div>
+        </section>
+        
+        <footer style="text-align: center; padding: 40px 0; font-family: var(--font-mono); font-size: 0.8em; color: var(--color-border);">
+            // END OF LINE // SECURITY LEVEL: OFFLINE //
+        </footer>
     </div>
 
     <script>
-        // JS 用于处理可点开模块的展开/折叠
+        const TIME_DISPLAY = document.getElementById('time-display');
+        const SYNC_BUTTON = document.getElementById('sync-button');
+        const LOADING_PROGRESS = document.getElementById('loading-progress');
+        const PROGRESS_BAR = document.getElementById('progress-bar');
+        const INTRO_SCREEN = document.getElementById('intro-screen');
+        const MAIN_CONTENT = document.getElementById('main-content');
+        const DOWN_ARROW = document.getElementById('down-arrow');
+        const ORG_CONTENT = document.getElementById('org-content');
+        
+        let glitchInterval;
+        let progress = 0;
+        let isSynced = false;
+
+        // --- 1. 初始故障效果 ---
+        function startGlitch() {
+            glitchInterval = setInterval(() => {
+                // 快速变化的时间条：不合理的数字变化
+                const year = Math.floor(Math.random() * 8000) + 1000;
+                const month = String(Math.floor(Math.random() * 12) + 1).padStart(2, '0');
+                const day = String(Math.floor(Math.random() * 30) + 1).padStart(2, '0');
+                const hour = String(Math.floor(Math.random() * 24)).padStart(2, '0');
+                const minute = String(Math.floor(Math.random() * 60)).padStart(2, '0');
+                const second = String(Math.floor(Math.random() * 60)).padStart(2, '0');
+                
+                TIME_DISPLAY.textContent = `YEAR: ${year}-${month}-${day} ${hour}:${minute}:${second}`;
+            }, 50); // 每50毫秒更新一次
+        }
+
+        // --- 2. 同步时间线操作 ---
+        function startSync() {
+            if (isSynced) return;
+            isSynced = true;
+            
+            clearInterval(glitchInterval); // 停止故障效果
+            SYNC_BUTTON.disabled = true;
+            SYNC_BUTTON.textContent = '同步中...';
+            LOADING_PROGRESS.style.opacity = 1;
+
+            // 获取当前时间戳
+            const now = new Date();
+            
+            // 计算最终目标时间：2012年11月，日期/时/分/秒与当前时间相同
+            const targetDate = new Date(2012, 10, now.getDate(), now.getHours(), now.getMinutes(), now.getSeconds());
+
+            // 进度条动画
+            let progressInterval = setInterval(() => {
+                progress += 1;
+                PROGRESS_BAR.style.width = `${progress}%`;
+
+                if (progress >= 100) {
+                    clearInterval(progressInterval);
+                    finishSync(targetDate);
+                }
+            }, 50);
+        }
+
+        function finishSync(targetDate) {
+            
+            // 格式化目标日期
+            const year = targetDate.getFullYear();
+            const month = String(targetDate.getMonth() + 1).padStart(2, '0'); // 11月是索引 10
+            const day = String(targetDate.getDate()).padStart(2, '0');
+            const hour = String(targetDate.getHours()).padStart(2, '0');
+            const minute = String(targetDate.getMinutes()).padStart(2, '0');
+            const second = String(targetDate.getSeconds()).padStart(2, '0');
+
+            // 最终显示的时间
+            TIME_DISPLAY.textContent = `TARGET: ${year}-${month}-${day} ${hour}:${minute}:${second}`;
+            TIME_DISPLAY.style.color = 'var(--color-accent-green)'; // 切换为正常颜色
+            
+            // 移除故障动画
+            document.getElementById('intro-title').style.animation = 'none';
+
+            SYNC_BUTTON.textContent = '时间线已锁定';
+            SYNC_BUTTON.style.backgroundColor = 'var(--color-accent-green)';
+            SYNC_BUTTON.style.color = 'var(--color-dark-bg)';
+            SYNC_BUTTON.style.boxShadow = '0 0 10px var(--color-accent-green)';
+
+            // 延迟显示内容
+            setTimeout(() => {
+                // 显示向下箭头
+                DOWN_ARROW.style.opacity = 1;
+                // 使内容可见
+                MAIN_CONTENT.style.opacity = 1;
+            }, 500);
+        }
+
+        // --- 3. 内容区互动逻辑 ---
+
+        // 展开/折叠模块
         function toggleDetails(moduleElement) {
             moduleElement.classList.toggle('active');
         }
-        
-        const ORIGINAL_TITLE_TEXT = "档案代号：黑山羊与编号W-25";
 
-        // JS 用于处理互动按钮的演示效果
-        function logAction(action) {
-            const title = document.getElementById('main-title');
-            
-            // 切换到警告状态
-            title.textContent = `[警告]：指令 "${action}" 已接收。请等待...`;
-            title.style.color = 'var(--color-accent-red)';
-            title.style.textShadow = '0 0 10px var(--color-accent-red)';
-            
-            // 2秒后恢复原标题和颜色
+        // 滚动到主内容
+        function scrollToContent() {
+            // 隐藏引导页
+            INTRO_SCREEN.style.opacity = 0; 
             setTimeout(() => {
-                title.textContent = ORIGINAL_TITLE_TEXT; // 恢复原始文本
-                title.style.color = 'var(--color-text-light)';
-                title.style.textShadow = '0 0 5px var(--color-accent-red)';
-            }, 2000);
-            
-            console.log(`执行操作: ${action}`);
+                INTRO_SCREEN.style.display = 'none';
+                MAIN_CONTENT.scrollIntoView({ behavior: 'smooth' });
+            }, 500); 
         }
-    </script>
-<!-- Code injected by live-server -->
-<script>
-	// <![CDATA[  <-- For SVG support
-	if ('WebSocket' in window) {
-		(function () {
-			function refreshCSS() {
-				var sheets = [].slice.call(document.getElementsByTagName("link"));
-				var head = document.getElementsByTagName("head")[0];
-				for (var i = 0; i < sheets.length; ++i) {
-					var elem = sheets[i];
-					var parent = elem.parentElement || head;
-					parent.removeChild(elem);
-					var rel = elem.rel;
-					if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
-						var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
-						elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
-					}
-					parent.appendChild(elem);
-				}
-			}
-			var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
-			var address = protocol + window.location.host + window.location.pathname + '/ws';
-			var socket = new WebSocket(address);
-			socket.onmessage = function (msg) {
-				if (msg.data == 'reload') window.location.reload();
-				else if (msg.data == 'refreshcss') refreshCSS();
-			};
-			if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
-				console.log('Live reload enabled.');
-				sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
-			}
-		})();
-	}
-	else {
-		console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
-	}
-	// ]]>
-</script>
 
-<!-- Code injected by live-server -->
-<script>
-	// <![CDATA[  <-- For SVG support
-	if ('WebSocket' in window) {
-		(function () {
-			function refreshCSS() {
-				var sheets = [].slice.call(document.getElementsByTagName("link"));
-				var head = document.getElementsByTagName("head")[0];
-				for (var i = 0; i < sheets.length; ++i) {
-					var elem = sheets[i];
-					var parent = elem.parentElement || head;
-					parent.removeChild(elem);
-					var rel = elem.rel;
-					if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
-						var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
-						elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
-					}
-					parent.appendChild(elem);
-				}
-			}
-			var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
-			var address = protocol + window.location.host + window.location.pathname + '/ws';
-			var socket = new WebSocket(address);
-			socket.onmessage = function (msg) {
-				if (msg.data == 'reload') window.location.reload();
-				else if (msg.data == 'refreshcss') refreshCSS();
-			};
-			if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
-				console.log('Live reload enabled.');
-				sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
-			}
-		})();
-	}
-	else {
-		console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
-	}
-	// ]]>
-</script>
-<div class="xl-chrome-ext-bar_4DB361DE-01F7-4376-B494-639E489D19ED" id="xl_chrome_ext_4DB361DE-01F7-4376-B494-639E489D19ED" data-v-app="" style="display: block;"><div class=""><div id="xl_chrome_ext_video_tag_wrapper_4DB361DE-01F7-4376-B494-639E489D19ED" config="[object Object]" uiversion="v2" exception="false" latestvideosrc="" isshowvideotag="false" isshowdownloadbar="true" isshowcloudaddbar="false"><div class="_video_op_wrapper_96mx8_1" config="[object Object]" uiversion="v2" style="display: none;"><ul class="_video_op_list_96mx8_17"><li class="_op_item_96mx8_39 _download_96mx8_45"><span class="_op_icon_96mx8_25"></span><span class="_op_text_96mx8_31">下载</span></li><li class="_op_item_96mx8_39 _screen_96mx8_51"><span class="_op_icon_96mx8_25"></span><span class="_op_text_96mx8_31">投屏</span></li></ul></div></div><div class="badge_wrapper_4DB361DE-01F7-4376-B494-639E489D19ED _badge_wrapper_wnbzb_1" id="badge_wrapper_4DB361DE-01F7-4376-B494-639E489D19ED"><div class="_logo_wnbzb_24"></div><span class="_line_wnbzb_32"></span><div class="_text_wrapper_wnbzb_39"><span class="_download_icon_wnbzb_51"></span><span class="_text_wnbzb_39">高速下载</span></div></div><!----><!----><!----><!----><div class="_container_wq4mj_4"><!----></div></div></div></body></html>
+        // 组织阵营数据
+        const orgData = {
+            committee: {
+                title: "无光委员会 (The Committee of No Light)",
+                description: "信奉高维几何学的古老精英组织，致力于将所有异常现象归类为跨维度投影。他们的目标是“校准”现实，消除所有不符合七维宇宙规则的变量。",
+                key_members: "几何体 (Geometrist), 坐标系 (The Coordinate)"
+            },
+            crows: {
+                title: "乌鸦物流 (Crow Logistics)",
+                description: "一个表面上从事普通物流运输，实际上垄断了异常物品运输和地下信息传递的组织。他们信奉效率和平衡，不对任何阵营效忠，只为最高出价者服务。",
+                key_members: "信使 (The Courier), 货单 (The Manifest)"
+            },
+            church: {
+                title: "旧日教会 (The Church of Bygone Days)",
+                description: "末世论邪教，崇拜在时间线异常前就已经存在的实体。他们认为 2012 年是时间线正式“断裂”的标志，并试图通过献祭来加速旧日回归，迎接真正的末日。",
+                key_members: "大牧师 (The Grand Pastor), 献祭者 (The Oblation)"
+            }
+        };
+
+        // 切换组织阵营内容
+        function switchOrg(button, orgKey) {
+            // 移除所有按钮的 active 类
+            document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+            // 激活当前按钮
+            button.classList.add('active');
+
+            const data = orgData[orgKey];
+            ORG_CONTENT.innerHTML = `
+                <h3>${data.title}</h3>
+                <p>${data.description}</p>
+                <p style="font-family: var(--font-mono); color: var(--color-text-light);">
+                    <strong style="color: var(--color-accent-red);">// 关键人物 //</strong><br>
+                    ${data.key_members}
+                </p>
+            `;
+        }
+
+        // --- 4. 启动脚本 ---
+        window.onload = function() {
+            startGlitch();
+            // 默认加载第一个组织的内容
+            switchOrg(document.querySelector('.tab-button[data-org="committee"]'), 'committee'); 
+        };
+    </script>
+</body>
+</html>
