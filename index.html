@@ -330,6 +330,20 @@
             background-color: transparent; 
         }
 
+        /* --- 新增：模块 A/B 标题样式，用于平铺展示时的小标题 --- */
+        .module-subtitle {
+            /* 模块 A/B 标题，使用终端风格的颜色和字体 */
+            font-family: 'Courier Prime', monospace;
+            font-weight: 700;
+            color: #33ccff; /* anomaly-cyan */
+            padding: 0.5rem 0;
+            margin-bottom: 0.5rem;
+            border-bottom: 1px dashed rgba(51, 204, 255, 0.3);
+            text-shadow: 0 0 5px rgba(51, 204, 255, 0.5);
+            letter-spacing: 0.1em;
+        }
+
+
     </style>
 </head>
 <body class="bg-liminal-bg text-gray-200 font-sans overflow-x-hidden">
@@ -340,8 +354,8 @@
             
             <!-- 主标题：已应用脉冲辉光效果 -->
             <div class="terminal-title main-terminal-title text-center rounded-lg">
-                <!-- 移除内部的 <span> 标签 -->
-                <h1 class="text-2xl md:text-4xl font-mono uppercase font-bold text-anomaly-cyan cursor-default">
+                <!-- 调整：增大字体尺寸到 text-4xl (移动端) 和 md:text-6xl (桌面端) -->
+                <h1 class="text-4xl md:text-6xl font-mono uppercase font-bold text-anomaly-cyan cursor-default">
                     [有限认知分部 // 数据检索终端]
                 </h1>
             </div>
@@ -358,9 +372,9 @@
                 </div>
             </div>
 
-            <!-- 激活按钮：添加 relative 和 overflow-hidden，为进度条效果做准备 -->
+            <!-- 激活按钮：调整：减小字体到 text-base，减小 padding 到 px-6 py-2 -->
             <button id="start-button" 
-                    class="px-8 py-3 w-full bg-anomaly-cyan text-terminal-dark font-bold rounded-lg shadow-xl hover:bg-cyan-300 transition-transform active:scale-95 duration-200 uppercase font-mono tracking-widest text-lg relative overflow-hidden"
+                    class="px-6 py-2 w-full bg-anomaly-cyan text-terminal-dark font-bold rounded-lg shadow-xl hover:bg-cyan-300 transition-transform active:scale-95 duration-200 uppercase font-mono tracking-widest text-base relative overflow-hidden"
                     style="background-size: 100% 100%;">
                 <span id="button-text">访问权限请求</span>
             </button>
@@ -435,8 +449,8 @@
             </div>
 
             <!-- 统一的补给仓库容器 - 容器 ID 已设置，内容将由 JS 动态生成 -->
-            <!-- 此处将包含两个可折叠的模块 A 和 模块 B -->
-            <div id="supply-list-container" class="bg-gray-900 border border-anomaly-cyan/50 rounded-lg shadow-xl p-4 md:p-6 space-y-4 font-mono">
+            <!-- 此处将包含两个平铺的模块 A 和 模块 B 的内容 -->
+            <div id="supply-list-container" class="bg-gray-900 border border-anomaly-cyan/50 rounded-lg shadow-xl p-4 md:p-6 space-y-6 font-mono">
                 <!-- 动态内容将在此处生成 -->
             </div>
         </section>
@@ -912,7 +926,7 @@
             }, intervalTime);
         }
         
-        // --- 补给仓库渲染逻辑 (已更新以支持模块分组) ---
+        // --- 补给仓库渲染逻辑 (已更新为平铺结构) ---
         /**
          * 动态渲染补给仓库中的所有物品列表
          */
@@ -937,7 +951,6 @@
                     const containerClasses = `bg-gray-800 rounded-lg overflow-hidden transition-all duration-300 border ${isBSeries ? 'border-gray-700/50 item-container-b' : 'border-gray-700/50'}`;
                     const titleClasses = `item-summary-title ${isBSeries ? 'item-summary-title-b' : ''}`;
                     const idClasses = `item-summary-id`;
-                    const indicatorColor = isBSeries ? 'text-anomaly-red' : 'text-yellow-300';
                     const summaryBg = 'hover:bg-gray-700';
                     const detailBorderColor = isBSeries ? 'border-gray-700/50' : 'border-gray-700/50';
 
@@ -988,14 +1001,14 @@
 
                     // 组装完整的 details 块
                     itemHtml += `
-                        <details class="${containerClasses}">
+                        <details class="mb-3 ${containerClasses}">
                             <summary class="flex justify-between items-center p-3 cursor-pointer ${summaryBg} transition-colors duration-200 font-bold">
                                 <div class="${titleClasses}">
                                     <span class="${idClasses}">[ ${item.id} ]</span> 
                                     <span>${item.title}</span>
                                 </div>
                                 <!-- 展开指示器 -->
-                                <span class="text-sm transform transition-transform duration-300 summary-indicator ${indicatorColor}">▼</span>
+                                <span class="text-sm transform transition-transform duration-300 summary-indicator text-yellow-300">▼</span>
                             </summary>
                             <div class="p-4 bg-gray-800/80 text-gray-400 border-t ${detailBorderColor}">
                                 ${detailContent}
@@ -1008,40 +1021,30 @@
 
             
             /**
-             * Function to wrap item details in a collapsible module (Module A or B)
-             * @param {string} title 模块标题
-             * @param {Array<Object>} items 模块包含的物品列表
-             * @param {boolean} defaultOpen 模块是否默认展开
+             * Function to wrap item details in a simple section with a subtitle
+             * **NOTE:** Removed the outer details/summary structure to achieve flat look.
              */
-            const renderModule = (title, items, defaultOpen = false) => { 
+            const renderModuleSection = (title, items) => { 
                 const moduleHtml = renderItems(items);
                 if (moduleHtml.length === 0) return ''; // Skip if no items
 
-                // 模块默认关闭，不需要 'open' 属性
-                const openAttribute = defaultOpen ? 'open' : ''; 
-
                 return `
-                    <!-- 模块 A/B 折叠容器 -->
-                    <details class="module-group bg-terminal-dark/80 rounded-xl border border-anomaly-cyan/30 overflow-hidden shadow-lg" ${openAttribute}>
-                        <summary class="p-4 bg-terminal-dark hover:bg-gray-800 cursor-pointer font-bold text-lg text-anomaly-cyan flex justify-between items-center transition-colors duration-200">
-                            <span>${title}</span>
-                            <!-- 使用 ▼ 图标和 rotation-180 实现 ▲/▼ 切换 -->
-                            <span class="module-indicator text-xl transform transition-transform duration-300">▼</span>
-                        </summary>
-                        <!-- 模块内容（内部包含物品详情列表） -->
-                        <div class="p-2 space-y-3">
-                            ${moduleHtml}
-                        </div>
-                    </details>
+                    <div class="space-y-3">
+                        <h3 class="module-subtitle text-xl">${title}</h3>
+                        ${moduleHtml}
+                    </div>
                 `;
             };
 
-            // 2. Render Modules
-            // Module A: 默认关闭
-            html += renderModule("模块 A", moduleAItems);
+            // 2. Render Modules (Flat structure)
+            html += renderModuleSection("[ 模块 A ] - 基础补给", moduleAItems);
             
-            // Module B: 默认关闭 
-            html += renderModule("模块 B", moduleBItems);
+            // Add a clear separator between modules
+            if (moduleAItems.length > 0 && moduleBItems.length > 0) {
+                html += '<div class="h-px bg-gray-700/50 my-6"></div>';
+            }
+
+            html += renderModuleSection("[ 模块 B ] - 敏感档案", moduleBItems);
 
 
             // 3. Update container HTML
@@ -1049,7 +1052,7 @@
             
             // 渲染完成后，重新绑定 details 箭头翻转逻辑
             setupDetailsToggle();
-            setupModuleToggle(); // 绑定模块 A/B 的切换逻辑
+            // setupModuleToggle(); // REMOVED: Module toggle is no longer needed
         }
 
 
@@ -1082,40 +1085,6 @@
             });
         }
         
-        // --- 模块 A/B 折叠逻辑 ---
-        function setupModuleToggle() {
-            document.querySelectorAll('.module-group').forEach(details => {
-                // Find the indicator within the summary
-                const indicator = details.querySelector('.module-indicator');
-                
-                // Only set up listeners once
-                if (!details.dataset.moduleListenerAdded) {
-                    
-                    // Event listener for toggle
-                    details.addEventListener('toggle', () => {
-                        if (indicator) {
-                            if (details.open) {
-                                indicator.style.transform = 'rotate(180deg)';
-                            } else {
-                                indicator.style.transform = 'rotate(0deg)';
-                            }
-                        }
-                    });
-                    details.dataset.moduleListenerAdded = 'true'; // Mark as set up
-                }
-                
-                // Initial setup for rotation
-                if (indicator) {
-                    if (details.open) {
-                        indicator.style.transform = 'rotate(180deg)';
-                    } else {
-                        indicator.style.transform = 'rotate(0deg)';
-                    }
-                }
-            });
-        }
-
-
         // --- 市场份额饼状图 Chart.js 逻辑 ---
         function setupMarketShareChart() {
             const ctx = document.getElementById('marketShareChart');
