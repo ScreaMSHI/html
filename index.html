@@ -50,13 +50,24 @@
                         scanlineJitter: {
                             '0%': { backgroundPosition: '0 0' },
                             '100%': { backgroundPosition: '0 4px' }
-                        }
+                        },
+                        // 新增：缓慢明暗效果 (已增强)
+                        subtlePulse: {
+                            '0%, 100%': { 
+                                'text-shadow': '0 0 10px #33ccff, 0 0 5px rgba(51, 204, 255, 0.5)' // 基础亮度
+                            },
+                            '50%': {
+                                'text-shadow': '0 0 20px #33ccff, 0 0 12px rgba(51, 204, 255, 1.0)' // 增强：更大的范围和更高的不透明度
+                            },
+                        },
                     },
                     animation: {
                         shake: 'shake 0.1s infinite',
                         glitchShake: 'glitchShake 0.15s infinite alternate',
                         textStream: 'textStream 3s infinite linear',
                         scanlineJitter: 'scanlineJitter 0.5s infinite steps(10) alternate',
+                        // 新增：应用缓慢脉冲动画
+                        pulseSlow: 'subtlePulse 4s infinite ease-in-out', 
                     }
                 }
             }
@@ -218,32 +229,21 @@
         /* --------------------------------------------------- */
         /* --- 1. 移除主标题的所有视觉效果 (故障抖动、辉光、扫描线) --- */
         
-        /* 移除针对主标题的故障抖动动画 */
-        #main-title {
-            animation: none !important; /* 强制禁用动画 */
-        }
-        
-        /* 确保主标题文本没有辉光、扫描线或其他装饰 */
-        #main-title span {
+        /* 针对主标题的样式 (已修改: 添加缓慢脉冲辉光) */
+        .main-terminal-title h1 {
+            /* 应用缓慢脉冲辉光动画 */
+            text-shadow: 0 0 10px #33ccff, 0 0 5px rgba(51, 204, 255, 0.5); /* 初始辉光 */
+            animation: pulseSlow; 
+            
+            /* 确保主标题文本没有扫描线或其他装饰 */
             position: relative;
             display: inline-block; 
-            /* 降低 z-index 到 3，确保低于 Title Screen 上的其他元素 */
             z-index: 3; 
             padding: 0; 
             margin: 0; 
             background-color: transparent; 
-            
-            /* 移除主标题文字的辉光效果 */
-            text-shadow: none !important; 
         }
         
-        /* 移除扫描线伪元素 */
-        #main-title span::before {
-            content: none;
-            background-image: none;
-            animation: none;
-        }
-
         /* --------------------------------------------------- */
         /* --- 补给仓库小标题样式 (Concise Terminal Look) --- */
         
@@ -305,6 +305,31 @@
             border-color: #ff3366 !important; /* 错误时显示红边框 */
             box-shadow: 0 0 10px #ff3366; /* 错误时显示红辉光 */
         }
+        
+        /* 模块 A/B 容器的特殊样式 */
+        .module-indicator {
+            transition: transform 0.3s ease;
+        }
+        
+        /* 按钮加载状态专用样式，确保文本在进度条上可见 */
+        #start-button.loading-state {
+            /* 移除背景颜色，完全依赖 linear-gradient */
+            background-color: transparent !important;
+            /* 确保过渡不影响进度条动画 */
+            transition: all 0.2s ease, background-image 0s; 
+            /* 确保文本颜色是深色，与进度条的亮色形成对比 */
+            color: #0a0a1a; 
+            /* 移除悬停效果 */
+            cursor: default;
+        }
+        /* 确保 span 文本在 loading 状态下层级高 */
+        #start-button.loading-state #button-text {
+            z-index: 10;
+            position: relative;
+            /* 允许文本背景是透明的，让背景渐变显示 */
+            background-color: transparent; 
+        }
+
     </style>
 </head>
 <body class="bg-liminal-bg text-gray-200 font-sans overflow-x-hidden">
@@ -313,11 +338,11 @@
     <div id="title-screen" class="flex flex-col items-center justify-center p-4 text-center">
         <div class="space-y-8 max-w-lg w-full">
             
-            <!-- 主标题：已去除所有视觉效果 (无辉光、无抖动、无扫描线) -->
+            <!-- 主标题：已应用脉冲辉光效果 -->
             <div class="terminal-title main-terminal-title text-center rounded-lg">
-                <!-- 移除 id="main-title" 的 h1，因为它不再需要抖动动画 -->
+                <!-- 移除内部的 <span> 标签 -->
                 <h1 class="text-2xl md:text-4xl font-mono uppercase font-bold text-anomaly-cyan cursor-default">
-                    <span>[有限认知分部 // 数据检索终端]</span>
+                    [有限认知分部 // 数据检索终端]
                 </h1>
             </div>
 
@@ -333,20 +358,16 @@
                 </div>
             </div>
 
-            <!-- 激活按钮 -->
-            <button id="start-button" class="px-8 py-3 w-full bg-anomaly-cyan text-terminal-dark font-bold rounded-lg shadow-xl hover:bg-cyan-300 transition-transform active:scale-95 duration-200 uppercase font-mono tracking-widest text-lg">
+            <!-- 激活按钮：添加 relative 和 overflow-hidden，为进度条效果做准备 -->
+            <button id="start-button" 
+                    class="px-8 py-3 w-full bg-anomaly-cyan text-terminal-dark font-bold rounded-lg shadow-xl hover:bg-cyan-300 transition-transform active:scale-95 duration-200 uppercase font-mono tracking-widest text-lg relative overflow-hidden"
+                    style="background-size: 100% 100%;">
                 <span id="button-text">访问权限请求</span>
             </button>
             
-            <!-- 加载进度条 -->
+            <!-- 移除旧的加载进度条容器 -->
             <div id="loading-container" class="mt-4 hidden">
-                <p class="text-anomaly-cyan text-sm mb-2 font-mono">
-                    <span id="loading-status">加载中... </span>
-                    <span id="loading-percent">0</span>%
-                </p>
-                <div class="h-2 bg-gray-700 rounded-full overflow-hidden">
-                    <div id="loading-bar" class="h-2 bg-anomaly-red transition-all duration-300 ease-linear" style="width: 0%;"></div>
-                </div>
+                <!-- 旧的进度条内容已移除 -->
             </div>
 
             <!-- 加载完成后显示的向下箭头 -->
@@ -414,17 +435,18 @@
             </div>
 
             <!-- 统一的补给仓库容器 - 容器 ID 已设置，内容将由 JS 动态生成 -->
-            <div id="supply-list-container" class="bg-gray-900 border border-anomaly-cyan/50 rounded-lg shadow-xl p-4 md:p-6 space-y-3 font-mono">
+            <!-- 此处将包含两个可折叠的模块 A 和 模块 B -->
+            <div id="supply-list-container" class="bg-gray-900 border border-anomaly-cyan/50 rounded-lg shadow-xl p-4 md:p-6 space-y-4 font-mono">
                 <!-- 动态内容将在此处生成 -->
             </div>
         </section>
 
-        <!-- 模块二：异常市场监测 (标题已更改) -->
+        <!-- 模块二：动态市场监测 -->
         <section>
-            <!-- 模块标题：已更改为“异常市场监测” -->
+            <!-- 模块标题：已更改为“动态市场监测” -->
             <div class="terminal-title rounded-lg">
                 <h1 class="text-2xl font-bold font-mono text-anomaly-cyan tracking-widest">
-                    <span>异常市场监测</span>
+                    <span>动态市场监测</span>
                 </h1>
             </div>
 
@@ -563,9 +585,10 @@
         const TIME_COMPONENT = document.getElementById('time-component');
         const MS_COMPONENT = document.getElementById('ms-component');
         const START_BUTTON = document.getElementById('start-button');
-        const LOADING_CONTAINER = document.getElementById('loading-container');
-        const LOADING_BAR = document.getElementById('loading-bar');
-        const LOADING_PERCENT = document.getElementById('loading-percent');
+        // const LOADING_CONTAINER = document.getElementById('loading-container'); // REMOVED
+        // const LOADING_BAR = document.getElementById('loading-bar'); // REMOVED
+        // const LOADING_PERCENT = document.getElementById('loading-percent'); // REMOVED
+        const BUTTON_TEXT_SPAN = document.getElementById('button-text');
         const TITLE_SCREEN = document.getElementById('title-screen');
         const MAIN_CONTENT = document.getElementById('main-content');
         const WELCOME_GREETING = document.getElementById('welcome-greeting');
@@ -588,6 +611,11 @@
         let loadingProgress = 0;
         const TARGET_YEAR = 2012;
         const TARGET_MONTH = 11; 
+        
+        // --- 进度条颜色常量 ---
+        const LOADING_FILL_COLOR = '#33ccff'; // anomaly-cyan
+        const LOADING_EMPTY_COLOR = '#374151'; // gray-700
+        const SUCCESS_COLOR = 'rgb(34, 197, 94)'; // green-500
 
         // --- 数据存储 (机密档案) ---
         const ARCHIVE_DATA = {
@@ -639,7 +667,7 @@
                 title: "一斤鸭梨",
                 award: 6,
                 series: "A",
-                description: "一个网兜装着的 3 个鸭梨，大小形状可能都不太一样，但三个的总重量一定是精准的 500g 重。它们真的很好吃。",
+                description: "三个网兜装着的鸭梨，大小形状可能都不太一样，但三个的总重量一定是精准的 500g 重。它们真的很好吃。",
                 effects: [
                     "任何吃下鸭梨或含梨汁食品的人（生效的浓度最少 1:3）都会沉溺于回忆之中，并变得极度充满倾诉欲。",
                     "这三个鸭梨如果分离超过 24 小时就会变成普通的鸭梨。"
@@ -647,7 +675,7 @@
             },
             {
                 id: "A-05",
-                title: "很coooooool的暴风雪桶",
+                title: "很coooool的暴风雪桶",
                 award: 6,
                 series: "A",
                 description: "一个印着三角形 logo，写着“暴风雪冰淇淋”的很 coooooool 的冰淇淋桶，看上去只是一个很 coooooool 的大份冰淇淋。",
@@ -802,22 +830,36 @@
          * 处理按钮点击和加载过程
          */
         function handleStart() {
-            // 每次点击时，如果内容区已显示，则先隐藏并重置进度条
-            if (!MAIN_CONTENT.classList.contains('opacity-0')) {
+            // 重置按钮样式（如果之前加载过）
+            if (START_BUTTON.classList.contains('loading-state') || START_BUTTON.classList.contains('bg-green-500')) {
+                 // 1. 重置页面状态
                  MAIN_CONTENT.classList.add('opacity-0', 'pointer-events-none');
                  TITLE_SCREEN.style.display = 'flex';
                  TITLE_SCREEN.style.opacity = '1';
                  TITLE_SCREEN.style.pointerEvents = 'auto';
+                 
+                 // 2. 重置加载状态
                  loadingProgress = 0;
-                 LOADING_BAR.style.width = '0%';
-                 LOADING_PERCENT.textContent = '0';
-                 document.getElementById('button-text').textContent = '访问权限请求';
-                 LOADING_BAR.classList.replace('bg-green-500', 'bg-anomaly-red');
+                 START_BUTTON.disabled = false; // 重新启用按钮
+                 
+                 // 3. 重置按钮视觉
+                 START_BUTTON.style.backgroundImage = 'none';
+                 START_BUTTON.classList.remove('loading-state', 'bg-green-500');
+                 // 恢复到初始状态的颜色和悬停效果
+                 START_BUTTON.classList.add('bg-anomaly-cyan', 'hover:bg-cyan-300');
+                 BUTTON_TEXT_SPAN.textContent = '访问权限请求';
+                 
+                 return; // 阻止后续逻辑，等待下一次点击
             }
-
+            
+            // 切换到加载状态
             START_BUTTON.disabled = true;
-            document.getElementById('button-text').textContent = '协议激活中...';
-            LOADING_CONTAINER.classList.remove('hidden');
+            START_BUTTON.classList.remove('bg-anomaly-cyan', 'hover:bg-cyan-300', 'active:scale-95');
+            START_BUTTON.classList.add('bg-gray-700', 'loading-state');
+            
+            // 隐藏旧的加载容器 (如果它仍存在)
+            const loadingContainer = document.getElementById('loading-container');
+            if (loadingContainer) loadingContainer.classList.add('hidden'); 
 
             const totalDuration = 3000; 
             const steps = 100;
@@ -827,24 +869,30 @@
                 loadingProgress++;
                 const widthPercent = Math.min(100, loadingProgress);
                 
-                LOADING_BAR.style.width = `${widthPercent}%`;
-                LOADING_PERCENT.textContent = widthPercent;
+                // --- 核心修改：使用 linear-gradient 作为进度条 ---
+                START_BUTTON.style.backgroundImage = `linear-gradient(to right, ${LOADING_FILL_COLOR} 0%, ${LOADING_FILL_COLOR} ${widthPercent}%, ${LOADING_EMPTY_COLOR} ${widthPercent}%, ${LOADING_EMPTY_COLOR} 100%)`;
+                
+                // 更新按钮文本显示百分比
+                BUTTON_TEXT_SPAN.textContent = `协议激活中... ${widthPercent}%`;
+                // --- 核心修改结束 ---
 
                 if (loadingProgress >= 100) {
                     clearInterval(loadingInterval);
                     
                     // 加载完成后的操作
-                    document.getElementById('button-text').textContent = '访问成功';
-                    document.getElementById('loading-status').textContent = '同步完成';
-                    LOADING_BAR.classList.replace('bg-anomaly-red', 'bg-green-500');
+                    // 1. 最终视觉效果：纯绿色成功背景
+                    START_BUTTON.style.backgroundImage = 'none';
+                    START_BUTTON.classList.remove('loading-state', 'bg-gray-700');
+                    START_BUTTON.classList.add('bg-green-500');
+                    BUTTON_TEXT_SPAN.textContent = '访问成功';
                     
-                    // 1. 停止故障并稳定时间
+                    // 2. 停止故障并稳定时间
                     stabilizeTime(11); 
                     
-                    // 2. 新增：生成并设置欢迎语中的随机乱码
+                    // 3. 新增：生成并设置欢迎语中的随机乱码
                     generateAndSetGreeting();
 
-                    // 3. 页面切换逻辑：隐藏标题页，显示主内容
+                    // 4. 页面切换逻辑：隐藏标题页，显示主内容
                     setTimeout(() => {
                         // 淡出标题页
                         TITLE_SCREEN.style.opacity = '0';
@@ -856,6 +904,7 @@
                         // 移除 fixed 定位，让文档流恢复正常，以便滚动
                         setTimeout(() => {
                             TITLE_SCREEN.style.display = 'none';
+                            document.getElementById('scroll-indicator').classList.remove('hidden');
                         }, 1000); 
 
                     }, 800);
@@ -863,7 +912,7 @@
             }, intervalTime);
         }
         
-        // --- 新增：补给仓库渲染逻辑 ---
+        // --- 补给仓库渲染逻辑 (已更新以支持模块分组) ---
         /**
          * 动态渲染补给仓库中的所有物品列表
          */
@@ -871,85 +920,201 @@
             const container = document.getElementById('supply-list-container');
             if (!container) return;
 
+            // 1. Group Data
+            const moduleAItems = SUPPLY_DATA.filter(item => item.series === 'A');
+            const moduleBItems = SUPPLY_DATA.filter(item => item.series === 'B');
+
             let html = '';
 
-            SUPPLY_DATA.forEach(item => {
-                const isBSeries = item.series === 'B';
-                // 统一容器类名
-                const containerClasses = `bg-gray-800 rounded-lg overflow-hidden transition-all duration-300 border ${isBSeries ? 'border-gray-700/50 item-container-b' : 'border-gray-700/50'}`;
-                const titleClasses = `item-summary-title ${isBSeries ? 'item-summary-title-b' : ''}`;
-                const idClasses = `item-summary-id`;
-                const indicatorColor = isBSeries ? 'text-anomaly-red' : 'text-yellow-300';
-                const summaryBg = 'hover:bg-gray-700';
-                const detailBorderColor = isBSeries ? 'border-gray-700/50' : 'border-gray-700/50';
+            /**
+             * Helper function to render individual item details (A-01, B-01, etc.)
+             */
+            const renderItems = (items) => {
+                let itemHtml = '';
+                items.forEach(item => {
+                    const isBSeries = item.series === 'B';
+                    // 统一容器类名
+                    const containerClasses = `bg-gray-800 rounded-lg overflow-hidden transition-all duration-300 border ${isBSeries ? 'border-gray-700/50 item-container-b' : 'border-gray-700/50'}`;
+                    const titleClasses = `item-summary-title ${isBSeries ? 'item-summary-title-b' : ''}`;
+                    const idClasses = `item-summary-id`;
+                    const indicatorColor = isBSeries ? 'text-anomaly-red' : 'text-yellow-300';
+                    const summaryBg = 'hover:bg-gray-700';
+                    const detailBorderColor = isBSeries ? 'border-gray-700/50' : 'border-gray-700/50';
 
-                let detailContent = '';
+                    let detailContent = '';
 
-                // 嘉奖消耗
-                detailContent += `
-                    <div class="mb-4 py-1 px-3 bg-gray-900 border-b border-t border-anomaly-red font-mono flex justify-between items-center rounded-md">
-                        <span class="text-xs text-anomaly-cyan uppercase tracking-widest">:: 嘉奖消耗 ::</span>
-                        <span class="text-xl font-bold text-anomaly-red">${item.award}</span>
-                    </div>
-                `;
-                
-                // 描述
-                detailContent += `<p class="text-sm leading-relaxed mb-3">${item.description}</p>`;
-                
-                // 效果列表
-                if (item.effects && item.effects.length > 0) {
-                    detailContent += `<ul class="text-sm list-none pl-4 space-y-1 mb-3">`;
-                    item.effects.forEach(effect => {
+                    // 嘉奖消耗
+                    detailContent += `
+                        <div class="mb-4 py-1 px-3 bg-gray-900 border-b border-t border-anomaly-red font-mono flex justify-between items-center rounded-md">
+                            <span class="text-xs text-anomaly-cyan uppercase tracking-widest">:: 嘉奖消耗 ::</span>
+                            <span class="text-xl font-bold text-anomaly-red">${item.award}</span>
+                        </div>
+                    `;
+                    
+                    // 描述
+                    detailContent += `<p class="text-sm leading-relaxed mb-3">${item.description}</p>`;
+                    
+                    // 效果列表
+                    if (item.effects && item.effects.length > 0) {
+                        detailContent += `<ul class="text-sm list-none pl-4 space-y-1 mb-3">`;
+                        item.effects.forEach(effect => {
+                            detailContent += `
+                                <li class="flex items-start">
+                                    <span class="text-green-400 mr-2 mt-px text-sm">►</span>
+                                    <span>${effect}</span>
+                                </li>
+                            `;
+                        });
+                        detailContent += `</ul>`;
+                    }
+
+                    // 风险/注意事项
+                    if (item.risk) {
                         detailContent += `
-                            <li class="flex items-start">
-                                <span class="text-green-400 mr-2 mt-px text-sm">►</span>
-                                <span>${effect}</span>
-                            </li>
+                            <p class="text-sm leading-relaxed">
+                                <span class="text-anomaly-red font-bold">${item.series === 'A' ? '泄露风险:' : '副作用:'}</span> ${item.risk}
+                            </p>
                         `;
-                    });
-                    detailContent += `</ul>`;
-                }
+                    }
+                    
+                    // 特别鸣谢
+                    if (item.note) {
+                        detailContent += `
+                            <p class="text-xs text-yellow-500 font-bold text-right italic">
+                                ${item.note}
+                            </p>
+                        `;
+                    }
 
-                // 风险/注意事项
-                if (item.risk) {
-                    detailContent += `
-                        <p class="text-sm leading-relaxed">
-                            <span class="text-anomaly-red font-bold">${item.series === 'A' ? '泄露风险:' : '副作用:'}</span> ${item.risk}
-                        </p>
-                    `;
-                }
-                
-                // 特别鸣谢
-                if (item.note) {
-                    detailContent += `
-                        <p class="text-xs text-yellow-500 font-bold text-right italic">
-                            ${item.note}
-                        </p>
-                    `;
-                }
-
-                // 组装完整的 details 块
-                html += `
-                    <details class="${containerClasses}">
-                        <summary class="flex justify-between items-center p-3 cursor-pointer ${summaryBg} transition-colors duration-200 font-bold">
-                            <div class="${titleClasses}">
-                                <span class="${idClasses}">[ ${item.id} ]</span> 
-                                <span>${item.title}</span>
+                    // 组装完整的 details 块
+                    itemHtml += `
+                        <details class="${containerClasses}">
+                            <summary class="flex justify-between items-center p-3 cursor-pointer ${summaryBg} transition-colors duration-200 font-bold">
+                                <div class="${titleClasses}">
+                                    <span class="${idClasses}">[ ${item.id} ]</span> 
+                                    <span>${item.title}</span>
+                                </div>
+                                <!-- 展开指示器 -->
+                                <span class="text-sm transform transition-transform duration-300 summary-indicator ${indicatorColor}">▼</span>
+                            </summary>
+                            <div class="p-4 bg-gray-800/80 text-gray-400 border-t ${detailBorderColor}">
+                                ${detailContent}
                             </div>
-                            <!-- 展开指示器 -->
-                            <span class="text-sm transform transition-transform duration-300 summary-indicator ${indicatorColor}">▼</span>
+                        </details>
+                    `;
+                });
+                return itemHtml;
+            };
+
+            
+            /**
+             * Function to wrap item details in a collapsible module (Module A or B)
+             * @param {string} title 模块标题
+             * @param {Array<Object>} items 模块包含的物品列表
+             * @param {boolean} defaultOpen 模块是否默认展开
+             */
+            const renderModule = (title, items, defaultOpen = false) => { 
+                const moduleHtml = renderItems(items);
+                if (moduleHtml.length === 0) return ''; // Skip if no items
+
+                // 模块默认关闭，不需要 'open' 属性
+                const openAttribute = defaultOpen ? 'open' : ''; 
+
+                return `
+                    <!-- 模块 A/B 折叠容器 -->
+                    <details class="module-group bg-terminal-dark/80 rounded-xl border border-anomaly-cyan/30 overflow-hidden shadow-lg" ${openAttribute}>
+                        <summary class="p-4 bg-terminal-dark hover:bg-gray-800 cursor-pointer font-bold text-lg text-anomaly-cyan flex justify-between items-center transition-colors duration-200">
+                            <span>${title}</span>
+                            <!-- 使用 ▼ 图标和 rotation-180 实现 ▲/▼ 切换 -->
+                            <span class="module-indicator text-xl transform transition-transform duration-300">▼</span>
                         </summary>
-                        <div class="p-4 bg-gray-800/80 text-gray-400 border-t ${detailBorderColor}">
-                            ${detailContent}
+                        <!-- 模块内容（内部包含物品详情列表） -->
+                        <div class="p-2 space-y-3">
+                            ${moduleHtml}
                         </div>
                     </details>
                 `;
-            });
+            };
 
+            // 2. Render Modules
+            // Module A: 默认关闭
+            html += renderModule("模块 A", moduleAItems);
+            
+            // Module B: 默认关闭 
+            html += renderModule("模块 B", moduleBItems);
+
+
+            // 3. Update container HTML
             container.innerHTML = html;
+            
             // 渲染完成后，重新绑定 details 箭头翻转逻辑
             setupDetailsToggle();
+            setupModuleToggle(); // 绑定模块 A/B 的切换逻辑
         }
+
+
+        // --- Details 箭头翻转逻辑 (物品详情) ---
+        function setupDetailsToggle() {
+            document.querySelectorAll('details').forEach(details => {
+                // 确保只添加一次事件监听器，避免重复调用
+                if (!details.dataset.listenerAdded) {
+                    details.addEventListener('toggle', () => {
+                        const indicator = details.querySelector('.summary-indicator');
+                        if (indicator) {
+                            if (details.open) {
+                                indicator.style.transform = 'rotate(180deg)';
+                            } else {
+                                indicator.style.transform = 'rotate(0deg)';
+                            }
+                        }
+                    });
+                    details.dataset.listenerAdded = 'true'; // 标记已添加
+                    // 初始设置
+                    const indicator = details.querySelector('.summary-indicator');
+                    if (indicator) {
+                         if (details.open) {
+                            indicator.style.transform = 'rotate(180deg)';
+                        } else {
+                            indicator.style.transform = 'rotate(0deg)';
+                        }
+                    }
+                }
+            });
+        }
+        
+        // --- 模块 A/B 折叠逻辑 ---
+        function setupModuleToggle() {
+            document.querySelectorAll('.module-group').forEach(details => {
+                // Find the indicator within the summary
+                const indicator = details.querySelector('.module-indicator');
+                
+                // Only set up listeners once
+                if (!details.dataset.moduleListenerAdded) {
+                    
+                    // Event listener for toggle
+                    details.addEventListener('toggle', () => {
+                        if (indicator) {
+                            if (details.open) {
+                                indicator.style.transform = 'rotate(180deg)';
+                            } else {
+                                indicator.style.transform = 'rotate(0deg)';
+                            }
+                        }
+                    });
+                    details.dataset.moduleListenerAdded = 'true'; // Mark as set up
+                }
+                
+                // Initial setup for rotation
+                if (indicator) {
+                    if (details.open) {
+                        indicator.style.transform = 'rotate(180deg)';
+                    } else {
+                        indicator.style.transform = 'rotate(0deg)';
+                    }
+                }
+            });
+        }
+
 
         // --- 市场份额饼状图 Chart.js 逻辑 ---
         function setupMarketShareChart() {
@@ -1108,27 +1273,6 @@
             // 3. 移除标题的点击光标，表示已解锁
             document.getElementById('archive-header').classList.remove('cursor-pointer', 'hover:bg-gray-900');
             document.getElementById('archive-header').onclick = null; // 移除点击事件
-        }
-
-
-        // --- Details 箭头翻转逻辑 (已封装为函数) ---
-        function setupDetailsToggle() {
-            document.querySelectorAll('details').forEach(details => {
-                // 确保只添加一次事件监听器，避免重复调用
-                if (!details.dataset.listenerAdded) {
-                    details.addEventListener('toggle', () => {
-                        const indicator = details.querySelector('.summary-indicator');
-                        if (indicator) {
-                            if (details.open) {
-                                indicator.style.transform = 'rotate(180deg)';
-                            } else {
-                                indicator.style.transform = 'rotate(0deg)';
-                            }
-                        }
-                    });
-                    details.dataset.listenerAdded = 'true'; // 标记已添加
-                }
-            });
         }
 
 
