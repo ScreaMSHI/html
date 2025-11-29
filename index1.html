@@ -80,8 +80,7 @@
             position: fixed; 
             top: 0;
             left: 0;
-            /* 移除 z-index: 50，让 body::after 衬线可以显示在标题页上 */
-            /* z-index: 50; */ 
+            z-index: 50;
         }
 
         /* 自定义滚动条指示器动画 */
@@ -112,41 +111,11 @@
         body {
             -ms-overflow-style: none;
             scrollbar-width: none;
-            
-            /* --------------------------------------------------- */
-            /* --- 2. 添加全局蓝色背景衬线效果 --- */
-            position: relative;
-        }
-
-        /* 全局蓝色扫描线 overlay (背景衬线) */
-        body::after {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none; /* 确保不影响点击事件 */
-            z-index: 1; /* 位于内容下方，背景上方 */
-            /* 修改：提高不透明度，让扫描线更明显 */
-            opacity: 0.3; 
-            
-            /* 蓝色/青色扫描线图案 */
-            background-image: repeating-linear-gradient(
-                0deg, 
-                rgba(51, 204, 255, 0.1), /* 浅色线 (Cyan) */
-                rgba(51, 204, 255, 0.1) 1px, 
-                transparent 1px, 
-                transparent 4px /* 线之间的间距 */
-            );
-            background-size: 100% 5px; /* 设置重复图案的高度 */
         }
 
         /* Modal/Dialog Fade-in */
         dialog {
             animation: fadeIn 0.3s ease-out forwards;
-            /* 保持 dialog 的 z-index 很高，确保它在所有 overlay 之上 */
-            z-index: 1000; 
         }
         @keyframes fadeIn {
             from { opacity: 0; transform: scale(0.95); }
@@ -217,35 +186,60 @@
             padding-top: 1.5rem; 
         }
 
-        /* --------------------------------------------------- */
-        /* --- 1. 移除主标题的所有视觉效果 (故障抖动、辉光、扫描线) --- */
-        
-        /* 移除针对主标题的故障抖动动画 */
+        /* 针对主标题的故障抖动动画 - 恢复 */
         #main-title {
-            animation: none !important; /* 强制禁用动画 */
+            animation: glitchShake 0.15s infinite alternate;
         }
         
-        /* 确保主标题文本没有辉光、扫描线或其他装饰 */
+        /* --- 局部 CRT 扫描线效果 (仅限制在主标题的 span 元素内) --- */
+        
+        /* 1. 确保 span 是定位上下文且内容可见 */
         #main-title span {
             position: relative;
-            display: inline-block; 
-            /* 降低 z-index 到 3，确保低于 Title Screen 上的其他元素 */
-            z-index: 3; 
-            padding: 0; 
-            margin: 0; 
-            background-color: transparent; 
+            display: inline-block; /* 允许应用定位和宽高 */
+            z-index: 3; /* 确保文本层级高于扫描线 */
             
-            /* 移除主标题文字的辉光效果 */
-            text-shadow: none !important; 
+            /* 为扫描线效果提供一点空间，使其不接触文字 */
+            padding: 0 0.25rem; 
+            margin: -0.25rem 0; /* 负边距抵消部分 padding */
+            
+            background-color: #0a0a1a; /* 确保扫描线只在背景上显示 */
+            
+            /* 恢复主标题文字的辉光效果 */
+            text-shadow: 0 0 10px rgba(51, 204, 255, 0.9), 0 0 20px rgba(51, 204, 255, 0.5); 
         }
         
-        /* 移除扫描线伪元素 */
+        /* 2. 创建扫描线伪元素 */
         #main-title span::before {
-            content: none;
-            background-image: none;
-            animation: none;
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            
+            /* 较明显的扫描线：使用更宽的重复模式和更高的不透明度 */
+            background-image: repeating-linear-gradient(
+                0deg, 
+                rgba(0, 204, 255, 0.3), /* 浅色线 (Cyan) */
+                rgba(0, 204, 255, 0.3) 1px, 
+                transparent 1px, 
+                transparent 3px /* 线之间的间距 */
+            );
+            background-size: 100% 4px; /* 设置重复图案的高度 */
+            pointer-events: none;
+            z-index: 2; /* 位于文本下方，背景上方 */
+            opacity: 0.6; /* 提高不透明度，使其更明显 */
+            
+            /* 应用轻微的垂直抖动动画 */
+            animation: scanlineJitter 0.5s infinite steps(10) alternate;
         }
 
+        /* 3. 移除全局 CRT 效果（如果存在） */
+        #main-content::before {
+            content: none;
+        }
+        
         /* --------------------------------------------------- */
         /* --- 补给仓库小标题样式 (Concise Terminal Look) --- */
         
@@ -277,7 +271,7 @@
 
         /* 强调 A-XX ID 部分 - 移除辉光 */
         .item-summary-id {
-            color: #33ccff; /* anomaly-cyan for A-series ID */
+            color: #33ccff; /* anomaly-cyan for ID */
             margin-right: 0.5rem;
             font-weight: 700;
             text-shadow: none; /* 移除辉光 */
@@ -285,25 +279,23 @@
             border-right: none;
         }
 
-        /* B-系列物品标题和 ID 颜色（保留红色 ID） */
+        /* 针对 B-03 异常源定位器，移除边框和阴影 */
+        .item-summary-title-b {
+             border-bottom-color: transparent; 
+        }
+        details:hover .item-summary-title-b {
+            box-shadow: none; 
+            border-bottom-color: transparent;
+        }
         .item-summary-title-b .item-summary-id {
             color: #ff3366; /* anomaly-red for B-series ID */
             text-shadow: none; /* 移除辉光 */
         }
-
-        /* 统一 Details 容器的边框和阴影到 A-系列的标准（蓝色/灰色） */
-        .item-container-b {
-            border-color: #4b5563 !important; /* border-gray-700/50 */
-            box-shadow: none !important; /* 移除可能的红色阴影 */
-        }
-        /* B-系列详情页的顶部边框改为灰色 */
-        .item-container-b .border-t {
-             border-top-color: #4b5563 !important; 
-        }
-
+        
         /* 密码输入框的抖动效果和错误视觉反馈 (增强) */
         .password-shake {
-            animation: shake 0.2s 3;
+            /* 动画持续 0.2s，重复 3 次，总时长 0.6s */
+            animation: shake 0.2s 3; 
             border-color: #ff3366 !important; /* 错误时显示红边框 */
             box-shadow: 0 0 10px #ff3366; /* 错误时显示红辉光 */
         }
@@ -315,10 +307,10 @@
     <div id="title-screen" class="flex flex-col items-center justify-center p-4 text-center">
         <div class="space-y-8 max-w-lg w-full">
             
-            <!-- 主标题：已去除所有视觉效果 (无辉光、无抖动、无扫描线) -->
+            <!-- 主标题：内容保持，移除 # 号和辉光边框样式，应用局部扫描线 -->
             <div class="terminal-title main-terminal-title text-center rounded-lg">
-                <!-- 移除 id="main-title" 的 h1，因为它不再需要抖动动画 -->
-                <h1 class="text-2xl md:text-4xl font-mono uppercase font-bold text-anomaly-cyan cursor-default">
+                <h1 id="main-title" class="text-2xl md:text-4xl font-mono uppercase font-bold text-anomaly-cyan cursor-default">
+                    <!-- 扫描线效果和新的辉光将仅应用于此 span 元素区域 -->
                     <span>[有限认知分部 // 数据检索终端]</span>
                 </h1>
             </div>
@@ -368,7 +360,7 @@
             
             <!-- 更改：添加 ID，移除硬编码文本，由 JS 动态设置 -->
             <h2 id="welcome-greeting" class="text-lg md:text-xl font-bold font-mono text-anomaly-cyan mb-2 tracking-widest text-center px-2">
-                <!-- JS will set content: 欢迎，特工 [RANDOM_CODE] 。您的访问操作已被记录。 -->
+                <!-- JS will set content: 欢迎，访客 [RANDOM_CODE] 。您的访问操作已被记录。 -->
             </h2>
 
             <!-- 警示状态行 -->
@@ -418,7 +410,7 @@
             <!-- 统一的补给仓库容器 -->
             <div class="bg-gray-900 border border-anomaly-cyan/50 rounded-lg shadow-xl p-4 md:p-6 space-y-3 font-mono">
                 
-                <!-- A-01: 游戏地图 (蓝色边框) -->
+                <!-- A-01: 游戏地图 -->
                 <details class="bg-gray-800 rounded-lg overflow-hidden transition-all duration-300 border border-gray-700/50">
                     <summary class="flex justify-between items-center p-3 cursor-pointer hover:bg-gray-700 transition-colors duration-200 font-bold">
                         <div class="item-summary-title">
@@ -452,7 +444,7 @@
                     </div>
                 </details>
 
-                <!-- A-02: 雪王喷雾 (蓝色边框) -->
+                <!-- A-02: 雪王喷雾 -->
                 <details class="bg-gray-800 rounded-lg overflow-hidden transition-all duration-300 border border-gray-700/50">
                     <summary class="flex justify-between items-center p-3 cursor-pointer hover:bg-gray-700 transition-colors duration-200 font-bold">
                         <div class="item-summary-title">
@@ -465,7 +457,7 @@
                     </summary>
                     <div class="p-4 bg-gray-800/80 text-gray-400 border-t border-gray-700/50">
                         <div class="mb-4 py-1 px-3 bg-gray-900 border-b border-t border-anomaly-red font-mono flex justify-between items-center rounded-md">
-                            <span class="xs text-anomaly-cyan uppercase tracking-widest">:: 嘉奖消耗 ::</span>
+                            <span class="text-xs text-anomaly-cyan uppercase tracking-widest">:: 嘉奖消耗 ::</span>
                             <span class="text-xl font-bold text-anomaly-red">15</span>
                         </div>
                         <p class="text-sm leading-relaxed mb-3">
@@ -481,7 +473,7 @@
                     </div>
                 </details>
 
-                <!-- A-03: 降温蛋筒 (蓝色边框) -->
+                <!-- A-03: 降温蛋筒 -->
                 <details class="bg-gray-800 rounded-lg overflow-hidden transition-all duration-300 border border-gray-700/50">
                     <summary class="flex justify-between items-center p-3 cursor-pointer hover:bg-gray-700 transition-colors duration-200 font-bold">
                         <div class="item-summary-title">
@@ -494,7 +486,7 @@
                     </summary>
                     <div class="p-4 bg-gray-800/80 text-gray-400 border-t border-gray-700/50">
                         <div class="mb-4 py-1 px-3 bg-gray-900 border-b border-t border-anomaly-red font-mono flex justify-between items-center rounded-md">
-                            <span class="xs text-anomaly-cyan uppercase tracking-widest">:: 嘉奖消耗 ::</span>
+                            <span class="text-xs text-anomaly-cyan uppercase tracking-widest">:: 嘉奖消耗 ::</span>
                             <span class="text-xl font-bold text-anomaly-red">4</span>
                         </div>
                         <p class="text-sm leading-relaxed mb-3">
@@ -507,7 +499,7 @@
                     </div>
                 </details>
 
-                <!-- A-04: 一斤鸭梨 (蓝色边框) -->
+                <!-- A-04: 一斤鸭梨 -->
                 <details class="bg-gray-800 rounded-lg overflow-hidden transition-all duration-300 border border-gray-700/50">
                     <summary class="flex justify-between items-center p-3 cursor-pointer hover:bg-gray-700 transition-colors duration-200 font-bold">
                         <div class="item-summary-title">
@@ -533,7 +525,7 @@
                     </div>
                 </details>
 
-                <!-- A-05: 暴风雪桶 (蓝色边框) -->
+                <!-- A-05: 暴风雪桶 -->
                 <details class="bg-gray-800 rounded-lg overflow-hidden transition-all duration-300 border border-gray-700/50">
                     <summary class="flex justify-between items-center p-3 cursor-pointer hover:bg-gray-700 transition-colors duration-200 font-bold">
                         <div class="item-summary-title">
@@ -559,7 +551,7 @@
                     </div>
                 </details>
 
-                <!-- A-06: 红油辣椒冰淇淋 (蓝色边框) -->
+                <!-- A-06: 红油辣椒冰淇淋 -->
                 <details class="bg-gray-800 rounded-lg overflow-hidden transition-all duration-300 border border-gray-700/50">
                     <summary class="flex justify-between items-center p-3 cursor-pointer hover:bg-gray-700 transition-colors duration-200 font-bold">
                         <div class="item-summary-title">
@@ -588,7 +580,7 @@
                     </div>
                 </details>
 
-                <!-- A-07: 沉默的八音盒 (蓝色边框) -->
+                <!-- A-07: 沉默的八音盒 -->
                 <details class="bg-gray-800 rounded-lg overflow-hidden transition-all duration-300 border border-gray-700/50">
                     <summary class="flex justify-between items-center p-3 cursor-pointer hover:bg-gray-700 transition-colors duration-200 font-bold">
                         <div class="item-summary-title">
@@ -614,7 +606,7 @@
                     </div>
                 </details>
 
-                <!-- A-08: 素质柠檬水 (蓝色边框) -->
+                <!-- A-08: 素质柠檬水 -->
                 <details class="bg-gray-800 rounded-lg overflow-hidden transition-all duration-300 border border-gray-700/50">
                     <summary class="flex justify-between items-center p-3 cursor-pointer hover:bg-gray-700 transition-colors duration-200 font-bold">
                         <div class="item-summary-title">
@@ -643,7 +635,7 @@
                     </div>
                 </details>
 
-                <!-- A-09: 雪景球 (蓝色边框) -->
+                <!-- A-09: 雪景球 -->
                 <details class="bg-gray-800 rounded-lg overflow-hidden transition-all duration-300 border border-gray-700/50">
                     <summary class="flex justify-between items-center p-3 cursor-pointer hover:bg-gray-700 transition-colors duration-200 font-bold">
                         <div class="item-summary-title">
@@ -670,36 +662,28 @@
                     </div>
                 </details>
 
-                <!-- B-01: 虫虫软糖 (B-系列，使用灰色边框，保留红色 ID) -->
-                <details class="bg-gray-800 rounded-lg overflow-hidden transition-all duration-300 border border-gray-700/50 item-container-b">
+                <!-- B-03: 异常源定位器 (使用不同的颜色和边框) -->
+                <details class="bg-gray-800 rounded-lg overflow-hidden transition-all duration-300 border border-anomaly-red/50">
                     <summary class="flex justify-between items-center p-3 cursor-pointer hover:bg-gray-700 transition-colors duration-200 font-bold">
                         <div class="item-summary-title item-summary-title-b">
-                            <span class="item-summary-id">[ B-01 ]</span> 
-                            <span>虫虫软糖</span>
+                            <span class="item-summary-id">[ B-03 ]</span> 
+                            <!-- 移除英文 -->
+                            <span>异常源定位器</span>
                         </div>
-                        <!-- 展开指示器，使用红色 -->
+                        <!-- 展开指示器 -->
                         <span class="text-sm transform transition-transform duration-300 summary-indicator text-anomaly-red">▼</span>
                     </summary>
-                    <div class="p-4 bg-gray-800/80 text-gray-400 border-t border-gray-700/50">
-                        <!-- 嘉奖消耗 (AWARD CONSUMPTION) -->
+                    <div class="p-4 bg-gray-800/80 text-gray-400 border-t border-anomaly-red/50">
                         <div class="mb-4 py-1 px-3 bg-gray-900 border-b border-t border-anomaly-red font-mono flex justify-between items-center rounded-md">
                             <span class="text-xs text-anomaly-cyan uppercase tracking-widest">:: 嘉奖消耗 ::</span>
-                            <span class="text-xl font-bold text-anomaly-red">1 / 包 (+1 运费)</span>
+                            <span class="text-xl font-bold text-anomaly-red">75</span>
                         </div>
-                        
-                        <p class="text-sm leading-relaxed mb-3">
-                            蠕虫形裹糖粉彩色软糖，长约25cm~33cm不等，通常为亮绿色，尝起来有一股浓郁的菠萝和轻微电子仪器的味道。
-                        </p>
-                        <ul class="text-sm list-none pl-4 space-y-1 mb-3">
-                            <li class="flex items-start"><span class="text-green-400 mr-2 mt-px text-sm">►</span><span>手持一条虫虫软糖，用头部和尾部分部连接想要连接的两台电子设备，可以轻松的在两台设备中移动任何你选择的文件。</span></li>
-                            <li class="flex items-start"><span class="text-green-400 mr-2 mt-px text-sm">►</span><span>每条离开包装袋的虫虫软糖最多存在24小时，使用完的虫虫软糖请尽快食用。</span></li>
-                        </ul>
-                        <p class="text-xs text-yellow-500 font-bold text-right italic">
-                            【特别鸣谢：碧玉分部】
+                        <p class="text-sm">
+                            一个校准频率偏移的设备。请注意，它找到的“异常”可能只是你所处时间线的正常现象。设备状态：不稳定，持续过热。
                         </p>
                     </div>
                 </details>
-                
+
             </div>
         </section>
 
@@ -850,7 +834,7 @@
         const LOADING_CONTAINER = document.getElementById('loading-container');
         const LOADING_BAR = document.getElementById('loading-bar');
         const LOADING_PERCENT = document.getElementById('loading-percent');
-        // const MAIN_TITLE = document.getElementById('main-title'); // 已移除 ID
+        const MAIN_TITLE = document.getElementById('main-title');
         const TITLE_SCREEN = document.getElementById('title-screen');
         const MAIN_CONTENT = document.getElementById('main-content');
         const WELCOME_GREETING = document.getElementById('welcome-greeting');
@@ -937,7 +921,7 @@
         }
         
         /**
-         * 生成 4 到 6 位的随机乱码（数字、英文、特殊字符）
+         * 生成 4 到 6 位随机乱码（数字、英文、特殊字符）
          */
         function generateGarbledCode() {
             // 包含数字、大写/小写字母和常见特殊字符
@@ -1104,7 +1088,8 @@
             // 清理密码输入框状态
             if (modalId === 'passwordModal') {
                 PASSWORD_INPUT.value = '';
-                PASSWORD_INPUT.classList.remove('password-shake');
+                // 确保在关闭时移除可能残存的样式
+                PASSWORD_INPUT.classList.remove('password-shake'); 
                 PASSWORD_MESSAGE.textContent = '';
             }
         }
@@ -1115,13 +1100,7 @@
                 const rect = dialog.getBoundingClientRect();
                 if (e.clientX < rect.left || e.clientX > rect.right || 
                     e.clientY < rect.top || e.clientY > rect.bottom) {
-                    dialog.close();
-                }
-                // 清理密码输入框状态
-                if (dialog.id === 'passwordModal') {
-                    PASSWORD_INPUT.value = '';
-                    PASSWORD_INPUT.classList.remove('password-shake');
-                    PASSWORD_MESSAGE.textContent = '';
+                    closeModal(dialog.id); // 使用封装的 closeModal 函数进行清理
                 }
             });
         });
@@ -1143,7 +1122,7 @@
         function validatePassword() {
             const enteredPassword = PASSWORD_INPUT.value.trim();
             
-            // 清除之前的动画和信息
+            // 1. 清除之前的动画和信息
             PASSWORD_INPUT.classList.remove('password-shake');
             PASSWORD_MESSAGE.textContent = '';
             
@@ -1152,17 +1131,17 @@
                 closeModal('passwordModal');
                 unlockArchives();
             } else {
-                // 密码错误：添加抖动效果、错误信息和视觉强调
+                // 2. 密码错误：添加抖动效果、错误信息和视觉强调
                 PASSWORD_MESSAGE.textContent = '[ 验证失败 ] 访问密钥不正确。';
                 PASSWORD_INPUT.classList.add('password-shake');
                 
-                // 移除抖动类和视觉强调，以便下次可以再次触发动画
+                // 3. 延迟移除抖动类和视觉强调，确保 600ms 的动画播放完毕
+                // 动画时长 0.2s * 3 = 0.6s (600ms), 延迟 700ms 移除
                 setTimeout(() => {
                     PASSWORD_INPUT.classList.remove('password-shake');
-                    // 注意: Tailwind 的 focus 样式会在移除 password-shake 后自动恢复
-                }, 500);
+                }, 700); 
             }
-            // 清空输入框以重新尝试
+            // 4. 清空输入框以重新尝试
             PASSWORD_INPUT.value = '';
         }
         
