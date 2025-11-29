@@ -3,23 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>::: 有限认知分部 / 非标准连接 :::</title>
+    <title>S C P-异常档案</title>
     <!-- 引入 Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- 使用 Inter 字体作为基准，但通过 CSS Glitch 效果进行风格化 -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <!-- 设置自定义 Tailwind 配置 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'anomaly-red': '#ff3366',
+                        'anomaly-cyan': '#33ccff',
+                        'liminal-bg': '#1a1a2e',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['\'Courier Prime\'', 'monospace'],
+                    },
+                    keyframes: {
+                        glitch: {
+                            '0%': { transform: 'translate(0)' },
+                            '20%': { transform: 'translate(-2px, 2px)' },
+                            '40%': { transform: 'translate(-2px, -2px)' },
+                            '60%': { transform: 'translate(2px, 2px)' },
+                            '80%': { transform: 'translate(2px, -2px)' },
+                            '100%': { transform: 'translate(0)' },
+                        },
+                        shake: {
+                            '0%, 100%': { transform: 'translateX(0)' },
+                            '10%, 30%, 50%, 70%, 90%': { transform: 'translateX(-1px)' },
+                            '20%, 40%, 60%, 80%': { transform: 'translateX(1px)' },
+                        }
+                    },
+                    animation: {
+                        glitch: 'glitch 0.5s infinite linear alternate',
+                        shake: 'shake 0.1s infinite',
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        /* 自定义故障（Glitch）动画 */
-        .glitch-text {
-            font-family: 'Inter', sans-serif;
-            text-shadow: 
-                1px 0 0 #f0f, 
-                -2px 0 0 #0ff;
-            animation: 
-                glitch-anim-1 2s infinite alternate-reverse linear,
-                flicker 0.1s infinite;
+        @import url('https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Inter:wght@400;700&display=swap');
+
+        /* 页面基础过渡设置 */
+        #title-screen, #main-content {
+            transition: opacity 1s ease-in-out;
         }
 
+        /* 强制标题页占满一个手机屏幕的高度 */
+        #title-screen {
+            min-height: 100vh;
+            width: 100%;
+            background-image: linear-gradient(135deg, #1a1a2e 0%, #0f0f1c 100%);
+            border-bottom: 4px solid #33ccff;
+            /* 确保标题页在最上层 */
+            position: fixed; 
+            top: 0;
+            left: 0;
+            z-index: 50;
+        }
+
+        /* Glitch 故障效果 CSS */
+        .glitch-text {
+            position: relative;
+            color: white;
+            animation: glitch 1s infinite alternate;
+        }
         .glitch-text::before,
         .glitch-text::after {
             content: attr(data-text);
@@ -28,505 +78,637 @@
             left: 0;
             width: 100%;
             height: 100%;
-            pointer-events: none;
-            clip: rect(0, 900px, 0, 0);
         }
 
+        /* 剪裁区域调整以适应更长的标题 */
         .glitch-text::before {
-            text-shadow: 3px 0 0 #ff00ff;
-            animation: glitch-anim-2 3s infinite alternate-reverse linear;
+            left: 2px;
+            text-shadow: -2px 0 #ff3366;
+            clip: rect(44px, 500px, 56px, 0); 
+            animation: glitch 1.5s infinite linear alternate-reverse;
         }
 
         .glitch-text::after {
-            text-shadow: -3px 0 0 #00ffff;
-            animation: glitch-anim-3 4s infinite alternate-reverse linear;
+            left: -2px;
+            text-shadow: -2px 0 #33ccff;
+            clip: rect(85px, 500px, 100px, 0);
+            animation: glitch 1s infinite linear alternate;
         }
 
-        @keyframes glitch-anim-1 {
-            0% { clip: rect(24px, 9999px, 83px, 0); transform: skew(0.5deg); }
-            10% { clip: rect(51px, 9999px, 60px, 0); transform: skew(0.1deg); }
-            20% { clip: rect(33px, 9999px, 39px, 0); transform: skew(1.2deg); }
-            30% { clip: rect(72px, 9999px, 73px, 0); transform: skew(0.7deg); }
-            40% { clip: rect(28px, 9999px, 94px, 0); transform: skew(-0.5deg); }
-            50% { clip: rect(10px, 9999px, 31px, 0); transform: skew(0.2deg); }
-            60% { clip: rect(65px, 9999px, 72px, 0); transform: skew(-1.1deg); }
-            70% { clip: rect(88px, 9999px, 99px, 0); transform: skew(0.9deg); }
-            80% { clip: rect(14px, 9999px, 57px, 0); transform: skew(-0.8deg); }
-            90% { clip: rect(30px, 9999px, 80px, 0); transform: skew(0.3deg); }
-            100% { clip: rect(18px, 9999px, 45px, 0); transform: skew(-0.2deg); }
+        /* 自定义滚动条指示器动画 */
+        .scroll-indicator {
+            animation: bounce 1.5s infinite;
         }
 
-        @keyframes glitch-anim-2 {
-            0% { clip: rect(31px, 9999px, 40px, 0); transform: translate(-5px); }
-            20% { clip: rect(79px, 9999px, 90px, 0); transform: translate(5px); }
-            40% { clip: rect(10px, 9999px, 20px, 0); transform: translate(-10px); }
-            60% { clip: rect(50px, 9999px, 60px, 0); transform: translate(10px); }
-            80% { clip: rect(95px, 9999px, 105px, 0); transform: translate(-5px); }
-            100% { clip: rect(22px, 9999px, 33px, 0); transform: translate(5px); }
+        /* 档案缩略图效果 */
+        .archive-card {
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px rgba(51, 204, 255, 0.2);
+            border-left: 4px solid transparent;
         }
-
-        @keyframes glitch-anim-3 {
-            0% { clip: rect(54px, 9999px, 63px, 0); transform: translate(5px); }
-            20% { clip: rect(12px, 9999px, 20px, 0); transform: translate(-5px); }
-            40% { clip: rect(70px, 9999px, 80px, 0); transform: translate(10px); }
-            60% { clip: rect(35px, 9999px, 45px, 0); transform: translate(-10px); }
-            80% { clip: rect(88px, 9999px, 98px, 0); transform: translate(5px); }
-            100% { clip: rect(41px, 9999px, 51px, 0); transform: translate(-5px); }
-        }
-
-        @keyframes flicker {
-            0% { opacity: 0.9; }
-            5% { opacity: 0.8; }
-            10% { opacity: 1; }
-            15% { opacity: 0.7; }
-            20% { opacity: 1; }
-            25% { opacity: 0.8; }
-            30% { opacity: 0.9; }
-            100% { opacity: 1; }
-        }
-
-        .no-glitch {
-            animation: none !important;
-            text-shadow: none !important;
-        }
-
-        /* 隐藏滚动条但允许内容滚动 */
-        body {
-            overflow-y: scroll;
-            -ms-overflow-style: none; /* IE and Edge */
-            scrollbar-width: none; /* Firefox */
-        }
-
-        body::-webkit-scrollbar {
-            display: none; /* Chrome, Safari, Opera */
+        .archive-card:hover {
+            border-left: 4px solid #33ccff;
+            transform: translateY(-2px);
+            box-shadow: 0 0 20px rgba(51, 204, 255, 0.4);
         }
         
         /* 隐藏 Details 箭头 */
         details > summary::-webkit-details-marker {
             display: none;
         }
+        
+        /* 隐藏滚动条 */
+        body::-webkit-scrollbar {
+            display: none;
+        }
+        body {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
     </style>
 </head>
-<body class="bg-gray-900 text-cyan-400 font-mono tracking-wider">
+<body class="bg-liminal-bg text-gray-200 font-sans overflow-x-hidden">
 
-    <!-- 1. 标题/加载页面 - 故障模式 -->
-    <div id="splash-screen" class="min-h-screen h-screen w-full flex flex-col justify-center items-center p-6 transition-opacity duration-1000">
-        <div class="max-w-md w-full text-center">
+    <!-- 1. 故障标题页面 (Title Screen) -->
+    <div id="title-screen" class="flex flex-col items-center justify-center p-4 text-center">
+        <div class="space-y-8 max-w-lg w-full">
             
-            <!-- 标题：::: 有限认知分部 / 非标准连接 ::: (Glitch Effect) -->
-            <h1 id="glitch-title" data-text="::: 有限认知分部 / 非标准连接 :::" 
-                class="glitch-text relative text-4xl sm:text-5xl font-bold mb-10 leading-tight inline-block mx-auto text-center">
-                ::: 有限认知分部 / 非标准连接 :::
+            <!-- 故障标题 -->
+            <h1 id="main-title" class="glitch-text text-5xl md:text-7xl font-mono uppercase font-bold tracking-widest text-white cursor-default" data-text="[COGNITION-PROTOCOL]">
+                [COGNITION-PROTOCOL]
             </h1>
-            
-            <!-- 快速变化的时间条 (已移除 [ 纪元时间戳 ] 标签) -->
-            <div class="text-xl sm:text-2xl mb-8 p-3 border-2 border-cyan-400/50 bg-gray-800/50 shadow-lg shadow-cyan-500/20">
-                <!-- 仅保留闪烁的数字 -->
-                <span id="glitch-time" class="text-yellow-400 glitch-text" data-text="0000.00.00 00:00:00">0000.00.00 00:00:00</span>
-            </div>
 
-            <!-- 确认接入指令 按钮 -->
-            <button id="sync-button" 
-                    class="w-full py-3 px-6 text-lg bg-cyan-600 hover:bg-cyan-700 active:bg-cyan-800 text-gray-900 font-bold rounded-lg shadow-xl shadow-cyan-500/50 transform transition duration-300 hover:scale-[1.01] disabled:opacity-50 disabled:cursor-not-allowed">
-                确认接入指令
-            </button>
-
-            <!-- 加载进度条 -->
-            <div id="loading-container" class="mt-8 hidden">
-                <p class="text-sm mb-2 text-cyan-400/70">正在重写时间线参数...</p>
-                <div class="w-full h-3 bg-gray-700 rounded-full overflow-hidden border border-cyan-400/30">
-                    <div id="loading-bar" class="h-full bg-green-500 transition-all duration-100 ease-linear" style="width: 0%"></div>
+            <!-- 时间条 (数字快速变化) -->
+            <div class="p-4 bg-gray-900 border-2 border-anomaly-cyan rounded-xl shadow-lg transition-all duration-500">
+                <p class="text-xs text-anomaly-cyan mb-2">系统时间戳 | S Y S T E M - C L O C K</p>
+                <div id="time-display" class="font-mono text-xl md:text-3xl text-anomaly-red glitch-text animate-shake" data-text="00-00-00_00:00:00.000">
+                    <span id="date-component">0000-00-00</span>
+                    <span class="text-white">_</span>
+                    <span id="time-component">00:00:00</span>
+                    <span id="ms-component" class="text-sm opacity-75">.000</span>
                 </div>
-                <p id="loading-text" class="text-xs mt-2 text-green-400">0%</p>
             </div>
+
+            <!-- 激活按钮 -->
+            <button id="start-button" class="px-8 py-3 w-full bg-anomaly-cyan text-liminal-bg font-bold rounded-lg shadow-xl hover:bg-cyan-300 transition-transform active:scale-95 duration-200 uppercase font-mono tracking-widest text-lg">
+                <span id="button-text">访问权限请求</span>
+            </button>
             
+            <!-- 加载进度条 -->
+            <div id="loading-container" class="mt-4 hidden">
+                <p class="text-anomaly-cyan text-sm mb-2 font-mono">
+                    <span id="loading-status">加载中... </span>
+                    <span id="loading-percent">0</span>%
+                </p>
+                <div class="h-2 bg-gray-700 rounded-full overflow-hidden">
+                    <div id="loading-bar" class="h-2 bg-anomaly-red transition-all duration-300 ease-linear" style="width: 0%;"></div>
+                </div>
+            </div>
+
+            <!-- 加载完成后显示的向下箭头 -->
+            <div id="scroll-indicator" class="hidden pt-12">
+                <p class="text-sm font-mono text-gray-400 mb-2">[ ACCESS GRANTED ]</p>
+                <svg class="scroll-indicator w-10 h-10 mx-auto text-anomaly-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+            </div>
+
         </div>
-        
-        <!-- 加载完成后显示的向下箭头 -->
-        <a id="scroll-indicator" href="#content-start" class="hidden absolute bottom-8 animate-bounce text-4xl text-green-500/80 hover:text-green-400 transition-colors duration-300">
-            &#x2B07; <!-- Unicode for Down Arrow -->
-        </a>
     </div>
 
-    <!-- 2. 主内容模块 -->
-    <div id="main-content" class="min-h-screen bg-gray-900 p-6 sm:p-12 transition-opacity duration-1000 opacity-0 pointer-events-none">
-        <a id="content-start" class="invisible"></a>
-
-        <!-- 导言 (已恢复为用户指定的静态文本) -->
-        <div class="max-w-4xl mx-auto mb-16 border-b border-cyan-400/30 pb-8">
-            <h2 id="final-time-h2" class="text-3xl font-bold text-red-500/80 mb-4 tracking-wider">::: 认知稳定，权限开放 :::</h2>
+    <!-- 2. 主内容区域 (初始隐藏) -->
+    <main id="main-content" class="container mx-auto p-6 md:p-10 space-y-16 opacity-0 pointer-events-none">
+        
+        <!-- 导言 -->
+        <div class="max-w-4xl mx-auto mb-16 border-b-2 border-anomaly-red pb-8">
+            <h2 id="final-time-h2" class="text-3xl font-bold text-anomaly-red mb-4 tracking-wider">::: 认知稳定，权限开放 :::</h2>
             <p class="text-gray-300 text-lg leading-relaxed">
                 当前数据同步至纪元2012年11月。以下信息已通过校验，但其真实性与源头稳定性仍处于低置信区间。请按需查阅，并严格遵循既定信息使用协议。
             </p>
         </div>
 
-        <!-- 模块 1: 补给仓库 (Supply Depot) -->
-        <div class="max-w-4xl mx-auto mb-16">
-            <h3 class="text-2xl font-bold text-cyan-400 border-b border-cyan-400 pb-2 mb-6"># 补给仓库 [001.01]</h3>
-            
-            <!-- 简略目录 -->
-            <div class="bg-gray-800 p-4 mb-6 rounded-lg border border-gray-700">
-                <p class="text-sm text-gray-500 mb-2">:: 目录索引 ::</p>
-                <p class="text-sm text-gray-400">
-                    <span class="mr-4">A-01: 游戏地图</span> | 
-                    <span class="mr-4">A-02: 记忆碎片</span> | 
-                    <span class="mr-4">B-03: 异常源定位器</span>
-                </p>
+        <!-- 模块一：补给仓库 [S-DEPOT] -->
+        <section>
+            <h3 class="text-2xl font-bold font-mono text-anomaly-cyan border-b-2 border-anomaly-cyan pb-2 mb-8">
+                # 补给仓库 [001.01]
+            </h3>
+
+            <!-- 购买规则 (PURCHASE PROTOCOL) -->
+            <div class="bg-gray-800 p-4 mb-6 rounded-lg border border-gray-700 font-mono">
+                <p class="text-sm text-anomaly-cyan mb-3">:: 采购协议 [PURCHASE PROTOCOL] ::</p>
+                <ul class="text-sm text-gray-400 space-y-2 list-none pl-0">
+                    <!-- 规则 1: 纯文本规则 -->
+                    <li class="flex items-start">
+                        <span class="text-anomaly-red mr-2 mt-px text-base">→</span>
+                        <span>
+                            可购买的单个补给价值小于参加外勤任务*10的嘉奖数量
+                        </span>
+                    </li>
+                    <!-- 规则 2: 带颜色高亮的规则 -->
+                    <li class="flex items-start">
+                        <span class="text-anomaly-red mr-2 mt-px text-base">→</span>
+                        <span>
+                            如果该补给不是由你自己的团队带回，则需要增加运费（<span class="text-yellow-300">A系列：1点嘉奖</span>，<span class="text-anomaly-red">其余系列：2点嘉奖</span>，运费不超过物品价格）
+                        </span>
+                    </li>
+                    <!-- 规则 3: 纯文本规则 -->
+                    <li class="flex items-start">
+                        <span class="text-anomaly-red mr-2 mt-px text-base">→</span>
+                        <span>
+                            价格和描述均有可能进行调整（请勿将此页面用于法律依据）
+                        </span>
+                    </li>
+                </ul>
             </div>
 
-            <!-- 可展开的小模块 (Accordion Style) -->
+            <!-- 可展开的小模块 -->
             <div class="space-y-4">
                 
-                <!-- A-01: 游戏地图 (价格改为非交互式徽章) -->
-                <details class="bg-gray-800 rounded-lg shadow-lg overflow-hidden transition-all duration-300 open:shadow-cyan-500/30 border border-cyan-500/20">
-                    <!-- 非交互式价格标签和指示器位于 Summary 内部右侧 -->
+                <!-- A-01: 游戏地图 -->
+                <details class="bg-gray-800 rounded-lg shadow-lg overflow-hidden transition-all duration-300 open:shadow-cyan-500/30 border border-anomaly-cyan/30">
                     <summary class="flex justify-between items-center p-4 cursor-pointer hover:bg-gray-700 transition-colors duration-200 text-yellow-300 font-bold">
                         <span>[ A-01 ] 游戏地图 (Game Map)</span>
                         <div class="flex items-center space-x-4">
-                            <!-- 非交互式价格徽章 (Badge) -->
-                            <span class="px-3 py-1 text-xs bg-gray-700 text-green-400 font-semibold rounded-full border border-green-500/50 tracking-wider">
-                                $25
-                            </span>
-                            <!-- 展开/收起指示器 -->
                             <span class="text-xl transform transition-transform duration-300 summary-indicator">&#x25BC;</span>
                         </div>
                     </summary>
-                    <div class="p-4 bg-gray-900 text-gray-400 border-t border-cyan-500/20">
+                    <div class="p-4 bg-gray-900 text-gray-400 border-t border-anomaly-cyan/30">
+                        <!-- 传输成本 (DATA COST) -->
+                        <div class="mb-6 py-2 px-4 bg-gray-800 border-b-2 border-t-2 border-anomaly-red font-mono flex justify-between items-center rounded-lg">
+                            <span class="text-sm text-anomaly-cyan uppercase tracking-widest">:: 传输成本 (DATA COST) ::</span>
+                            <span class="text-2xl font-bold text-anomaly-red">25</span>
+                        </div>
+                        
                         <p class="text-sm leading-relaxed mb-4">
                             一张以携带者为中心，半径500m，随移动实时更新的像素风格地图。可以显示附近道路、墙壁、河流、房间等的基本布局。地图范围内的平凡生命会以小人图标标记，并标出其视野范围。
                             <br><br>
                             特工可以消耗一点任意品质（Quality）的素质保证（Quality Assurance），来实现一项以下功能：
                         </p>
-                        <!-- 使用自定义的右三角箭头 (►) 作为列表标记 -->
                         <ul class="text-sm list-none pl-4 space-y-2">
-                            <li class="flex items-start">
-                                <span class="text-green-400 mr-2 mt-px text-sm">►</span>
-                                <span>标记一个目标持续跟踪其位置（超出范围会以小箭头标记大概方向）</span>
-                            </li>
-                            <li class="flex items-start">
-                                <span class="text-green-400 mr-2 mt-px text-sm">►</span>
-                                <span>显示两点之间的一条较短可用道路</span>
-                            </li>
-                            <li class="flex items-start">
-                                <span class="text-green-400 mr-2 mt-px text-sm">►</span>
-                                <span>原地建立传送锚点</span>
-                            </li>
-                            <li class="flex items-start">
-                                <span class="text-green-400 mr-2 mt-px text-sm">►</span>
-                                <span>在明显的10秒读条效果后前往传送锚点</span>
-                            </li>
+                            <li class="flex items-start"><span class="text-green-400 mr-2 mt-px text-sm">►</span><span>标记一个目标持续跟踪其位置（超出范围会以小箭头标记大概方向）</span></li>
+                            <li class="flex items-start"><span class="text-green-400 mr-2 mt-px text-sm">►</span><span>显示两点之间的一条较短可用道路</span></li>
+                            <li class="flex items-start"><span class="text-green-400 mr-2 mt-px text-sm">►</span><span>原地建立传送锚点</span></li>
+                            <li class="flex items-start"><span class="text-green-400 mr-2 mt-px text-sm">►</span><span>在明显的10秒读条效果后前往传送锚点</span></li>
                         </ul>
-                        
                     </div>
                 </details>
 
-                <!-- A-02: 记忆碎片包 -->
-                <details class="bg-gray-800 rounded-lg shadow-lg overflow-hidden transition-all duration-300 border border-cyan-500/20">
+                <!-- A-02: 雪王喷雾 -->
+                <details class="bg-gray-800 rounded-lg shadow-lg overflow-hidden transition-all duration-300 open:shadow-cyan-500/30 border border-anomaly-cyan/30">
                     <summary class="flex justify-between items-center p-4 cursor-pointer hover:bg-gray-700 transition-colors duration-200 text-yellow-300 font-bold">
-                        <span>[ A-02 ] 记忆碎片包 (Memory Shard Pack)</span>
+                        <span>[ A-02 ] 雪王喷雾 (Snow King Spray)</span>
                         <span class="text-xl transform transition-transform duration-300 summary-indicator">&#x25BC;</span>
                     </summary>
-                    <div class="p-4 bg-gray-900 text-gray-400 border-t border-cyan-500/20">
-                        <p class="text-sm">
-                            由回收站回收的无用信息片段，经高熵处理后用于掩盖敏感数据。使用时可能会触发随机且毫无意义的童年记忆或过往人生路径。
+                    <div class="p-4 bg-gray-900 text-gray-400 border-t border-anomaly-cyan/30">
+                        <div class="mb-6 py-2 px-4 bg-gray-800 border-b-2 border-t-2 border-anomaly-red font-mono flex justify-between items-center rounded-lg">
+                            <span class="text-sm text-anomaly-cyan uppercase tracking-widest">:: 传输成本 (DATA COST) ::</span>
+                            <span class="text-2xl font-bold text-anomaly-red">15</span>
+                        </div>
+                        <p class="text-sm leading-relaxed mb-4">
+                            外观为一个正常喷漆罐，上面印有雪王卡通图案。内部充满异常制冷剂，常温下为液体。一旦从喷嘴喷出降压，制冷剂会立即汽化，并吸收大量热能，瞬间冻结目标。
+                        </p>
+                        <ul class="text-sm list-none pl-4 space-y-2 mb-4">
+                            <li class="flex items-start"><span class="text-green-400 mr-2 mt-px text-sm">►</span><span>冰冻效果持续 5 秒。</span></li>
+                            <li class="flex items-start"><span class="text-green-400 mr-2 mt-px text-sm">►</span><span>喷雾最多使用 4 次，使用完后，需等待 24 小时进行内部充能。</span></li>
+                        </ul>
+                        <p class="text-sm leading-relaxed">
+                            <span class="text-anomaly-red">泄露风险：</span>若喷漆罐因受损炸裂，则对范围 10 米内所有生物及物品进行冰封，持续时间 3 秒。此状况下的喷雾无法回收。
                         </p>
                     </div>
                 </details>
-                
-                <!-- B-03 模块：背景色已还原为标准深灰，标题字体颜色更改为红色 -->
+
+                <!-- A-03: 降温蛋筒 -->
+                <details class="bg-gray-800 rounded-lg shadow-lg overflow-hidden transition-all duration-300 open:shadow-cyan-500/30 border border-anomaly-cyan/30">
+                    <summary class="flex justify-between items-center p-4 cursor-pointer hover:bg-gray-700 transition-colors duration-200 text-yellow-300 font-bold">
+                        <span>[ A-03 ] 降温蛋筒 (Cooling Cone)</span>
+                        <span class="text-xl transform transition-transform duration-300 summary-indicator">&#x25BC;</span>
+                    </summary>
+                    <div class="p-4 bg-gray-900 text-gray-400 border-t border-anomaly-cyan/30">
+                        <div class="mb-6 py-2 px-4 bg-gray-800 border-b-2 border-t-2 border-anomaly-red font-mono flex justify-between items-center rounded-lg">
+                            <span class="text-sm text-anomaly-cyan uppercase tracking-widest">:: 传输成本 (DATA COST) ::</span>
+                            <span class="text-2xl font-bold text-anomaly-red">4</span>
+                        </div>
+                        <p class="text-sm leading-relaxed mb-4">
+                            外观是个普通的冰淇淋蛋筒，但实际上不易受外力（不超过普通男性人类用力挥出的一拳）破坏。
+                        </p>
+                        <ul class="text-sm list-none pl-4 space-y-2 mb-4">
+                            <li class="flex items-start"><span class="text-green-400 mr-2 mt-px text-sm">►</span><span>蛋筒外缘是稳定的零下 18°C（保存冰淇淋的最佳温度！）。</span></li>
+                            <li class="flex items-start"><span class="text-green-400 mr-2 mt-px text-sm">►</span><span>能够将 200ml 的开水在 10 秒内冻结。</span></li>
+                        </ul>
+                    </div>
+                </details>
+
+                <!-- A-04: 一斤鸭梨 -->
+                <details class="bg-gray-800 rounded-lg shadow-lg overflow-hidden transition-all duration-300 open:shadow-cyan-500/30 border border-anomaly-cyan/30">
+                    <summary class="flex justify-between items-center p-4 cursor-pointer hover:bg-gray-700 transition-colors duration-200 text-yellow-300 font-bold">
+                        <span>[ A-04 ] 一斤鸭梨 (One Catty of Pears)</span>
+                        <span class="text-xl transform transition-transform duration-300 summary-indicator">&#x25BC;</span>
+                    </summary>
+                    <div class="p-4 bg-gray-900 text-gray-400 border-t border-anomaly-cyan/30">
+                        <div class="mb-6 py-2 px-4 bg-gray-800 border-b-2 border-t-2 border-anomaly-red font-mono flex justify-between items-center rounded-lg">
+                            <span class="text-sm text-anomaly-cyan uppercase tracking-widest">:: 传输成本 (DATA COST) ::</span>
+                            <span class="text-2xl font-bold text-anomaly-red">6</span>
+                        </div>
+                        <p class="text-sm leading-relaxed mb-4">
+                            一个网兜装着的 3 个鸭梨，大小形状可能都不太一样，但三个的总重量一定是精准的 500g 重。它们真的很好吃。
+                        </p>
+                        <ul class="text-sm list-none pl-4 space-y-2 mb-4">
+                            <li class="flex items-start"><span class="text-green-400 mr-2 mt-px text-sm">►</span><span>任何吃下鸭梨或含梨汁食品的人（生效的浓度最少 1:3）都会沉溺于回忆之中，并变得极度充满倾诉欲。</span></li>
+                            <li class="flex items-start"><span class="text-green-400 mr-2 mt-px text-sm">►</span><span>这三个鸭梨如果分离超过 24 小时就会变成普通的鸭梨。</span></li>
+                        </ul>
+                    </div>
+                </details>
+
+                <!-- A-05: 暴风雪桶 -->
+                <details class="bg-gray-800 rounded-lg shadow-lg overflow-hidden transition-all duration-300 open:shadow-cyan-500/30 border border-anomaly-cyan/30">
+                    <summary class="flex justify-between items-center p-4 cursor-pointer hover:bg-gray-700 transition-colors duration-200 text-yellow-300 font-bold">
+                        <span>[ A-05 ] 很coooooool的暴风雪桶 (Blizzard Bucket)</span>
+                        <span class="text-xl transform transition-transform duration-300 summary-indicator">&#x25BC;</span>
+                    </summary>
+                    <div class="p-4 bg-gray-900 text-gray-400 border-t border-anomaly-cyan/30">
+                        <div class="mb-6 py-2 px-4 bg-gray-800 border-b-2 border-t-2 border-anomaly-red font-mono flex justify-between items-center rounded-lg">
+                            <span class="text-sm text-anomaly-cyan uppercase tracking-widest">:: 传输成本 (DATA COST) ::</span>
+                            <span class="text-2xl font-bold text-anomaly-red">6</span>
+                        </div>
+                        <p class="text-sm leading-relaxed mb-4">
+                            一个印着三角形 logo，写着“暴风雪冰淇淋”的很 coooooool 的冰淇淋桶，看上去只是一个很 coooooool 的大份冰淇淋。
+                        </p>
+                        <ul class="text-sm list-none pl-4 space-y-2 mb-4">
+                            <li class="flex items-start"><span class="text-green-400 mr-2 mt-px text-sm">►</span><span>打开之后就会有一团暴风雪冲出来。</span></li>
+                            <li class="flex items-start"><span class="text-green-400 mr-2 mt-px text-sm">►</span><span>被暴风雪覆盖的人会觉得一切都变得很 coooooool，哪怕出现再奇怪的事情也不妨碍他们赞叹一声“cool”然后继续做自己的事情。</span></li>
+                        </ul>
+                    </div>
+                </details>
+
+                <!-- A-06: 红油辣椒冰淇淋 -->
+                <details class="bg-gray-800 rounded-lg shadow-lg overflow-hidden transition-all duration-300 open:shadow-cyan-500/30 border border-anomaly-cyan/30">
+                    <summary class="flex justify-between items-center p-4 cursor-pointer hover:bg-gray-700 transition-colors duration-200 text-yellow-300 font-bold">
+                        <span>[ A-06 ] 红油辣椒冰淇淋 (Chili Oil Ice Cream)</span>
+                        <span class="text-xl transform transition-transform duration-300 summary-indicator">&#x25BC;</span>
+                    </summary>
+                    <div class="p-4 bg-gray-900 text-gray-400 border-t border-anomaly-cyan/30">
+                        <div class="mb-6 py-2 px-4 bg-gray-800 border-b-2 border-t-2 border-anomaly-red font-mono flex justify-between items-center rounded-lg">
+                            <span class="text-sm text-anomaly-cyan uppercase tracking-widest">:: 传输成本 (DATA COST) ::</span>
+                            <span class="text-2xl font-bold text-anomaly-red">2 / set (3 cups)</span>
+                        </div>
+                        <p class="text-sm leading-relaxed mb-4">
+                            一个淋满了红油的大圣代，以至于看起来像冰淇淋新装的火锅底料。
+                        </p>
+                        <ul class="text-sm list-none pl-4 space-y-2 mb-4">
+                            <li class="flex items-start"><span class="text-green-400 mr-2 mt-px text-sm">►</span><span>服用后会在 1 小时内将你的体温稳定在 36 摄氏度。</span></li>
+                            <li class="flex items-start"><span class="text-green-400 mr-2 mt-px text-sm">►</span><span>服用后瞬间增重 10 斤，并在后续的一个小时内消耗你的体重 20 斤。</span></li>
+                        </ul>
+                        <p class="text-sm leading-relaxed">
+                            <span class="text-anomaly-red">副作用：</span>在食用后即使是超人来了也抵抗不住的冷热交替，必定会引起腹泻或相关肠道疾病，还会让你的痔疮像爱人的心跳一样火热，如果没有，它会奖励你一个的。
+                        </p>
+                    </div>
+                </details>
+
+                <!-- A-07: 沉默的八音盒 -->
+                <details class="bg-gray-800 rounded-lg shadow-lg overflow-hidden transition-all duration-300 open:shadow-cyan-500/30 border border-anomaly-cyan/30">
+                    <summary class="flex justify-between items-center p-4 cursor-pointer hover:bg-gray-700 transition-colors duration-200 text-yellow-300 font-bold">
+                        <span>[ A-07 ] 沉默的八音盒 (Silent Music Box)</span>
+                        <span class="text-xl transform transition-transform duration-300 summary-indicator">&#x25BC;</span>
+                    </summary>
+                    <div class="p-4 bg-gray-900 text-gray-400 border-t border-anomaly-cyan/30">
+                        <div class="mb-6 py-2 px-4 bg-gray-800 border-b-2 border-t-2 border-anomaly-red font-mono flex justify-between items-center rounded-lg">
+                            <span class="text-sm text-anomaly-cyan uppercase tracking-widest">:: 传输成本 (DATA COST) ::</span>
+                            <span class="text-2xl font-bold text-anomaly-red">4</span>
+                        </div>
+                        <p class="text-sm leading-relaxed mb-4">
+                            一个八音盒，打开时，会弹出一个缓慢旋转的指挥家塑像，塑像有着白色手套。
+                        </p>
+                        <ul class="text-sm list-none pl-4 space-y-2 mb-4">
+                            <li class="flex items-start"><span class="text-green-400 mr-2 mt-px text-sm">►</span><span>附近 5m 的除了特工的凡俗心智会感到抑郁而想要回到自己的住处或者安全的角落独自伤感，这种伤感来自于自身回忆，因而不会产生松散端。</span></li>
+                            <li class="flex items-start"><span class="text-green-400 mr-2 mt-px text-sm">►</span><span>持续时间为一分钟的沉默歌曲结束后，指挥家会停止转动，八音盒将再也不能使用，陷入永远的沉默。</span></li>
+                        </ul>
+                    </div>
+                </details>
+
+                <!-- A-08: 素质柠檬水 -->
+                <details class="bg-gray-800 rounded-lg shadow-lg overflow-hidden transition-all duration-300 open:shadow-cyan-500/30 border border-anomaly-cyan/30">
+                    <summary class="flex justify-between items-center p-4 cursor-pointer hover:bg-gray-700 transition-colors duration-200 text-yellow-300 font-bold">
+                        <span>[ A-08 ] 素质柠檬水 (Quality Lemonade)</span>
+                        <span class="text-xl transform transition-transform duration-300 summary-indicator">&#x25BC;</span>
+                    </summary>
+                    <div class="p-4 bg-gray-900 text-gray-400 border-t border-anomaly-cyan/30">
+                        <div class="mb-6 py-2 px-4 bg-gray-800 border-b-2 border-t-2 border-anomaly-red font-mono flex justify-between items-center rounded-lg">
+                            <span class="text-sm text-anomaly-cyan uppercase tracking-widest">:: 传输成本 (DATA COST) ::</span>
+                            <span class="text-2xl font-bold text-anomaly-red">12</span>
+                        </div>
+                        <p class="text-sm leading-relaxed mb-4">
+                            这是杯清爽解腻的柠檬水共 32盎司，可以随时为你让你保持干劲和好心情。
+                        </p>
+                        <ul class="text-sm list-none pl-4 space-y-2 mb-4">
+                            <li class="flex items-start"><span class="text-green-400 mr-2 mt-px text-sm">►</span><span>饮用一杯可以清空一点异常状态。</span></li>
+                            <li class="flex items-start"><span class="text-green-400 mr-2 mt-px text-sm">►</span><span>若饮用时嚼碎吞服柠檬片（极其酸涩），则可以瞬间恢复 1 点素质保障。</span></li>
+                        </ul>
+                        <p class="text-sm leading-relaxed">
+                            <span class="text-anomaly-red">注意：</span>为了保护环境，请不要随手扔杯子以及注意表情管理。
+                        </p>
+                    </div>
+                </details>
+
+                <!-- A-09: 雪景球 -->
+                <details class="bg-gray-800 rounded-lg shadow-lg overflow-hidden transition-all duration-300 open:shadow-cyan-500/30 border border-anomaly-cyan/30">
+                    <summary class="flex justify-between items-center p-4 cursor-pointer hover:bg-gray-700 transition-colors duration-200 text-yellow-300 font-bold">
+                        <span>[ A-09 ] 雪景球 (Snow Globe)</span>
+                        <span class="text-xl transform transition-transform duration-300 summary-indicator">&#x25BC;</span>
+                    </summary>
+                    <div class="p-4 bg-gray-900 text-gray-400 border-t border-anomaly-cyan/30">
+                        <div class="mb-6 py-2 px-4 bg-gray-800 border-b-2 border-t-2 border-anomaly-red font-mono flex justify-between items-center rounded-lg">
+                            <span class="text-sm text-anomaly-cyan uppercase tracking-widest">:: 传输成本 (DATA COST) ::</span>
+                            <span class="text-2xl font-bold text-anomaly-red">3 / use</span>
+                        </div>
+                        <p class="text-sm leading-relaxed mb-4">
+                            外观：一个内置一根冰淇淋的雪景球，摇晃时会发出音乐。
+                        </p>
+                        <ul class="text-sm list-none pl-4 space-y-2 mb-4">
+                            <li class="flex items-start"><span class="text-green-400 mr-2 mt-px text-sm">►</span><span>当你剧烈摇晃时，除你和你指定的目标外，任何平凡生物都会感觉到刺骨的寒意并放下手中的事，立刻朝着最近的温暖源跑去，并在那里停留 5 分钟。</span></li>
+                            <li class="flex items-start"><span class="text-green-400 mr-2 mt-px text-sm">►</span><span>范围：为以使用者为中心半径 25 米的球形。</span></li>
+                            <li class="flex items-start"><span class="text-green-400 mr-2 mt-px text-sm">►</span><span>收到影响者不会因该能力产生松散端。</span></li>
+                        </ul>
+                    </div>
+                </details>
+
+                <!-- B-03: 异常源定位器 -->
                 <details class="bg-gray-800 rounded-lg shadow-lg overflow-hidden transition-all duration-300 open:shadow-yellow-500/30 border border-yellow-500/20">
-                    <summary class="flex justify-between items-center p-4 cursor-pointer hover:bg-gray-700 transition-colors duration-200 text-red-400 font-bold">
+                    <summary class="flex justify-between items-center p-4 cursor-pointer hover:bg-gray-700 transition-colors duration-200 text-anomaly-red font-bold">
                         <span>[ B-03 ] 异常源定位器 (Anomaly Locator)</span>
                         <span class="text-xl transform transition-transform duration-300 summary-indicator">&#x25BC;</span>
                     </summary>
                     <div class="p-4 bg-gray-900 text-gray-400 border-t border-yellow-500/20">
+                        <div class="mb-6 py-2 px-4 bg-gray-800 border-b-2 border-t-2 border-anomaly-red font-mono flex justify-between items-center rounded-lg">
+                            <span class="text-sm text-anomaly-cyan uppercase tracking-widest">:: 传输成本 (DATA COST) ::</span>
+                            <span class="text-2xl font-bold text-anomaly-red">75</span>
+                        </div>
                         <p class="text-sm">
                             一个校准频率偏移的设备。请注意，它找到的“异常”可能只是你所处时间线的正常现象。设备状态：不稳定，持续过热。
                         </p>
                     </div>
                 </details>
             </div>
-        </div>
+        </section>
 
-        <!-- 模块 2: 组织阵营 (Organizational Factions) -->
-        <div class="max-w-4xl mx-auto mb-16">
-            <h3 class="text-2xl font-bold text-cyan-400 border-b border-cyan-400 pb-2 mb-6"># 组织阵营 [002.01]</h3>
-            
-            <!-- 标签切换 (Tabs) -->
-            <div id="factions-tabs" class="flex space-x-2 sm:space-x-4 mb-6 overflow-x-auto pb-2">
-                <button data-faction="division" class="tab-button active-tab">有限认知分部</button>
-                <button data-faction="syndicate" class="tab-button">灰质财团</button>
-                <button data-faction="watchers" class="tab-button">时空观察者</button>
+        <!-- 模块二：组织阵营 [FACTIONS] -->
+        <section>
+            <h3 class="text-2xl font-bold font-mono text-anomaly-cyan border-b-2 border-anomaly-cyan pb-2 mb-8">
+                # 组织阵营 [002.01]
+            </h3>
+
+            <!-- 标签切换 -->
+            <div id="factions-tabs" class="flex flex-wrap gap-2 mb-6">
+                <button data-faction="division" class="tab-button px-4 py-2 bg-anomaly-cyan text-liminal-bg rounded-full text-sm font-bold transition-all hover:bg-cyan-300">有限认知分部</button>
+                <button data-faction="syndicate" class="tab-button px-4 py-2 bg-gray-700 text-gray-200 rounded-full text-sm font-bold transition-all hover:bg-gray-500">灰质财团</button>
+                <button data-faction="watchers" class="tab-button px-4 py-2 bg-gray-700 fanatics-text text-gray-200 rounded-full text-sm font-bold transition-all hover:bg-gray-500">时空观察者</button>
             </div>
 
-            <!-- 阵营简介内容 -->
-            <div id="faction-content-division" class="faction-content bg-gray-800 p-6 rounded-xl border border-red-500/30 shadow-2xl shadow-red-500/10">
-                <h4 class="text-xl text-red-400 font-bold mb-3">有限认知分部 (The Division)</h4>
-                <p class="text-gray-400 text-sm leading-relaxed">
-                    本部门。致力于在多重时间线的混乱中，建立一个“有限但可控”的认知框架。我们的目标不是理解宇宙，而是防止它彻底崩溃成一堆无法被人类心智处理的矛盾。核心原则：无知即稳定。
-                </p>
-            </div>
+            <!-- 组织简介内容 -->
+            <div id="faction-content-container" class="bg-gray-900 p-6 rounded-xl border border-gray-700 shadow-xl font-mono text-sm">
+                <!-- 有限认知分部 -->
+                <div id="faction-content-division" class="faction-content">
+                    <h3 class="text-2xl font-bold text-anomaly-red mb-3">有限认知分部 (The Division)</h3>
+                    <p class="text-gray-400 mb-4">
+                        本部门。致力于在多重时间线的混乱中，建立一个“有限但可控”的认知框架。我们的目标不是理解宇宙，而是防止它彻底崩溃成一堆无法被人类心智处理的矛盾。
+                    </p>
+                    <p class="text-gray-400">
+                        核心原则：<span class="text-yellow-300">无知即稳定。</span>
+                    </p>
+                </div>
+                
+                <!-- 灰质财团 -->
+                <div id="faction-content-syndicate" class="faction-content hidden">
+                    <h3 class="text-2xl font-bold text-anomaly-red mb-3">灰质财团 (Grey Matter Syndicate)</h3>
+                    <p class="text-gray-400 mb-4">
+                        一个利用异常现象进行非法时间线交易的实体。他们贩卖“预知片段”和“因果债券”，将现实的确定性视为可交易的商品。
+                    </p>
+                    <p class="text-gray-400">
+                        高度危险，涉嫌多起现实结构局部坍塌事件。
+                    </p>
+                </div>
 
-            <div id="faction-content-syndicate" class="faction-content hidden bg-gray-800 p-6 rounded-xl border border-red-500/30">
-                <h4 class="text-xl text-red-400 font-bold mb-3">灰质财团 (Grey Matter Syndicate)</h4>
-                <p class="text-gray-400 text-sm leading-relaxed">
-                    一个利用异常现象进行非法时间线交易的实体。他们贩卖“预知片段”和“因果债券”，将现实的确定性视为可交易的商品。高度危险，涉嫌多起现实结构局部坍塌事件。
-                </p>
+                <!-- 时空观察者 -->
+                <div id="faction-content-watchers" class="faction-content hidden">
+                    <h3 class="text-2xl font-bold text-anomaly-red mb-3">时空观察者 (The Chronal Watchers)</h3>
+                    <p class="text-gray-400 mb-4">
+                        自称是“原始时间线维护者”。他们漂浮在所有时间线的边缘，只记录、不干预。
+                    </p>
+                    <p class="text-gray-400">
+                        对他们的存在尚无确切证据，但他们的记录偶尔会以加密数据的形式渗透到我们的网络中。
+                    </p>
+                </div>
             </div>
+        </section>
 
-            <div id="faction-content-watchers" class="faction-content hidden bg-gray-800 p-6 rounded-xl border border-red-500/30">
-                <h4 class="text-xl text-red-400 font-bold mb-3">时空观察者 (The Chronal Watchers)</h4>
-                <p class="text-gray-400 text-sm leading-relaxed">
-                    自称是“原始时间线维护者”。他们漂浮在所有时间线的边缘，只记录、不干预。对他们的存在尚无确切证据，但他们的记录偶尔会以加密数据的形式渗透到我们的网络中。
-                </p>
-            </div>
-        </div>
+        <!-- 模块三：机密档案 [CLASSIFIED] -->
+        <section>
+            <h3 class="text-2xl font-bold font-mono text-anomaly-cyan border-b-2 border-anomaly-cyan pb-2 mb-8">
+                # 机密档案库 [003.01]
+            </h3>
 
-        <!-- 模块 3: 机密档案 (Confidential Archives) -->
-        <div class="max-w-4xl mx-auto mb-16">
-            <h3 class="text-2xl font-bold text-cyan-400 border-b border-cyan-400 pb-2 mb-6"># 机密档案库 [003.01]</h3>
-            
-            <div id="archives-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <!-- 档案 1: 碎裂星云事件 -->
-                <div class="archive-card bg-gray-800 rounded-lg overflow-hidden shadow-lg border border-cyan-500/30 cursor-pointer hover:shadow-cyan-500/50 transition-all duration-300">
+            <div id="archives-grid" class="grid md:grid-cols-3 gap-6">
+                <!-- 档案 1: 碎裂星云 -->
+                <div class="archive-card bg-gray-900 rounded-xl overflow-hidden cursor-pointer border border-anomaly-cyan/30">
                     <div class="p-4">
-                        <h4 class="text-lg font-bold text-red-400 mb-2">档案: S-77</h4>
+                        <h4 class="text-lg font-bold text-anomaly-red mb-2">档案: S-77</h4>
                         <p class="text-sm text-gray-500 mb-3">碎裂星云事件报告</p>
-                        <p class="text-xs text-gray-400 line-clamp-3">
-                            <span class="text-yellow-400">摘要:</span> 2012年11月，在欧洲上空监测到无法解释的重力场波动，导致短暂的物理定律松弛。报告提及“天空如玻璃般破碎”的目击者描述。文件容量：极高。
-                        </p>
+                        <p class="text-xs text-gray-400 line-clamp-3"><span class="text-yellow-400">摘要:</span> 2012年11月，在欧洲上空监测到无法解释的重力场波动，导致短暂的物理定律松弛。</p>
                     </div>
-                    <button class="expand-button w-full bg-gray-700 py-2 text-sm text-cyan-300 hover:bg-cyan-700 hover:text-gray-900 transition-colors duration-200" data-id="archive1">
-                        展开文本
-                    </button>
+                    <button class="expand-button w-full bg-gray-800 py-2 text-sm text-anomaly-cyan hover:bg-anomaly-cyan hover:text-liminal-bg transition-colors duration-200" data-id="archive1">展开文本</button>
                 </div>
 
                 <!-- 档案 2: 非物质信使 -->
-                <div class="archive-card bg-gray-800 rounded-lg overflow-hidden shadow-lg border border-cyan-500/30 cursor-pointer hover:shadow-cyan-500/50 transition-all duration-300">
+                <div class="archive-card bg-gray-900 rounded-xl overflow-hidden cursor-pointer border border-anomaly-cyan/30">
                     <div class="p-4">
-                        <h4 class="text-lg font-bold text-red-400 mb-2">档案: P-19</h4>
+                        <h4 class="text-lg font-bold text-anomaly-red mb-2">档案: P-19</h4>
                         <p class="text-sm text-gray-500 mb-3">非物质信使实验记录</p>
-                        <p class="text-xs text-gray-400 line-clamp-3">
-                            <span class="text-yellow-400">摘要:</span> 对一种无法被电磁波段捕获的“信使”的持续研究。信使似乎携带了来自未来或过去的道德指令。所有尝试解码的探员都出现了同一种手部震颤。
-                        </p>
+                        <p class="text-xs text-gray-400 line-clamp-3"><span class="text-yellow-400">摘要:</span> 对一种无法被电磁波段捕获的“信使”的持续研究。信使似乎携带了来自未来或过去的道德指令。</p>
                     </div>
-                    <button class="expand-button w-full bg-gray-700 py-2 text-sm text-cyan-300 hover:bg-cyan-700 hover:text-gray-900 transition-colors duration-200" data-id="archive2">
-                        展开文本
-                    </button>
+                    <button class="expand-button w-full bg-gray-800 py-2 text-sm text-anomaly-cyan hover:bg-anomaly-cyan hover:text-liminal-bg transition-colors duration-200" data-id="archive2">展开文本</button>
                 </div>
 
                 <!-- 档案 3: 循环梦境 -->
-                <div class="archive-card bg-gray-800 rounded-lg overflow-hidden shadow-lg border border-cyan-500/30 cursor-pointer hover:shadow-cyan-500/50 transition-all duration-300">
+                <div class="archive-card bg-gray-900 rounded-xl overflow-hidden cursor-pointer border border-anomaly-cyan/30">
                     <div class="p-4">
-                        <h4 class="text-lg font-bold text-red-400 mb-2">档案: M-04</h4>
+                        <h4 class="text-lg font-bold text-anomaly-red mb-2">档案: M-04</h4>
                         <p class="text-sm text-gray-500 mb-3">循环梦境个体评估</p>
-                        <p class="text-xs text-gray-400 line-clamp-3">
-                            <span class="text-yellow-400">摘要:</span> 对一名声称每天晚上都在同一个地点、做同一件事（吃一个不存在的苹果）的个体的评估报告。该个体似乎是时间线循环的稳定锚点。
-                        </p>
+                        <p class="text-xs text-gray-400 line-clamp-3"><span class="text-yellow-400">摘要:</span> 对一名声称每天晚上都在同一个地点、做同一件事（吃一个不存在的苹果）的个体的评估。</p>
                     </div>
-                    <button class="expand-button w-full bg-gray-700 py-2 text-sm text-cyan-300 hover:bg-cyan-700 hover:text-gray-900 transition-colors duration-200" data-id="archive3">
-                        展开文本
-                    </button>
+                    <button class="expand-button w-full bg-gray-800 py-2 text-sm text-anomaly-cyan hover:bg-anomaly-cyan hover:text-liminal-bg transition-colors duration-200" data-id="archive3">展开文本</button>
                 </div>
             </div>
 
             <!-- 档案展开区域 -->
-            <div id="expanded-archive-area" class="mt-8 p-6 bg-gray-900 border-2 border-red-500/50 rounded-lg shadow-xl shadow-red-500/20 hidden">
-                <h4 id="expanded-archive-title" class="text-2xl text-red-400 mb-4 border-b border-red-500/30 pb-2"></h4>
-                <p id="expanded-archive-text" class="text-gray-300 whitespace-pre-wrap leading-loose text-sm"></p>
-                <button id="close-archive-button" class="mt-4 px-4 py-2 bg-red-600 text-white text-sm rounded hover:bg-red-700 transition-colors duration-200">
+            <div id="expanded-archive-area" class="mt-8 p-6 bg-gray-900 border-2 border-anomaly-red rounded-xl shadow-xl hidden">
+                <h4 id="expanded-archive-title" class="text-2xl text-anomaly-red mb-4 border-b border-anomaly-red/50 pb-2"></h4>
+                <p id="expanded-archive-text" class="text-gray-300 whitespace-pre-wrap leading-loose text-base"></p>
+                <button id="close-archive-button" class="mt-4 px-4 py-2 bg-anomaly-red text-white text-sm rounded-lg hover:bg-red-500 transition-colors duration-200 shadow-md">
                     [ 关闭档案 ]
                 </button>
             </div>
-        </div>
-    </div>
+        </section>
 
+    </main>
+
+    <!-- JavaScript 逻辑 -->
     <script>
-        const splashScreen = document.getElementById('splash-screen');
-        const glitchTitle = document.getElementById('glitch-title');
-        const glitchTime = document.getElementById('glitch-time');
-        const syncButton = document.getElementById('sync-button');
-        const loadingContainer = document.getElementById('loading-container');
-        const loadingBar = document.getElementById('loading-bar');
-        const loadingText = document.getElementById('loading-text');
-        const scrollIndicator = document.getElementById('scroll-indicator');
-        const mainContent = document.getElementById('main-content');
-        const finalTimeH2 = document.getElementById('final-time-h2');
-        
-        let glitchInterval;
-        let lastGlitchValue = 0;
-        let isSyncing = false;
+        // --- 全局常量和变量 ---
+        const TIME_DISPLAY = document.getElementById('time-display');
+        const DATE_COMPONENT = document.getElementById('date-component');
+        const TIME_COMPONENT = document.getElementById('time-component');
+        const MS_COMPONENT = document.getElementById('ms-component');
+        const START_BUTTON = document.getElementById('start-button');
+        const LOADING_CONTAINER = document.getElementById('loading-container');
+        const LOADING_BAR = document.getElementById('loading-bar');
+        const LOADING_PERCENT = document.getElementById('loading-percent');
+        const MAIN_TITLE = document.getElementById('main-title');
+        const TITLE_SCREEN = document.getElementById('title-screen');
+        const MAIN_CONTENT = document.getElementById('main-content');
 
-        // --- 数据存储 ---
+        let glitchInterval;
+        let loadingProgress = 0;
+        const TARGET_YEAR = 2012;
+        const TARGET_MONTH = 11; 
+
+        // --- 数据存储 (机密档案) ---
         const ARCHIVE_DATA = {
-            archive1: {
-                title: "档案 S-77: 碎裂星云事件报告",
-                text: "记录日期: 2012年11月22日 04:47:11\n\n[机密等级: 5/5 - 绝对不可知]\n\n事件摘要：位于格陵兰海的监测站记录到时空结构出现局部撕裂，持续时间约为4.3秒。目击者（一名渔民，代号'Maelstrom'）报告天空在撕裂期间呈现出'一万个时钟'同时破碎的景象。\n\n分析：重力常数在撕裂期间波动了±0.00000001%。这足以导致水分子在短时间内无法保持液态。任何企图通过常规手段理解此次事件的尝试都被判定为高风险的认知污染。建议将此档案标记为'非事件'，并在所有官方记录中将其替换为'天气反常'。",
-            },
-            archive2: {
-                title: "档案 P-19: 非物质信使实验记录",
-                text: "记录日期: 2012年11月10日 11:59:00\n\n[机密等级: 3/5 - 需授权]\n\n实验目的：捕获并分析代号'低语'的非物质信使。信使不遵循任何已知宇宙定律，通过潜意识共振传递信息。\n\n实验结果：信使传递的信息被探员L-03记录为一串二进制代码。解码后得到：'他们看到了你'。随后，L-03的手部开始出现不可控的、无规律的震颤。此震颤与心跳或呼吸均不相关。L-03已被隔离，信使被判定为具有高认知侵入性。实验终止，建议将所有捕获尝试降级为被动监测。",
-            },
-            archive3: {
-                title: "档案 M-04: 循环梦境个体评估",
-                text: "记录日期: 2012年11月05日 19:30:00\n\n[机密等级: 4/5 - 敏感]\n\n个体代号: '锚点'\n\n评估：锚点是一个活生生的、自洽的时间循环。他所处的梦境（位于一个不存在的灰色小镇，始终在一家咖啡馆里吃苹果）是他时间线中唯一稳定的点。如果锚点被唤醒或打破循环，该时间线将面临不可预测的重写风险。评估建议：保持距离，被动观察。如果他向你提及任何关于'正确的时钟'的信息，立即终止对话。",
-            },
+            archive1: { title: "档案 S-77: 碎裂星云事件报告", text: "记录日期: 2012年11月22日 04:47:11\n\n[机密等级: 5/5 - 绝对不可知]\n\n事件摘要：位于格陵兰海的监测站记录到时空结构出现局部撕裂，持续时间约为4.3秒。目击者（一名渔民，代号'Maelstrom'）报告天空在撕裂期间呈现出'一万个时钟'同时破碎的景象。\n\n分析：重力常数在撕裂期间波动了±0.00000001%。这足以导致水分子在短时间内无法保持液态。任何企图通过常规手段理解此次事件的尝试都被判定为高风险的认知污染。建议将此档案标记为'非事件'，并在所有官方记录中将其替换为'天气反常'。" },
+            archive2: { title: "档案 P-19: 非物质信使实验记录", text: "记录日期: 2012年11月10日 11:59:00\n\n[机密等级: 3/5 - 需授权]\n\n实验目的：捕获并分析代号'低语'的非物质信使。信使不遵循任何已知宇宙定律，通过潜意识共振传递信息。\n\n实验结果：信使传递的信息被探员L-03记录为一串二进制代码。解码后得到：'他们看到了你'。随后，L-03的手部开始出现不可控的、无规律的震颤。此震颤与心跳或呼吸均不相关。L-03已被隔离，信使被判定为具有高认知侵入性。实验终止，建议将所有捕获尝试降级为被动监测。" },
+            archive3: { title: "档案 M-04: 循环梦境个体评估", text: "记录日期: 2012年11月05日 19:30:00\n\n[机密等级: 4/5 - 敏感]\n\n个体代号: '锚点'\n\n评估：锚点是一个活生生的、自洽的时间循环。他所处的梦境（位于一个不存在的灰色小镇，始终在一家咖啡馆里吃苹果）是他时间线中唯一稳定的点。如果锚点被唤醒或打破循环，该时间线将面临不可预测的重写风险。评估建议：保持距离，被动观察。如果他向你提及任何关于'正确的时钟'的信息，立即终止对话。" }
         };
 
-        // --- 故障时间函数 ---
+        // --- 核心功能: 时间和故障效果 ---
 
-        function formatTargetTime(date) {
-            const year = String(date.getFullYear()).padStart(4, '0');
-            const month = String(date.getMonth() + 1).padStart(2, '0');
-            return `${year}/${month}/XX`; // 隐藏日期
-        }
-        
-        function updateGlitchTime() {
-            if (isSyncing) return;
-
+        function generateGlitchTime() {
             const now = new Date();
-            const baseTime = now.getTime();
+            const randomYear = Math.floor(Math.random() * 9000) + 1000;
+            const randomMonth = String(Math.floor(Math.random() * 100)).padStart(2, '0');
+            const randomDay = String(Math.floor(Math.random() * 100)).padStart(2, '0');
             
-            // 生成一个不合理的、快速变化的数字，作为时间条的“纪元时间戳”
-            const offset = Math.floor(Math.random() * 9999999999999999);
-            const glitchDate = new Date(baseTime + offset);
+            const currentHour = String(now.getHours()).padStart(2, '0');
+            const currentMinute = String(now.getMinutes()).padStart(2, '0');
+            const randomSecond = String(Math.min(59, Math.max(0, now.getSeconds() + Math.floor(Math.random() * 10) - 5))).padStart(2, '0');
             
-            // 生成一个随机的小数字，避免数字变化停滞
-            const randomChange = Math.random() * 50 - 25; // 变化范围 -25 to 25
-            lastGlitchValue += randomChange;
-            
-            // 用当前时间结构包裹随机纪元
-            let year = String(glitchDate.getFullYear()).slice(-4);
-            let month = String(glitchDate.getMonth() + 1).padStart(2, '0');
-            let day = String(glitchDate.getDate()).padStart(2, '0');
-            let hour = String(glitchDate.getHours()).padStart(2, '0');
-            let minute = String(glitchDate.getMinutes()).padStart(2, '0');
-            let second = String(glitchDate.getSeconds()).padStart(2, '0');
+            const randomMs = String(Math.floor(Math.random() * 1000)).padStart(3, '0');
 
-            // 故意引入数字错乱效果
-            const dateString = `${year}.${month}.${day} ${hour}:${minute}:${second}`;
-            let glitchedString = '';
-            for (let i = 0; i < dateString.length; i++) {
-                if (Math.random() < 0.15) { // 15%的概率替换为随机数字
-                    glitchedString += Math.floor(Math.random() * 10);
-                } else if (Math.random() < 0.05) { // 5%的概率替换为特殊字符
-                    glitchedString += (i % 3 === 0) ? ':' : '.';
-                } else {
-                    glitchedString += dateString[i];
-                }
+            DATE_COMPONENT.textContent = `${randomYear}-${randomMonth}-${randomDay}`;
+            TIME_COMPONENT.textContent = `${currentHour}:${currentMinute}:${randomSecond}`;
+            MS_COMPONENT.textContent = `.${randomMs}`;
+
+            // 随机切换颜色和抖动
+            if (Math.random() < 0.5) {
+                TIME_DISPLAY.classList.replace('text-anomaly-red', 'text-anomaly-cyan');
+            } else {
+                TIME_DISPLAY.classList.replace('text-anomaly-cyan', 'text-anomaly-red');
             }
-
-            glitchTime.textContent = glitchedString;
-            glitchTime.setAttribute('data-text', glitchedString);
         }
 
-        // --- 同步函数 ---
+        function startGlitch() {
+            glitchInterval = setInterval(generateGlitchTime, 50); 
+            TIME_DISPLAY.classList.add('glitch-text', 'animate-shake');
+            MAIN_TITLE.classList.add('glitch-text');
+        }
 
-        function synchronizeTimeline() {
-            if (isSyncing) return;
-            isSyncing = true;
-            syncButton.disabled = true;
-            // 按钮文本更改：从 “确认接入指令” 到 “正在执行指令...”
-            syncButton.textContent = '正在执行指令...'; 
-            loadingContainer.classList.remove('hidden');
-            
-            // 停止故障时间更新
+        function stabilizeTime(targetMonth) {
             clearInterval(glitchInterval);
 
-            // 移除故障CSS类
-            glitchTitle.classList.remove('glitch-text');
-            glitchTime.classList.remove('glitch-text');
-            glitchTitle.classList.add('no-glitch');
-            glitchTime.classList.add('no-glitch');
+            // 移除故障效果
+            TIME_DISPLAY.classList.remove('glitch-text', 'animate-shake', 'text-anomaly-red', 'text-anomaly-cyan');
+            TIME_DISPLAY.classList.add('text-white');
+            MAIN_TITLE.classList.remove('glitch-text');
 
-            let progress = 0;
-            const duration = 2500; // 2.5秒加载
-            const startTime = performance.now();
-
-            function animateLoading(currentTime) {
-                if (progress >= 100) return;
-
-                const elapsed = currentTime - startTime;
-                progress = Math.min(100, (elapsed / duration) * 100);
-                
-                loadingBar.style.width = `${progress}%`;
-                loadingText.textContent = `${Math.floor(progress)}%`;
-
-                if (progress < 100) {
-                    requestAnimationFrame(animateLoading);
-                } else {
-                    finishSynchronization();
-                }
-            }
-            
-            requestAnimationFrame(animateLoading);
-        }
-
-        function finishSynchronization() {
             const now = new Date();
+            // 稳定时间到 2012 年 11 月
+            const stableDate = new Date(TARGET_YEAR, targetMonth - 1, now.getDate(), now.getHours(), now.getMinutes(), now.getSeconds(), now.getMilliseconds());
             
-            // 计算目标时间: 2012年11月 (保留计算，但不用于更新H2标题)
-            const targetDate = new Date(now);
-            targetDate.setFullYear(2012);
-            targetDate.setMonth(10); // 10 is November
+            const year = stableDate.getFullYear();
+            const month = String(stableDate.getMonth() + 1).padStart(2, '0'); 
+            const day = String(stableDate.getDate()).padStart(2, '0');
+            const hour = String(stableDate.getHours()).padStart(2, '0');
+            const minute = String(stableDate.getMinutes()).padStart(2, '0');
+            const second = String(stableDate.getSeconds()).padStart(2, '0');
 
-            // 按钮文本更改：从 “正在执行指令...” 到 “接入已确认”
-            syncButton.textContent = '接入已确认';
-            syncButton.classList.remove('bg-cyan-600', 'hover:bg-cyan-700');
-            syncButton.classList.add('bg-green-600');
+            DATE_COMPONENT.textContent = `${year}-${month}-${day}`;
+            TIME_COMPONENT.textContent = `${hour}:${minute}:${second}`;
+            MS_COMPONENT.textContent = '.000';
             
-            // 显示向下箭头
-            scrollIndicator.classList.remove('hidden');
-            
-            // 平滑过渡到主内容可读状态
-            setTimeout(() => {
-                splashScreen.classList.add('opacity-0', 'pointer-events-none', 'absolute');
-                mainContent.classList.remove('opacity-0', 'pointer-events-none');
-            }, 1000); // 等待1秒让用户看到最终状态
+            TIME_DISPLAY.parentElement.classList.replace('border-anomaly-cyan', 'border-gray-500');
         }
 
-        // --- 模块 2: 组织阵营 逻辑 ---
+        /**
+         * 处理按钮点击和加载过程
+         */
+        function handleStart() {
+            START_BUTTON.disabled = true;
+            document.getElementById('button-text').textContent = '协议激活中...';
+            LOADING_CONTAINER.classList.remove('hidden');
 
-        const tabButtons = document.querySelectorAll('.tab-button');
-        const factionContents = document.querySelectorAll('.faction-content');
-        const defaultActiveFaction = 'division';
+            const totalDuration = 3000; 
+            const steps = 100;
+            const intervalTime = totalDuration / steps;
 
-        // 样式初始化
-        tabButtons.forEach(button => {
-            button.className = 'tab-button px-4 py-2 text-sm sm:text-base rounded-md font-semibold transition-colors duration-200 bg-gray-700 text-cyan-400 hover:bg-cyan-800/50';
-        });
+            const loadingInterval = setInterval(() => {
+                loadingProgress++;
+                const widthPercent = Math.min(100, loadingProgress);
+                
+                LOADING_BAR.style.width = `${widthPercent}%`;
+                LOADING_PERCENT.textContent = widthPercent;
 
-        const activeTabClass = 'bg-red-600 text-white shadow-lg shadow-red-500/30 hover:bg-red-700';
+                if (loadingProgress >= 100) {
+                    clearInterval(loadingInterval);
+                    
+                    // 加载完成后的操作
+                    document.getElementById('button-text').textContent = '访问成功';
+                    document.getElementById('loading-status').textContent = '同步完成';
+                    LOADING_BAR.classList.replace('bg-anomaly-red', 'bg-green-500');
+                    
+                    // 1. 停止故障并稳定时间
+                    stabilizeTime(11); 
 
-        function switchFaction(factionId) {
-            factionContents.forEach(content => {
-                content.classList.add('hidden');
-                content.classList.remove('shadow-2xl', 'shadow-red-500/10');
-            });
+                    // 2. 页面切换逻辑：隐藏标题页，显示主内容
+                    setTimeout(() => {
+                        // 淡出标题页
+                        TITLE_SCREEN.style.opacity = '0';
+                        TITLE_SCREEN.style.pointerEvents = 'none';
+                        
+                        // 显示并淡入主内容
+                        MAIN_CONTENT.classList.remove('opacity-0', 'pointer-events-none');
 
-            tabButtons.forEach(button => {
-                button.classList.remove(...activeTabClass.split(' '));
-                button.classList.add('bg-gray-700', 'text-cyan-400');
-            });
+                        // 移除 fixed 定位，让文档流恢复正常，以便滚动
+                        setTimeout(() => {
+                            TITLE_SCREEN.style.display = 'none';
+                        }, 1000); 
 
-            document.getElementById(`faction-content-${factionId}`).classList.remove('hidden');
-            document.getElementById(`faction-content-${factionId}`).classList.add('shadow-2xl', 'shadow-red-500/10');
-            document.querySelector(`.tab-button[data-faction="${factionId}"]`).classList.add(...activeTabClass.split(' '));
-            document.querySelector(`.tab-button[data-faction="${factionId}"]`).classList.remove('bg-gray-700', 'text-cyan-400');
+                    }, 800);
+                }
+            }, intervalTime);
         }
 
-        tabButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                switchFaction(button.getAttribute('data-faction'));
+        // --- 模块二：组织阵营逻辑 ---
+        function setupFactionTabs() {
+            const tabs = document.querySelectorAll('.tab-button');
+            const contents = document.querySelectorAll('.faction-content');
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const factionId = tab.getAttribute('data-faction');
+
+                    // 切换标签样式
+                    tabs.forEach(t => {
+                        t.classList.remove('bg-anomaly-cyan', 'text-liminal-bg');
+                        t.classList.add('bg-gray-700', 'text-gray-200');
+                    });
+                    tab.classList.add('bg-anomaly-cyan', 'text-liminal-bg');
+                    tab.classList.remove('bg-gray-700', 'text-gray-200');
+
+                    // 切换内容显示
+                    contents.forEach(content => {
+                        content.classList.add('hidden');
+                    });
+                    document.getElementById(`faction-content-${factionId}`).classList.remove('hidden');
+                });
             });
-        });
-
-        // 初始激活默认标签
-        switchFaction(defaultActiveFaction);
-
-
-        // --- 模块 3: 机密档案 逻辑 ---
-
+        }
+        
+        // --- 模块三：机密档案逻辑 ---
         const expandButtons = document.querySelectorAll('.expand-button');
         const expandedArchiveArea = document.getElementById('expanded-archive-area');
         const expandedArchiveTitle = document.getElementById('expanded-archive-title');
@@ -553,27 +735,29 @@
             expandedArchiveText.textContent = '';
         });
 
-        // --- 初始化事件监听 ---
-        
-        // 确保 Details 展开时，箭头方向变化
+        // --- Details 箭头翻转逻辑 ---
         document.querySelectorAll('details').forEach(details => {
             details.addEventListener('toggle', () => {
                 const indicator = details.querySelector('.summary-indicator');
-                if (details.open) {
-                    indicator.style.transform = 'rotate(180deg)';
-                } else {
-                    indicator.style.transform = 'rotate(0deg)';
+                if (indicator) {
+                    if (details.open) {
+                        indicator.style.transform = 'rotate(180deg)';
+                    } else {
+                        indicator.style.transform = 'rotate(0deg)';
+                    }
                 }
             });
         });
 
-        syncButton.addEventListener('click', synchronizeTimeline);
 
-        // 页面加载完成后启动故障时间更新
+        // --- 初始化 ---
         window.onload = function() {
-            updateGlitchTime(); // 立即执行一次
-            glitchInterval = setInterval(updateGlitchTime, 100); // 每100ms更新一次
+            startGlitch(); // 启动故障时间动画
+            START_BUTTON.addEventListener('click', handleStart);
+            setupFactionTabs();
         }
+
+        
     </script>
 </body>
 </html>
