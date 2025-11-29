@@ -239,6 +239,58 @@
             content: none;
         }
         
+        /* --------------------------------------------------- */
+        /* --- 补给仓库小标题样式 (Concise Terminal Look) --- */
+        
+        /* 移除辉光：物品小标题的块状背景、辉光和边框，只保留文本和 ID 的颜色 */
+        .item-summary-title {
+            display: inline-flex;
+            align-items: center;
+            padding: 0; /* 移除 padding */
+            margin-left: 0; /* 移除负边距 */
+            border-bottom: none; /* 移除底部细线 */
+            box-shadow: none; /* 移除阴影 */
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        
+        /* 鼠标悬停时增强效果: 移除所有悬停阴影和边框变化 */
+        details:hover .item-summary-title {
+            box-shadow: none; 
+            border-bottom-color: transparent;
+        }
+        
+        /* 标题文本本身使用更粗的字体，移除辉光 */
+        .item-summary-title > span {
+            font-weight: 700;
+            font-family: 'Courier Prime', monospace;
+            color: #fcd34d; /* yellow-300 */
+            text-shadow: none; /* 移除辉光 */
+        }
+
+        /* 强调 A-XX ID 部分 - 移除辉光 */
+        .item-summary-id {
+            color: #33ccff; /* anomaly-cyan for ID */
+            margin-right: 0.5rem;
+            font-weight: 700;
+            text-shadow: none; /* 移除辉光 */
+            padding-right: 0; 
+            border-right: none;
+        }
+
+        /* 针对 B-03 异常源定位器，移除边框和阴影 */
+        .item-summary-title-b {
+             border-bottom-color: transparent; 
+        }
+        details:hover .item-summary-title-b {
+            box-shadow: none; 
+            border-bottom-color: transparent;
+        }
+        .item-summary-title-b .item-summary-id {
+            color: #ff3366; /* anomaly-red for B-series ID */
+            text-shadow: none; /* 移除辉光 */
+        }
+        
     </style>
 </head>
 <body class="bg-liminal-bg text-gray-200 font-sans overflow-x-hidden">
@@ -298,8 +350,9 @@
         <!-- 导言 - 有限认知-数据检索终端 (恢复辉光边框) -->
         <div class="max-w-4xl mx-auto mb-12 p-4 md:p-6 rounded-lg shadow-2xl terminal-box">
             
-            <h2 class="text-lg md:text-xl font-bold font-mono text-anomaly-cyan mb-2 tracking-widest text-center px-2">
-                欢迎，访客。您的访问操作已被记录。
+            <!-- 更改：添加 ID，移除硬编码文本，由 JS 动态设置 -->
+            <h2 id="welcome-greeting" class="text-lg md:text-xl font-bold font-mono text-anomaly-cyan mb-2 tracking-widest text-center px-2">
+                <!-- JS will set content: 欢迎，访客 [RANDOM_CODE] 。您的访问操作已被记录。 -->
             </h2>
 
             <!-- 警示状态行 -->
@@ -318,27 +371,27 @@
                 </h1>
             </div>
 
-            <!-- 购买规则 (PURCHASE PROTOCOL) -->
+            <!-- 购买须知 (PURCHASE NOTICE) -->
             <div class="bg-gray-800 p-4 mb-6 rounded-lg border border-gray-700 font-mono">
-                <p class="text-sm text-anomaly-cyan mb-3">:: 采购协议 [PURCHASE PROTOCOL] ::</p>
+                <p class="text-sm text-anomaly-cyan mb-3">:: 购买须知 [PURCHASE NOTICE] ::</p>
                 <ul class="text-sm text-gray-400 space-y-2 list-none pl-0">
-                    <!-- 规则 1: 补给价格限制 (圆点) -->
+                    <!-- 规则 1: 补给价格限制 (已改为绿色小三角) -->
                     <li class="flex items-start">
-                        <span class="text-anomaly-red mr-2 mt-px text-base">•</span>
+                        <span class="text-green-400 mr-2 mt-px text-sm">►</span>
                         <span>
                             可购买的单个补给价格需小于等于参加外勤任务*10的嘉奖数量
                         </span>
                     </li>
-                    <!-- 规则 2: 运费规定 (圆点) -->
+                    <!-- 规则 2: 运费规定 (已改为绿色小三角) -->
                     <li class="flex items-start">
-                        <span class="text-anomaly-red mr-2 mt-px text-base">•</span>
+                        <span class="text-green-400 mr-2 mt-px text-sm">►</span>
                         <span>
                             则购买时需要增加运费（A系列：1点嘉奖，其余系列：2点嘉奖，运费不超过物品价格）
                         </span>
                     </li>
-                    <!-- 规则 3: 最终解释权 (圆点) -->
+                    <!-- 规则 3: 最终解释权 (已改为绿色小三角) -->
                     <li class="flex items-start">
-                        <span class="text-anomaly-red mr-2 mt-px text-base">•</span>
+                        <span class="text-green-400 mr-2 mt-px text-sm">►</span>
                         <span>
                             价格和描述均有可能进行调整，经理拥有最终解释权
                         </span>
@@ -346,30 +399,35 @@
                 </ul>
             </div>
 
-            <!-- 可展开的小模块 -->
-            <div class="space-y-4">
+            <!-- 统一的补给仓库容器 -->
+            <div class="bg-gray-900 border border-anomaly-cyan/50 rounded-lg shadow-xl p-4 md:p-6 space-y-3 font-mono">
                 
                 <!-- A-01: 游戏地图 -->
-                <details class="bg-gray-800 rounded-lg shadow-lg overflow-hidden transition-all duration-300 open:shadow-cyan-500/30 border border-anomaly-cyan/30">
-                    <summary class="flex justify-between items-center p-4 cursor-pointer hover:bg-gray-700 transition-colors duration-200 text-yellow-300 font-bold">
-                        <span>[ A-01 ] 游戏地图 (Game Map)</span>
+                <details class="bg-gray-800 rounded-lg overflow-hidden transition-all duration-300 border border-gray-700/50">
+                    <summary class="flex justify-between items-center p-3 cursor-pointer hover:bg-gray-700 transition-colors duration-200 font-bold">
+                        <div class="item-summary-title">
+                            <span class="item-summary-id">[ A-01 ]</span> 
+                            <!-- 移除英文 -->
+                            <span>游戏地图</span>
+                        </div>
                         <div class="flex items-center space-x-4">
-                            <span class="text-xl transform transition-transform duration-300 summary-indicator">&#x25BC;</span>
+                            <!-- 展开指示器 -->
+                            <span class="text-sm transform transition-transform duration-300 summary-indicator text-yellow-300">▼</span>
                         </div>
                     </summary>
-                    <div class="p-4 bg-gray-900 text-gray-400 border-t border-anomaly-cyan/30">
-                        <!-- 传输成本 (DATA COST) -->
-                        <div class="mb-6 py-2 px-4 bg-gray-800 border-b-2 border-t-2 border-anomaly-red font-mono flex justify-between items-center rounded-lg">
-                            <span class="text-sm text-anomaly-cyan uppercase tracking-widest">:: 传输成本 (DATA COST) ::</span>
-                            <span class="text-2xl font-bold text-anomaly-red">25</span>
+                    <div class="p-4 bg-gray-800/80 text-gray-400 border-t border-gray-700/50">
+                        <!-- 嘉奖消耗 (AWARD CONSUMPTION) -->
+                        <div class="mb-4 py-1 px-3 bg-gray-900 border-b border-t border-anomaly-red font-mono flex justify-between items-center rounded-md">
+                            <span class="text-xs text-anomaly-cyan uppercase tracking-widest">:: 嘉奖消耗 ::</span>
+                            <span class="text-xl font-bold text-anomaly-red">25</span>
                         </div>
                         
-                        <p class="text-sm leading-relaxed mb-4">
+                        <p class="text-sm leading-relaxed mb-3">
                             一张以携带者为中心，半径500m，随移动实时更新的像素风格地图。可以显示附近道路、墙壁、河流、房间等的基本布局。地图范围内的平凡生命会以小人图标标记，并标出其视野范围。
                             <br><br>
                             特工可以消耗一点任意品质（Quality）的素质保证（Quality Assurance），来实现一项以下功能：
                         </p>
-                        <ul class="text-sm list-none pl-4 space-y-2">
+                        <ul class="text-sm list-none pl-4 space-y-1">
                             <li class="flex items-start"><span class="text-green-400 mr-2 mt-px text-sm">►</span><span>标记一个目标持续跟踪其位置（超出范围会以小箭头标记大概方向）</span></li>
                             <li class="flex items-start"><span class="text-green-400 mr-2 mt-px text-sm">►</span><span>显示两点之间的一条较短可用道路</span></li>
                             <li class="flex items-start"><span class="text-green-400 mr-2 mt-px text-sm">►</span><span>原地建立传送锚点</span></li>
@@ -379,44 +437,54 @@
                 </details>
 
                 <!-- A-02: 雪王喷雾 -->
-                <details class="bg-gray-800 rounded-lg shadow-lg overflow-hidden transition-all duration-300 open:shadow-cyan-500/30 border border-anomaly-cyan/30">
-                    <summary class="flex justify-between items-center p-4 cursor-pointer hover:bg-gray-700 transition-colors duration-200 text-yellow-300 font-bold">
-                        <span>[ A-02 ] 雪王喷雾 (Snow King Spray)</span>
-                        <span class="text-xl transform transition-transform duration-300 summary-indicator">&#x25BC;</span>
-                    </summary>
-                    <div class="p-4 bg-gray-900 text-gray-400 border-t border-anomaly-cyan/30">
-                        <div class="mb-6 py-2 px-4 bg-gray-800 border-b-2 border-t-2 border-anomaly-red font-mono flex justify-between items-center rounded-lg">
-                            <span class="text-sm text-anomaly-cyan uppercase tracking-widest">:: 传输成本 (DATA COST) ::</span>
-                            <span class="text-2xl font-bold text-anomaly-red">15</span>
+                <details class="bg-gray-800 rounded-lg overflow-hidden transition-all duration-300 border border-gray-700/50">
+                    <summary class="flex justify-between items-center p-3 cursor-pointer hover:bg-gray-700 transition-colors duration-200 font-bold">
+                        <div class="item-summary-title">
+                            <span class="item-summary-id">[ A-02 ]</span> 
+                            <!-- 移除英文 -->
+                            <span>雪王喷雾</span>
                         </div>
-                        <p class="text-sm leading-relaxed mb-4">
+                        <!-- 展开指示器 -->
+                        <span class="text-sm transform transition-transform duration-300 summary-indicator text-yellow-300">▼</span>
+                    </summary>
+                    <div class="p-4 bg-gray-800/80 text-gray-400 border-t border-gray-700/50">
+                        <div class="mb-4 py-1 px-3 bg-gray-900 border-b border-t border-anomaly-red font-mono flex justify-between items-center rounded-md">
+                            <span class="text-xs text-anomaly-cyan uppercase tracking-widest">:: 嘉奖消耗 ::</span>
+                            <span class="text-xl font-bold text-anomaly-red">15</span>
+                        </div>
+                        <p class="text-sm leading-relaxed mb-3">
                             外观为一个正常喷漆罐，上面印有雪王卡通图案。内部充满异常制冷剂，常温下为液体。一旦从喷嘴喷出降压，制冷剂会立即汽化，并吸收大量热能，瞬间冻结目标。
                         </p>
-                        <ul class="text-sm list-none pl-4 space-y-2 mb-4">
+                        <ul class="text-sm list-none pl-4 space-y-1 mb-3">
                             <li class="flex items-start"><span class="text-green-400 mr-2 mt-px text-sm">►</span><span>冰冻效果持续 5 秒。</span></li>
                             <li class="flex items-start"><span class="text-green-400 mr-2 mt-px text-sm">►</span><span>喷雾最多使用 4 次，使用完后，需等待 24 小时进行内部充能。</span></li>
                         </ul>
                         <p class="text-sm leading-relaxed">
-                            <span class="text-anomaly-red">泄露风险：</span>若喷漆罐因受损炸裂，则对范围 10 米内所有生物及物品进行冰封，持续时间 3 秒。此状况下的喷雾无法回收。
+                            <span class="text-anomaly-red font-bold">泄露风险:</span> 若喷漆罐因受损炸裂，则对范围 10 米内所有生物及物品进行冰封，持续时间 3 秒。此状况下的喷雾无法回收。
                         </p>
                     </div>
                 </details>
 
                 <!-- A-03: 降温蛋筒 -->
-                <details class="bg-gray-800 rounded-lg shadow-lg overflow-hidden transition-all duration-300 open:shadow-cyan-500/30 border border-anomaly-cyan/30">
-                    <summary class="flex justify-between items-center p-4 cursor-pointer hover:bg-gray-700 transition-colors duration-200 text-yellow-300 font-bold">
-                        <span>[ A-03 ] 降温蛋筒 (Cooling Cone)</span>
-                        <span class="text-xl transform transition-transform duration-300 summary-indicator">&#x25BC;</span>
-                    </summary>
-                    <div class="p-4 bg-gray-900 text-gray-400 border-t border-anomaly-cyan/30">
-                        <div class="mb-6 py-2 px-4 bg-gray-800 border-b-2 border-t-2 border-anomaly-red font-mono flex justify-between items-center rounded-lg">
-                            <span class="text-sm text-anomaly-cyan uppercase tracking-widest">:: 传输成本 (DATA COST) ::</span>
-                            <span class="text-2xl font-bold text-anomaly-red">4</span>
+                <details class="bg-gray-800 rounded-lg overflow-hidden transition-all duration-300 border border-gray-700/50">
+                    <summary class="flex justify-between items-center p-3 cursor-pointer hover:bg-gray-700 transition-colors duration-200 font-bold">
+                        <div class="item-summary-title">
+                            <span class="item-summary-id">[ A-03 ]</span> 
+                            <!-- 移除英文 -->
+                            <span>降温蛋筒</span>
                         </div>
-                        <p class="text-sm leading-relaxed mb-4">
+                        <!-- 展开指示器 -->
+                        <span class="text-sm transform transition-transform duration-300 summary-indicator text-yellow-300">▼</span>
+                    </summary>
+                    <div class="p-4 bg-gray-800/80 text-gray-400 border-t border-gray-700/50">
+                        <div class="mb-4 py-1 px-3 bg-gray-900 border-b border-t border-anomaly-red font-mono flex justify-between items-center rounded-md">
+                            <span class="text-xs text-anomaly-cyan uppercase tracking-widest">:: 嘉奖消耗 ::</span>
+                            <span class="text-xl font-bold text-anomaly-red">4</span>
+                        </div>
+                        <p class="text-sm leading-relaxed mb-3">
                             外观是个普通的冰淇淋蛋筒，但实际上不易受外力（不超过普通男性人类用力挥出的一拳）破坏。
                         </p>
-                        <ul class="text-sm list-none pl-4 space-y-2 mb-4">
+                        <ul class="text-sm list-none pl-4 space-y-1 mb-3">
                             <li class="flex items-start"><span class="text-green-400 mr-2 mt-px text-sm">►</span><span>蛋筒外缘是稳定的零下 18°C（保存冰淇淋的最佳温度！）。</span></li>
                             <li class="flex items-start"><span class="text-green-400 mr-2 mt-px text-sm">►</span><span>能够将 200ml 的开水在 10 秒内冻结。</span></li>
                         </ul>
@@ -424,20 +492,25 @@
                 </details>
 
                 <!-- A-04: 一斤鸭梨 -->
-                <details class="bg-gray-800 rounded-lg shadow-lg overflow-hidden transition-all duration-300 open:shadow-cyan-500/30 border border-anomaly-cyan/30">
-                    <summary class="flex justify-between items-center p-4 cursor-pointer hover:bg-gray-700 transition-colors duration-200 text-yellow-300 font-bold">
-                        <span>[ A-04 ] 一斤鸭梨 (One Catty of Pears)</span>
-                        <span class="text-xl transform transition-transform duration-300 summary-indicator">&#x25BC;</span>
-                    </summary>
-                    <div class="p-4 bg-gray-900 text-gray-400 border-t border-anomaly-cyan/30">
-                        <div class="mb-6 py-2 px-4 bg-gray-800 border-b-2 border-t-2 border-anomaly-red font-mono flex justify-between items-center rounded-lg">
-                            <span class="text-sm text-anomaly-cyan uppercase tracking-widest">:: 传输成本 (DATA COST) ::</span>
-                            <span class="text-2xl font-bold text-anomaly-red">6</span>
+                <details class="bg-gray-800 rounded-lg overflow-hidden transition-all duration-300 border border-gray-700/50">
+                    <summary class="flex justify-between items-center p-3 cursor-pointer hover:bg-gray-700 transition-colors duration-200 font-bold">
+                        <div class="item-summary-title">
+                            <span class="item-summary-id">[ A-04 ]</span> 
+                            <!-- 移除英文 -->
+                            <span>一斤鸭梨</span>
                         </div>
-                        <p class="text-sm leading-relaxed mb-4">
+                        <!-- 展开指示器 -->
+                        <span class="text-sm transform transition-transform duration-300 summary-indicator text-yellow-300">▼</span>
+                    </summary>
+                    <div class="p-4 bg-gray-800/80 text-gray-400 border-t border-gray-700/50">
+                        <div class="mb-4 py-1 px-3 bg-gray-900 border-b border-t border-anomaly-red font-mono flex justify-between items-center rounded-md">
+                            <span class="text-xs text-anomaly-cyan uppercase tracking-widest">:: 嘉奖消耗 ::</span>
+                            <span class="text-xl font-bold text-anomaly-red">6</span>
+                        </div>
+                        <p class="text-sm leading-relaxed mb-3">
                             一个网兜装着的 3 个鸭梨，大小形状可能都不太一样，但三个的总重量一定是精准的 500g 重。它们真的很好吃。
                         </p>
-                        <ul class="text-sm list-none pl-4 space-y-2 mb-4">
+                        <ul class="text-sm list-none pl-4 space-y-1 mb-3">
                             <li class="flex items-start"><span class="text-green-400 mr-2 mt-px text-sm">►</span><span>任何吃下鸭梨或含梨汁食品的人（生效的浓度最少 1:3）都会沉溺于回忆之中，并变得极度充满倾诉欲。</span></li>
                             <li class="flex items-start"><span class="text-green-400 mr-2 mt-px text-sm">►</span><span>这三个鸭梨如果分离超过 24 小时就会变成普通的鸭梨。</span></li>
                         </ul>
@@ -445,20 +518,25 @@
                 </details>
 
                 <!-- A-05: 暴风雪桶 -->
-                <details class="bg-gray-800 rounded-lg shadow-lg overflow-hidden transition-all duration-300 open:shadow-cyan-500/30 border border-anomaly-cyan/30">
-                    <summary class="flex justify-between items-center p-4 cursor-pointer hover:bg-gray-700 transition-colors duration-200 text-yellow-300 font-bold">
-                        <span>[ A-05 ] 很coooooool的暴风雪桶 (Blizzard Bucket)</span>
-                        <span class="text-xl transform transition-transform duration-300 summary-indicator">&#x25BC;</span>
-                    </summary>
-                    <div class="p-4 bg-gray-900 text-gray-400 border-t border-anomaly-cyan/30">
-                        <div class="mb-6 py-2 px-4 bg-gray-800 border-b-2 border-t-2 border-anomaly-red font-mono flex justify-between items-center rounded-lg">
-                            <span class="text-sm text-anomaly-cyan uppercase tracking-widest">:: 传输成本 (DATA COST) ::</span>
-                            <span class="text-2xl font-bold text-anomaly-red">6</span>
+                <details class="bg-gray-800 rounded-lg overflow-hidden transition-all duration-300 border border-gray-700/50">
+                    <summary class="flex justify-between items-center p-3 cursor-pointer hover:bg-gray-700 transition-colors duration-200 font-bold">
+                        <div class="item-summary-title">
+                            <span class="item-summary-id">[ A-05 ]</span> 
+                            <!-- 移除英文 -->
+                            <span>很coooooool的暴风雪桶</span>
                         </div>
-                        <p class="text-sm leading-relaxed mb-4">
+                        <!-- 展开指示器 -->
+                        <span class="text-sm transform transition-transform duration-300 summary-indicator text-yellow-300">▼</span>
+                    </summary>
+                    <div class="p-4 bg-gray-800/80 text-gray-400 border-t border-gray-700/50">
+                        <div class="mb-4 py-1 px-3 bg-gray-900 border-b border-t border-anomaly-red font-mono flex justify-between items-center rounded-md">
+                            <span class="text-xs text-anomaly-cyan uppercase tracking-widest">:: 嘉奖消耗 ::</span>
+                            <span class="text-xl font-bold text-anomaly-red">6</span>
+                        </div>
+                        <p class="text-sm leading-relaxed mb-3">
                             一个印着三角形 logo，写着“暴风雪冰淇淋”的很 coooooool 的冰淇淋桶，看上去只是一个很 coooooool 的大份冰淇淋。
                         </p>
-                        <ul class="text-sm list-none pl-4 space-y-2 mb-4">
+                        <ul class="text-sm list-none pl-4 space-y-1 mb-3">
                             <li class="flex items-start"><span class="text-green-400 mr-2 mt-px text-sm">►</span><span>打开之后就会有一团暴风雪冲出来。</span></li>
                             <li class="flex items-start"><span class="text-green-400 mr-2 mt-px text-sm">►</span><span>被暴风雪覆盖的人会觉得一切都变得很 coooooool，哪怕出现再奇怪的事情也不妨碍他们赞叹一声“cool”然后继续做自己的事情。</span></li>
                         </ul>
@@ -466,44 +544,54 @@
                 </details>
 
                 <!-- A-06: 红油辣椒冰淇淋 -->
-                <details class="bg-gray-800 rounded-lg shadow-lg overflow-hidden transition-all duration-300 open:shadow-cyan-500/30 border border-anomaly-cyan/30">
-                    <summary class="flex justify-between items-center p-4 cursor-pointer hover:bg-gray-700 transition-colors duration-200 text-yellow-300 font-bold">
-                        <span>[ A-06 ] 红油辣椒冰淇淋 (Chili Oil Ice Cream)</span>
-                        <span class="text-xl transform transition-transform duration-300 summary-indicator">&#x25BC;</span>
-                    </summary>
-                    <div class="p-4 bg-gray-900 text-gray-400 border-t border-anomaly-cyan/30">
-                        <div class="mb-6 py-2 px-4 bg-gray-800 border-b-2 border-t-2 border-anomaly-red font-mono flex justify-between items-center rounded-lg">
-                            <span class="text-sm text-anomaly-cyan uppercase tracking-widest">:: 传输成本 (DATA COST) ::</span>
-                            <span class="text-2xl font-bold text-anomaly-red">2 / set (3 cups)</span>
+                <details class="bg-gray-800 rounded-lg overflow-hidden transition-all duration-300 border border-gray-700/50">
+                    <summary class="flex justify-between items-center p-3 cursor-pointer hover:bg-gray-700 transition-colors duration-200 font-bold">
+                        <div class="item-summary-title">
+                            <span class="item-summary-id">[ A-06 ]</span> 
+                            <!-- 移除英文 -->
+                            <span>红油辣椒冰淇淋</span>
                         </div>
-                        <p class="text-sm leading-relaxed mb-4">
+                        <!-- 展开指示器 -->
+                        <span class="text-sm transform transition-transform duration-300 summary-indicator text-yellow-300">▼</span>
+                    </summary>
+                    <div class="p-4 bg-gray-800/80 text-gray-400 border-t border-gray-700/50">
+                        <div class="mb-4 py-1 px-3 bg-gray-900 border-b border-t border-anomaly-red font-mono flex justify-between items-center rounded-md">
+                            <span class="text-xs text-anomaly-cyan uppercase tracking-widest">:: 嘉奖消耗 ::</span>
+                            <span class="text-xl font-bold text-anomaly-red">2 / set (3 cups)</span>
+                        </div>
+                        <p class="text-sm leading-relaxed mb-3">
                             一个淋满了红油的大圣代，以至于看起来像冰淇淋新装的火锅底料。
                         </p>
-                        <ul class="text-sm list-none pl-4 space-y-2 mb-4">
+                        <ul class="text-sm list-none pl-4 space-y-1 mb-3">
                             <li class="flex items-start"><span class="text-green-400 mr-2 mt-px text-sm">►</span><span>服用后会在 1 小时内将你的体温稳定在 36 摄氏度。</span></li>
                             <li class="flex items-start"><span class="text-green-400 mr-2 mt-px text-sm">►</span><span>服用后瞬间增重 10 斤，并在后续的一个小时内消耗你的体重 20 斤。</span></li>
                         </ul>
                         <p class="text-sm leading-relaxed">
-                            <span class="text-anomaly-red">副作用：</span>在食用后即使是超人来了也抵抗不住的冷热交替，必定会引起腹泻或相关肠道疾病，还会让你的痔疮像爱人的心跳一样火热，如果没有，它会奖励你一个的。
+                            <span class="text-anomaly-red font-bold">副作用:</span> 在食用后即使是超人来了也抵抗不住的冷热交替，必定会引起腹泻或相关肠道疾病，还会让你的痔疮像爱人的心跳一样火热，如果没有，它会奖励你一个的。
                         </p>
                     </div>
                 </details>
 
                 <!-- A-07: 沉默的八音盒 -->
-                <details class="bg-gray-800 rounded-lg shadow-lg overflow-hidden transition-all duration-300 open:shadow-cyan-500/30 border border-anomaly-cyan/30">
-                    <summary class="flex justify-between items-center p-4 cursor-pointer hover:bg-gray-700 transition-colors duration-200 text-yellow-300 font-bold">
-                        <span>[ A-07 ] 沉默的八音盒 (Silent Music Box)</span>
-                        <span class="text-xl transform transition-transform duration-300 summary-indicator">&#x25BC;</span>
-                    </summary>
-                    <div class="p-4 bg-gray-900 text-gray-400 border-t border-anomaly-cyan/30">
-                        <div class="mb-6 py-2 px-4 bg-gray-800 border-b-2 border-t-2 border-anomaly-red font-mono flex justify-between items-center rounded-lg">
-                            <span class="text-sm text-anomaly-cyan uppercase tracking-widest">:: 传输成本 (DATA COST) ::</span>
-                            <span class="text-2xl font-bold text-anomaly-red">4</span>
+                <details class="bg-gray-800 rounded-lg overflow-hidden transition-all duration-300 border border-gray-700/50">
+                    <summary class="flex justify-between items-center p-3 cursor-pointer hover:bg-gray-700 transition-colors duration-200 font-bold">
+                        <div class="item-summary-title">
+                            <span class="item-summary-id">[ A-07 ]</span> 
+                            <!-- 移除英文 -->
+                            <span>沉默的八音盒</span>
                         </div>
-                        <p class="text-sm leading-relaxed mb-4">
+                        <!-- 展开指示器 -->
+                        <span class="text-sm transform transition-transform duration-300 summary-indicator text-yellow-300">▼</span>
+                    </summary>
+                    <div class="p-4 bg-gray-800/80 text-gray-400 border-t border-gray-700/50">
+                        <div class="mb-4 py-1 px-3 bg-gray-900 border-b border-t border-anomaly-red font-mono flex justify-between items-center rounded-md">
+                            <span class="text-xs text-anomaly-cyan uppercase tracking-widest">:: 嘉奖消耗 ::</span>
+                            <span class="text-xl font-bold text-anomaly-red">4</span>
+                        </div>
+                        <p class="text-sm leading-relaxed mb-3">
                             一个八音盒，打开时，会弹出一个缓慢旋转的指挥家塑像，塑像有着白色手套。
                         </p>
-                        <ul class="text-sm list-none pl-4 space-y-2 mb-4">
+                        <ul class="text-sm list-none pl-4 space-y-1 mb-3">
                             <li class="flex items-start"><span class="text-green-400 mr-2 mt-px text-sm">►</span><span>附近 5m 的除了特工的凡俗心智会感到抑郁而想要回到自己的住处或者安全的角落独自伤感，这种伤感来自于自身回忆，因而不会产生松散端。</span></li>
                             <li class="flex items-start"><span class="text-green-400 mr-2 mt-px text-sm">►</span><span>持续时间为一分钟的沉默歌曲结束后，指挥家会停止转动，八音盒将再也不能使用，陷入永远的沉默。</span></li>
                         </ul>
@@ -511,44 +599,54 @@
                 </details>
 
                 <!-- A-08: 素质柠檬水 -->
-                <details class="bg-gray-800 rounded-lg shadow-lg overflow-hidden transition-all duration-300 open:shadow-cyan-500/30 border border-anomaly-cyan/30">
-                    <summary class="flex justify-between items-center p-4 cursor-pointer hover:bg-gray-700 transition-colors duration-200 text-yellow-300 font-bold">
-                        <span>[ A-08 ] 素质柠檬水 (Quality Lemonade)</span>
-                        <span class="text-xl transform transition-transform duration-300 summary-indicator">&#x25BC;</span>
-                    </summary>
-                    <div class="p-4 bg-gray-900 text-gray-400 border-t border-anomaly-cyan/30">
-                        <div class="mb-6 py-2 px-4 bg-gray-800 border-b-2 border-t-2 border-anomaly-red font-mono flex justify-between items-center rounded-lg">
-                            <span class="text-sm text-anomaly-cyan uppercase tracking-widest">:: 传输成本 (DATA COST) ::</span>
-                            <span class="text-2xl font-bold text-anomaly-red">12</span>
+                <details class="bg-gray-800 rounded-lg overflow-hidden transition-all duration-300 border border-gray-700/50">
+                    <summary class="flex justify-between items-center p-3 cursor-pointer hover:bg-gray-700 transition-colors duration-200 font-bold">
+                        <div class="item-summary-title">
+                            <span class="item-summary-id">[ A-08 ]</span> 
+                            <!-- 移除英文 -->
+                            <span>素质柠檬水</span>
                         </div>
-                        <p class="text-sm leading-relaxed mb-4">
+                        <!-- 展开指示器 -->
+                        <span class="text-sm transform transition-transform duration-300 summary-indicator text-yellow-300">▼</span>
+                    </summary>
+                    <div class="p-4 bg-gray-800/80 text-gray-400 border-t border-gray-700/50">
+                        <div class="mb-4 py-1 px-3 bg-gray-900 border-b border-t border-anomaly-red font-mono flex justify-between items-center rounded-md">
+                            <span class="text-xs text-anomaly-cyan uppercase tracking-widest">:: 嘉奖消耗 ::</span>
+                            <span class="text-xl font-bold text-anomaly-red">12</span>
+                        </div>
+                        <p class="text-sm leading-relaxed mb-3">
                             这是杯清爽解腻的柠檬水共 32盎司，可以随时为你让你保持干劲和好心情。
                         </p>
-                        <ul class="text-sm list-none pl-4 space-y-2 mb-4">
+                        <ul class="text-sm list-none pl-4 space-y-1 mb-3">
                             <li class="flex items-start"><span class="text-green-400 mr-2 mt-px text-sm">►</span><span>饮用一杯可以清空一点异常状态。</span></li>
                             <li class="flex items-start"><span class="text-green-400 mr-2 mt-px text-sm">►</span><span>若饮用时嚼碎吞服柠檬片（极其酸涩），则可以瞬间恢复 1 点素质保障。</span></li>
                         </ul>
                         <p class="text-sm leading-relaxed">
-                            <span class="text-anomaly-red">注意：</span>为了保护环境，请不要随手扔杯子以及注意表情管理。
+                            <span class="text-anomaly-red font-bold">注意:</span> 为了保护环境，请不要随手扔杯子以及注意表情管理。
                         </p>
                     </div>
                 </details>
 
                 <!-- A-09: 雪景球 -->
-                <details class="bg-gray-800 rounded-lg shadow-lg overflow-hidden transition-all duration-300 open:shadow-cyan-500/30 border border-anomaly-cyan/30">
-                    <summary class="flex justify-between items-center p-4 cursor-pointer hover:bg-gray-700 transition-colors duration-200 text-yellow-300 font-bold">
-                        <span>[ A-09 ] 雪景球 (Snow Globe)</span>
-                        <span class="text-xl transform transition-transform duration-300 summary-indicator">&#x25BC;</span>
-                    </summary>
-                    <div class="p-4 bg-gray-900 text-gray-400 border-t border-anomaly-cyan/30">
-                        <div class="mb-6 py-2 px-4 bg-gray-800 border-b-2 border-t-2 border-anomaly-red font-mono flex justify-between items-center rounded-lg">
-                            <span class="text-sm text-anomaly-cyan uppercase tracking-widest">:: 传输成本 (DATA COST) ::</span>
-                            <span class="text-2xl font-bold text-anomaly-red">3 / use</span>
+                <details class="bg-gray-800 rounded-lg overflow-hidden transition-all duration-300 border border-gray-700/50">
+                    <summary class="flex justify-between items-center p-3 cursor-pointer hover:bg-gray-700 transition-colors duration-200 font-bold">
+                        <div class="item-summary-title">
+                            <span class="item-summary-id">[ A-09 ]</span> 
+                            <!-- 移除英文 -->
+                            <span>雪景球</span>
                         </div>
-                        <p class="text-sm leading-relaxed mb-4">
+                        <!-- 展开指示器 -->
+                        <span class="text-sm transform transition-transform duration-300 summary-indicator text-yellow-300">▼</span>
+                    </summary>
+                    <div class="p-4 bg-gray-800/80 text-gray-400 border-t border-gray-700/50">
+                        <div class="mb-4 py-1 px-3 bg-gray-900 border-b border-t border-anomaly-red font-mono flex justify-between items-center rounded-md">
+                            <span class="text-xs text-anomaly-cyan uppercase tracking-widest">:: 嘉奖消耗 ::</span>
+                            <span class="text-xl font-bold text-anomaly-red">3 / use</span>
+                        </div>
+                        <p class="text-sm leading-relaxed mb-3">
                             外观：一个内置一根冰淇淋的雪景球，摇晃时会发出音乐。
                         </p>
-                        <ul class="text-sm list-none pl-4 space-y-2 mb-4">
+                        <ul class="text-sm list-none pl-4 space-y-1 mb-3">
                             <li class="flex items-start"><span class="text-green-400 mr-2 mt-px text-sm">►</span><span>当你剧烈摇晃时，除你和你指定的目标外，任何平凡生物都会感觉到刺骨的寒意并放下手中的事，立刻朝着最近的温暖源跑去，并在那里停留 5 分钟。</span></li>
                             <li class="flex items-start"><span class="text-green-400 mr-2 mt-px text-sm">►</span><span>范围：为以使用者为中心半径 25 米的球形。</span></li>
                             <li class="flex items-start"><span class="text-green-400 mr-2 mt-px text-sm">►</span><span>收到影响者不会因该能力产生松散端。</span></li>
@@ -556,31 +654,37 @@
                     </div>
                 </details>
 
-                <!-- B-03: 异常源定位器 -->
-                <details class="bg-gray-800 rounded-lg shadow-lg overflow-hidden transition-all duration-300 open:shadow-yellow-500/30 border border-yellow-500/20">
-                    <summary class="flex justify-between items-center p-4 cursor-pointer hover:bg-gray-700 transition-colors duration-200 text-anomaly-red font-bold">
-                        <span>[ B-03 ] 异常源定位器 (Anomaly Locator)</span>
-                        <span class="text-xl transform transition-transform duration-300 summary-indicator">&#x25BC;</span>
+                <!-- B-03: 异常源定位器 (使用不同的颜色和边框) -->
+                <details class="bg-gray-800 rounded-lg overflow-hidden transition-all duration-300 border border-anomaly-red/50">
+                    <summary class="flex justify-between items-center p-3 cursor-pointer hover:bg-gray-700 transition-colors duration-200 font-bold">
+                        <div class="item-summary-title item-summary-title-b">
+                            <span class="item-summary-id">[ B-03 ]</span> 
+                            <!-- 移除英文 -->
+                            <span>异常源定位器</span>
+                        </div>
+                        <!-- 展开指示器 -->
+                        <span class="text-sm transform transition-transform duration-300 summary-indicator text-anomaly-red">▼</span>
                     </summary>
-                    <div class="p-4 bg-gray-900 text-gray-400 border-t border-yellow-500/20">
-                        <div class="mb-6 py-2 px-4 bg-gray-800 border-b-2 border-t-2 border-anomaly-red font-mono flex justify-between items-center rounded-lg">
-                            <span class="text-sm text-anomaly-cyan uppercase tracking-widest">:: 传输成本 (DATA COST) ::</span>
-                            <span class="text-2xl font-bold text-anomaly-red">75</span>
+                    <div class="p-4 bg-gray-800/80 text-gray-400 border-t border-anomaly-red/50">
+                        <div class="mb-4 py-1 px-3 bg-gray-900 border-b border-t border-anomaly-red font-mono flex justify-between items-center rounded-md">
+                            <span class="text-xs text-anomaly-cyan uppercase tracking-widest">:: 嘉奖消耗 ::</span>
+                            <span class="text-xl font-bold text-anomaly-red">75</span>
                         </div>
                         <p class="text-sm">
                             一个校准频率偏移的设备。请注意，它找到的“异常”可能只是你所处时间线的正常现象。设备状态：不稳定，持续过热。
                         </p>
                     </div>
                 </details>
+
             </div>
         </section>
 
-        <!-- 模块二：组织阵营 (市场份额) -->
+        <!-- 模块二：当前市场份额 (标题已更改) -->
         <section>
-            <!-- 模块标题：恢复竖线和辉光 -->
+            <!-- 模块标题：已更改为“当前市场份额” -->
             <div class="terminal-title rounded-lg">
                 <h1 class="text-2xl font-bold font-mono text-anomaly-cyan tracking-widest">
-                    <span>市场份额</span>
+                    <span>当前市场份额</span>
                 </h1>
             </div>
 
@@ -593,23 +697,24 @@
                 
                 <!-- 阵营信息和描述 -->
                 <div class="w-full md:w-1/2 p-2 mt-6 md:mt-0 font-mono text-sm space-y-4">
-                    <h3 class="text-2xl font-bold text-anomaly-red mb-3">
-                        三角机构 (Triangular Agency)
-                    </h3>
+                    <!-- 移除 H3 标题 -->
                     
                     <ul class="text-gray-300 space-y-2">
+                        <!-- 列表项已更新，移除 (可追踪) -->
                         <li>
                             <span class="inline-block w-3 h-3 rounded-full bg-anomaly-cyan mr-2"></span>
-                            <strong class="text-anomaly-cyan">三角机构:</strong> 25% (可追踪)
+                            <strong class="text-anomaly-cyan">三角机构:</strong> 25%
                         </li>
+                        <!-- 列表项已更新，更改为 未知企业实体 并移除 (未探知) -->
                         <li>
                             <span class="inline-block w-3 h-3 rounded-full bg-anomaly-red mr-2"></span>
-                            <strong class="text-anomaly-red">？？？:</strong> 75% (未探知)
+                            <strong class="text-anomaly-red">未知企业实体:</strong> 75%
                         </li>
                     </ul>
 
+                    <!-- 警告文本已更新 -->
                     <p class="mt-4 p-3 bg-gray-700/50 rounded-lg border-l-4 border-yellow-500 text-sm italic text-gray-400">
-                        警告：当前网络仅能确定**三角机构**占据 25% 的已知市场份额。其余 75% 仍未被探知，归属于代号为 **"？？？"** 的未知实体。
+                        当前网络仅能确定**三角机构**占据 25% 的已知市场份额。其余 75% 仍归属为未知企业实体。
                     </p>
                 </div>
             </div>
@@ -696,6 +801,9 @@
         const TITLE_SCREEN = document.getElementById('title-screen');
         const MAIN_CONTENT = document.getElementById('main-content');
         
+        // 新增：欢迎语元素
+        const WELCOME_GREETING = document.getElementById('welcome-greeting');
+        
         // Modal 元素
         const ARCHIVE_MODAL = document.getElementById('archiveModal');
         const MODAL_TITLE = document.getElementById('modalTitle');
@@ -768,11 +876,50 @@
             
             TIME_DISPLAY.parentElement.classList.replace('border-anomaly-cyan', 'border-gray-500');
         }
+        
+        /**
+         * 生成 4 到 6 位的随机乱码（数字、英文、特殊字符）
+         */
+        function generateGarbledCode() {
+            // 包含数字、大写/小写字母和常见特殊字符
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}|;:,.<>?';
+            const length = Math.floor(Math.random() * 3) + 4; // 4 to 6 characters
+            let code = '';
+            for (let i = 0; i < length; i++) {
+                code += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return code;
+        }
+
+        /**
+         * 生成并设置欢迎语，包含随机乱码
+         */
+        function generateAndSetGreeting() {
+            if (WELCOME_GREETING) {
+                const code = generateGarbledCode();
+                // 设置最终文本，乱码用方括号包裹，突出显示
+                WELCOME_GREETING.textContent = `欢迎，访客 [ ${code} ]。您的访问操作已被记录。`;
+            }
+        }
+
 
         /**
          * 处理按钮点击和加载过程
          */
         function handleStart() {
+            // 每次点击时，如果内容区已显示，则先隐藏并重置进度条
+            if (!MAIN_CONTENT.classList.contains('opacity-0')) {
+                 MAIN_CONTENT.classList.add('opacity-0', 'pointer-events-none');
+                 TITLE_SCREEN.style.display = 'flex';
+                 TITLE_SCREEN.style.opacity = '1';
+                 TITLE_SCREEN.style.pointerEvents = 'auto';
+                 loadingProgress = 0;
+                 LOADING_BAR.style.width = '0%';
+                 LOADING_PERCENT.textContent = '0';
+                 document.getElementById('button-text').textContent = '访问权限请求';
+                 LOADING_BAR.classList.replace('bg-green-500', 'bg-anomaly-red');
+            }
+
             START_BUTTON.disabled = true;
             document.getElementById('button-text').textContent = '协议激活中...';
             LOADING_CONTAINER.classList.remove('hidden');
@@ -798,13 +945,12 @@
                     
                     // 1. 停止故障并稳定时间
                     stabilizeTime(11); 
+                    
+                    // 2. 新增：生成并设置欢迎语中的随机乱码
+                    generateAndSetGreeting();
 
-                    // 2. 页面切换逻辑：隐藏标题页，显示主内容
+                    // 3. 页面切换逻辑：隐藏标题页，显示主内容
                     setTimeout(() => {
-                        // 移除主标题的抖动动画 (CSS 中已添加，这里需要移除)
-                        // 注意: 这里不移除 CSS 中的 glitchShake 动画，因为它增加了赛博朋克感，但为了满足上一步的要求，我在上一步移除了。
-                        // 既然现在用户要求恢复抖动，我们保持 CSS 中的动画定义，并确保它在标题页持续运行即可。
-                        
                         // 淡出标题页
                         TITLE_SCREEN.style.opacity = '0';
                         TITLE_SCREEN.style.pointerEvents = 'none';
@@ -827,7 +973,8 @@
             const ctx = document.getElementById('marketShareChart');
             
             const chartData = {
-                labels: ['三角机构 (25%)', '？？？ (75%)'],
+                // 更改饼状图标签以匹配新的文本
+                labels: ['三角机构 (25%)', '未知企业实体 (75%)'], 
                 datasets: [{
                     data: [25, 75], // 25% for Triangular Agency, 75% for ???
                     backgroundColor: [
