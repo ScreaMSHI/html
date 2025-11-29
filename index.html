@@ -25,9 +25,10 @@
                     },
                     keyframes: {
                         shake: {
+                            // 增加抖动幅度
                             '0%, 100%': { transform: 'translateX(0)' },
-                            '10%, 30%, 50%, 70%, 90%': { transform: 'translateX(-1px)' },
-                            '20%, 40%, 60%, 80%': { transform: 'translateX(1px)' },
+                            '10%, 30%, 50%, 70%, 90%': { transform: 'translateX(-2px)' },
+                            '20%, 40%, 60%, 80%': { transform: 'translateX(2px)' },
                         },
                         // 轻微的故障抖动效果
                         glitchShake: { 
@@ -291,6 +292,13 @@
             text-shadow: none; /* 移除辉光 */
         }
         
+        /* 密码输入框的抖动效果和错误视觉反馈 (增强) */
+        .password-shake {
+            /* 动画持续 0.2s，重复 3 次，总时长 0.6s */
+            animation: shake 0.2s 3; 
+            border-color: #ff3366 !important; /* 错误时显示红边框 */
+            box-shadow: 0 0 10px #ff3366; /* 错误时显示红辉光 */
+        }
     </style>
 </head>
 <body class="bg-liminal-bg text-gray-200 font-sans overflow-x-hidden">
@@ -373,7 +381,7 @@
 
             <!-- 购买须知 (PURCHASE NOTICE) -->
             <div class="bg-gray-800 p-4 mb-6 rounded-lg border border-gray-700 font-mono">
-                <p class="text-sm text-anomaly-cyan mb-3">:: 购买须知 [PURCHASE NOTICE] ::</p>
+                <p class="text-sm text-anomaly-cyan mb-3">:: 购买须知 ::</p>
                 <ul class="text-sm text-gray-400 space-y-2 list-none pl-0">
                     <!-- 规则 1: 补给价格限制 (已改为绿色小三角) -->
                     <li class="flex items-start">
@@ -720,46 +728,50 @@
             </div>
         </section>
 
-        <!-- 模块三：机密档案库 -->
+        <!-- 模块三：机密档案库 (外部容器) -->
         <section>
-            <!-- 模块标题：恢复竖线和辉光 -->
-            <div class="terminal-title rounded-lg">
-                <h1 class="text-2xl font-bold font-mono text-anomaly-cyan tracking-widest">
+            <!-- 模块标题：添加 flex 和 justify-between 将锁定状态推到右侧 -->
+            <div id="archive-header" class="terminal-title rounded-lg cursor-pointer hover:bg-gray-900 transition-colors duration-200" onclick="showPasswordModal()">
+                <h1 class="text-2xl font-bold font-mono text-anomaly-cyan tracking-widest flex justify-between items-center w-full">
                     <span>机密档案库</span>
+                    <span id="lock-status" class="text-red-500 text-sm ml-2">[ 权限锁定 ]</span>
                 </h1>
             </div>
 
-            <div id="archives-grid" class="grid md:grid-cols-3 gap-6">
-                <!-- 档案 1: 碎裂星云 -->
-                <div class="archive-card bg-gray-900 rounded-xl overflow-hidden cursor-pointer border border-anomaly-cyan/30">
-                    <div class="p-4">
-                        <h4 class="text-lg font-bold text-anomaly-red mb-2">档案: S-77</h4>
-                        <p class="text-sm text-gray-500 mb-3">碎裂星云事件报告</p>
-                        <p class="text-xs text-gray-400 line-clamp-3"><span class="text-yellow-400">摘要:</span> 2012年11月，在欧洲上空监测到无法解释的重力场波动，导致短暂的物理定律松弛。</p>
+            <!-- 档案库内容，初始隐藏 -->
+            <div id="archive-content" class="hidden">
+                <div id="archives-grid" class="grid md:grid-cols-3 gap-6">
+                    <!-- 档案 1: 碎裂星云 -->
+                    <div class="archive-card bg-gray-900 rounded-xl overflow-hidden cursor-pointer border border-anomaly-cyan/30">
+                        <div class="p-4">
+                            <h4 class="text-lg font-bold text-anomaly-red mb-2">档案: S-77</h4>
+                            <p class="text-sm text-gray-500 mb-3">碎裂星云事件报告</p>
+                            <p class="text-xs text-gray-400 line-clamp-3"><span class="text-yellow-400">摘要:</span> 2012年11月，在欧洲上空监测到无法解释的重力场波动，导致短暂的物理定律松弛。</p>
+                        </div>
+                        <!-- 弹出页面按钮 -->
+                        <button class="expand-button w-full bg-gray-800 py-2 text-sm text-anomaly-cyan hover:bg-anomaly-cyan hover:text-terminal-dark transition-colors duration-200" onclick="openArchiveModal('archive1')">弹出页面</button>
                     </div>
-                    <!-- 弹出页面按钮 -->
-                    <button class="expand-button w-full bg-gray-800 py-2 text-sm text-anomaly-cyan hover:bg-anomaly-cyan hover:text-terminal-dark transition-colors duration-200" onclick="openArchiveModal('archive1')">弹出页面</button>
-                </div>
 
-                <!-- 档案 2: 非物质信使 -->
-                <div class="archive-card bg-gray-900 rounded-xl overflow-hidden cursor-pointer border border-anomaly-cyan/30">
-                    <div class="p-4">
-                        <h4 class="text-lg font-bold text-anomaly-red mb-2">档案: P-19</h4>
-                        <p class="text-sm text-gray-500 mb-3">非物质信使实验记录</p>
+                    <!-- 档案 2: 非物质信使 -->
+                    <div class="archive-card bg-gray-900 rounded-xl overflow-hidden cursor-pointer border border-anomaly-cyan/30">
+                        <div class="p-4">
+                            <h4 class="text-lg font-bold text-anomaly-red mb-2">档案: P-19</h4>
+                            <p class="text-sm text-gray-500 mb-3">非物质信使实验记录</p>
+                        </div>
+                        <!-- 弹出页面按钮 -->
+                        <button class="expand-button w-full bg-gray-800 py-2 text-sm text-anomaly-cyan hover:bg-anomaly-cyan hover:text-terminal-dark transition-colors duration-200" onclick="openArchiveModal('archive2')">弹出页面</button>
                     </div>
-                    <!-- 弹出页面按钮 -->
-                    <button class="expand-button w-full bg-gray-800 py-2 text-sm text-anomaly-cyan hover:bg-anomaly-cyan hover:text-terminal-dark transition-colors duration-200" onclick="openArchiveModal('archive2')">弹出页面</button>
-                </div>
 
-                <!-- 档案 3: 循环梦境 -->
-                <div class="archive-card bg-gray-900 rounded-xl overflow-hidden cursor-pointer border border-anomaly-cyan/30">
-                    <div class="p-4">
-                        <h4 class="text-lg font-bold text-anomaly-red mb-2">档案: M-04</h4>
-                        <p class="text-sm text-gray-500 mb-3">循环梦境个体评估</p>
-                        <p class="text-xs text-gray-400 line-clamp-3"><span class="text-yellow-400">摘要:</span> 对一名声称每天晚上都在同一个地点、做同一件事（吃一个不存在的苹果）的个体的评估。</p>
+                    <!-- 档案 3: 循环梦境 -->
+                    <div class="archive-card bg-gray-900 rounded-xl overflow-hidden cursor-pointer border border-anomaly-cyan/30">
+                        <div class="p-4">
+                            <h4 class="text-lg font-bold text-anomaly-red mb-2">档案: M-04</h4>
+                            <p class="text-sm text-gray-500 mb-3">循环梦境个体评估</p>
+                            <p class="text-xs text-gray-400 line-clamp-3"><span class="text-yellow-400">摘要:</span> 对一名声称每天晚上都在同一个地点、做同一件事（吃一个不存在的苹果）的个体的评估。</p>
+                        </div>
+                        <!-- 弹出页面按钮 -->
+                        <button class="expand-button w-full bg-gray-800 py-2 text-sm text-anomaly-cyan hover:bg-anomaly-cyan hover:text-terminal-dark transition-colors duration-200" onclick="openArchiveModal('archive3')">弹出页面</button>
                     </div>
-                    <!-- 弹出页面按钮 -->
-                    <button class="expand-button w-full bg-gray-800 py-2 text-sm text-anomaly-cyan hover:bg-anomaly-cyan hover:text-terminal-dark transition-colors duration-200" onclick="openArchiveModal('archive3')">弹出页面</button>
                 </div>
             </div>
         </section>
@@ -767,11 +779,10 @@
     </main>
     
     <!-- 弹出页面 (Modal/Dialog) 结构 -->
-    <!-- 模态框在手机上会最大化，确保内容可见 -->
     <dialog id="archiveModal" class="p-6 rounded-2xl shadow-2xl backdrop:bg-black/80 bg-gray-900 border border-anomaly-cyan/80 w-11/12 max-w-3xl text-gray-100">
         <div class="flex justify-between items-start mb-4 border-b border-gray-700 pb-3">
             <h3 id="modalTitle" class="text-2xl font-bold text-anomaly-cyan">档案标题</h3>
-            <button onclick="closeModal()" class="text-3xl font-light text-gray-400 hover:text-anomaly-red transition-colors ml-4">&times;</button>
+            <button onclick="closeModal('archiveModal')" class="text-3xl font-light text-gray-400 hover:text-anomaly-red transition-colors ml-4">&times;</button>
         </div>
         <div class="pt-4 space-y-4">
             <p id="modalContent" class="text-gray-300 whitespace-pre-wrap leading-relaxed font-mono text-sm"></p>
@@ -780,11 +791,37 @@
             </p>
         </div>
         <div class="mt-6 text-right">
-            <button onclick="closeModal()" class="px-6 py-2 bg-anomaly-red text-white font-semibold rounded-lg hover:bg-red-500 transition duration-200">
+            <button onclick="closeModal('archiveModal')" class="px-6 py-2 bg-anomaly-red text-white font-semibold rounded-lg hover:bg-red-500 transition duration-200">
                 [ 关闭档案 ]
             </button>
         </div>
     </dialog>
+
+    <!-- 密码输入模态框 (新增) -->
+    <dialog id="passwordModal" class="p-6 rounded-2xl shadow-2xl backdrop:bg-black/80 bg-gray-900 border border-anomaly-red/80 w-11/12 max-w-md text-gray-100 font-mono">
+        <div class="flex justify-between items-start mb-4 border-b border-gray-700 pb-3">
+            <h3 class="text-2xl font-bold text-anomaly-red">权限验证</h3>
+            <button onclick="closeModal('passwordModal')" class="text-3xl font-light text-gray-400 hover:text-anomaly-red transition-colors ml-4">&times;</button>
+        </div>
+        
+        <p class="text-sm text-gray-400 mb-4">需要输入高权限访问密钥以访问机密档案库。</p>
+        
+        <div class="space-y-4">
+            <input type="password" id="passwordInput" placeholder="输入访问密钥 (199933333333)" 
+                   class="w-full p-3 bg-terminal-dark border-2 border-gray-700 text-anomaly-cyan focus:border-anomaly-cyan rounded-lg transition-colors placeholder-gray-500"
+                   onkeydown="if(event.key === 'Enter') validatePassword()">
+            
+            <p id="password-message" class="text-sm text-red-400 min-h-5"></p>
+
+            <!-- 移除 [取消] 按钮，只保留确认按钮 -->
+            <div class="flex justify-end space-x-3">
+                <button onclick="validatePassword()" class="px-6 py-2 bg-anomaly-cyan text-terminal-dark font-semibold rounded-lg hover:bg-cyan-300 transition duration-200">
+                    [ 确认 ]
+                </button>
+            </div>
+        </div>
+    </dialog>
+
 
     <!-- JavaScript 逻辑 -->
     <script>
@@ -800,14 +837,20 @@
         const MAIN_TITLE = document.getElementById('main-title');
         const TITLE_SCREEN = document.getElementById('title-screen');
         const MAIN_CONTENT = document.getElementById('main-content');
-        
-        // 新增：欢迎语元素
         const WELCOME_GREETING = document.getElementById('welcome-greeting');
         
         // Modal 元素
         const ARCHIVE_MODAL = document.getElementById('archiveModal');
         const MODAL_TITLE = document.getElementById('modalTitle');
         const MODAL_CONTENT = document.getElementById('modalContent');
+        
+        // 新增：密码和档案库元素
+        const PASSWORD_MODAL = document.getElementById('passwordModal');
+        const PASSWORD_INPUT = document.getElementById('passwordInput');
+        const PASSWORD_MESSAGE = document.getElementById('password-message');
+        const ARCHIVE_CONTENT = document.getElementById('archive-content');
+        const LOCK_STATUS = document.getElementById('lock-status');
+        const CORRECT_PASSWORD = '199933333333';
 
 
         let glitchInterval;
@@ -878,7 +921,7 @@
         }
         
         /**
-         * 生成 4 到 6 位的随机乱码（数字、英文、特殊字符）
+         * 生成 4 到 6 位随机乱码（数字、英文、特殊字符）
          */
         function generateGarbledCode() {
             // 包含数字、大写/小写字母和常见特殊字符
@@ -1028,29 +1071,94 @@
                 MODAL_CONTENT.textContent = data.text;
                 ARCHIVE_MODAL.showModal();
             } else {
+                // 仅在控制台显示错误，不使用 alert
                 console.error("Archive data not found for ID:", archiveId);
             }
         }
 
         /**
          * 关闭模态窗口
+         * @param {string} modalId 要关闭的模态框 ID
          */
-        function closeModal() {
-            ARCHIVE_MODAL.close();
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal && modal.open) {
+                modal.close();
+            }
+            // 清理密码输入框状态
+            if (modalId === 'passwordModal') {
+                PASSWORD_INPUT.value = '';
+                // 确保在关闭时移除可能残存的样式
+                PASSWORD_INPUT.classList.remove('password-shake'); 
+                PASSWORD_MESSAGE.textContent = '';
+            }
         }
         
-        // 允许用户点击 backdrop 关闭 modal
-        ARCHIVE_MODAL.addEventListener('click', (e) => {
-            const dialogDimensions = ARCHIVE_MODAL.getBoundingClientRect()
-            if (
-                e.clientX < dialogDimensions.left ||
-                e.clientX > dialogDimensions.right ||
-                e.clientY < dialogDimensions.top ||
-                e.clientY > dialogDimensions.bottom
-            ) {
-                closeModal();
-            }
+        // 允许用户点击 backdrop 关闭 modal (对所有 dialog 生效)
+        document.querySelectorAll('dialog').forEach(dialog => {
+            dialog.addEventListener('click', (e) => {
+                const rect = dialog.getBoundingClientRect();
+                if (e.clientX < rect.left || e.clientX > rect.right || 
+                    e.clientY < rect.top || e.clientY > rect.bottom) {
+                    closeModal(dialog.id); // 使用封装的 closeModal 函数进行清理
+                }
+            });
         });
+
+
+        // --- 机密档案库密码验证逻辑 (新增) ---
+        
+        function showPasswordModal() {
+            // 如果档案库已解锁，则直接返回，不显示密码框
+            if (!ARCHIVE_CONTENT.classList.contains('hidden')) {
+                return;
+            }
+            
+            PASSWORD_MODAL.showModal();
+            // 确保输入框获得焦点
+            PASSWORD_INPUT.focus();
+        }
+
+        function validatePassword() {
+            const enteredPassword = PASSWORD_INPUT.value.trim();
+            
+            // 1. 清除之前的动画和信息
+            PASSWORD_INPUT.classList.remove('password-shake');
+            PASSWORD_MESSAGE.textContent = '';
+            
+            if (enteredPassword === CORRECT_PASSWORD) {
+                // 密码正确
+                closeModal('passwordModal');
+                unlockArchives();
+            } else {
+                // 2. 密码错误：添加抖动效果、错误信息和视觉强调
+                PASSWORD_MESSAGE.textContent = '[ 验证失败 ] 访问密钥不正确。';
+                PASSWORD_INPUT.classList.add('password-shake');
+                
+                // 3. 延迟移除抖动类和视觉强调，确保 600ms 的动画播放完毕
+                // 动画时长 0.2s * 3 = 0.6s (600ms), 延迟 700ms 移除
+                setTimeout(() => {
+                    PASSWORD_INPUT.classList.remove('password-shake');
+                }, 700); 
+            }
+            // 4. 清空输入框以重新尝试
+            PASSWORD_INPUT.value = '';
+        }
+        
+        function unlockArchives() {
+            // 1. 显示档案内容
+            ARCHIVE_CONTENT.classList.remove('hidden');
+            
+            // 2. 更新锁定状态文本
+            LOCK_STATUS.textContent = '[ 访问授权 ]';
+            LOCK_STATUS.classList.remove('text-red-500');
+            LOCK_STATUS.classList.add('text-green-500');
+            
+            // 3. 移除标题的点击光标，表示已解锁
+            document.getElementById('archive-header').classList.remove('cursor-pointer');
+            document.getElementById('archive-header').classList.remove('hover:bg-gray-900');
+            document.getElementById('archive-header').onclick = null; // 移除点击事件
+        }
 
 
         // --- Details 箭头翻转逻辑 ---
